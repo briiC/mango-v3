@@ -2,7 +2,7 @@ package mango
 
 import "testing"
 
-func Benchmark_MergeParams(b *testing.B) {
+func Benchmark_MergeParams_Parallel(b *testing.B) {
 	params := map[string]string{} //global
 
 	params2 := map[string]string{
