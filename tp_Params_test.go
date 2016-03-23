@@ -3,7 +3,12 @@ package mango
 import "testing"
 
 func Benchmark_MergeParams_Parallel(b *testing.B) {
-	params := map[string]string{} //global
+	// var mutex = &sync.Mutex{}
+	params := map[string]string{
+		"A": "aaa",
+		"B": "bbb",
+		"C": "ccc",
+	}
 
 	params2 := map[string]string{
 		"B": "bbb",
@@ -18,12 +23,7 @@ func Benchmark_MergeParams_Parallel(b *testing.B) {
 
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			params = map[string]string{
-				"A": "aaa",
-				"B": "bbb",
-				"C": "ccc",
-			}
-			params = mergeParams(params, params2, params3)
+			mergeParams(params, params2, params3)
 		}
 	})
 }
