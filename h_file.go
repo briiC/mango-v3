@@ -2,6 +2,7 @@ package mango
 
 import (
 	"bytes"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -45,7 +46,7 @@ func fileToParams(fpath string) map[string]string {
 
 	// Set existing file system file params
 	params2["Path"] = fpath
-	params2["ModTime"] = finfo.ModTime().Format(time.RFC3339)
+	params2["ModTime"] = fmt.Sprint(finfo.ModTime().UnixNano()) //TODO: or strconv faster?
 
 	// if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
 

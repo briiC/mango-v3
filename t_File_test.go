@@ -2,6 +2,7 @@ package mango
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 )
 
@@ -94,6 +95,7 @@ func Test_FileToParams(t *testing.T) {
 			"A":             "rewriting key A",
 			"NotMultiLine":  "This not part of \"MultiLine\" param",
 			"NotMultiLine2": "have \\ but not at the end",
+			"ModTime":       "BEGIN: 14588", // 1458839061048723130
 		},
 		"not-exists": map[string]string{
 			"Ext":       "",
@@ -132,7 +134,25 @@ func Test_FileToParams(t *testing.T) {
 	for filename, cParams := range cases {
 		fParams := fileToParams(filename)
 		for ckey, cval := range cParams {
+			notValid := false
+
+			// Test if value starts with correct
+			if strings.Index(cval, "BEGIN:") == 0 {
+				beginVal := strings.TrimSpace(cval[6:]) // len(BEGIN:) == 6
+				if strings.Index(fParams[ckey], beginVal) != 0 {
+					notValid = true
+				} else {
+					continue
+				}
+			}
+
+			// Test exact match
 			if fParams[ckey] != cval {
+				notValid = true
+			}
+
+			// If not valid print map and show error
+			if notValid {
 				printMap(filename, fParams)
 				t.Fatal(filename, "\""+ckey+"\" expected to be \""+cval+"\" -- (Found: ["+fParams[ckey]+"])")
 			}
