@@ -6,6 +6,7 @@ import (
 	"testing"
 )
 
+// Print map in human readable format
 func printMap(fname string, m map[string]string) {
 	fmt.Println("@ ---", fname, "---")
 	for key, val := range m {
@@ -27,24 +28,28 @@ func Test_FilenameToParams(t *testing.T) {
 		"Simple.md": map[string]string{
 			"Ext":       ".md",
 			"Label":     "Simple",
+			"Title":     "Simple",
 			"Slug":      "simple",
 			"IsVisible": "Yes",
 		},
 		"path.to/some/file/Simple.md": map[string]string{
 			"Ext":       ".md",
 			"Label":     "Simple",
+			"Title":     "Simple",
 			"Slug":      "simple",
 			"IsVisible": "Yes",
 		},
 		"path.to/some/file/ŪTF 8.md/": map[string]string{
 			"Ext":       ".md",
 			"Label":     "ŪTF 8",
+			"Title":     "ŪTF 8",
 			"Slug":      "utf-8",
 			"IsVisible": "Yes",
 		},
 		"65_With sort number.md": map[string]string{
 			"Ext":       ".md",
 			"Label":     "With sort number",
+			"Title":     "With sort number",
 			"Slug":      "with-sort-number",
 			"IsVisible": "Yes",
 			"SortNr":    "65",
@@ -52,6 +57,7 @@ func Test_FilenameToParams(t *testing.T) {
 		"1_01.01.2000-26.05.2001_Date range.md": map[string]string{
 			"Ext":       ".md",
 			"Label":     "Date range",
+			"Title":     "Date range",
 			"Slug":      "date-range",
 			"IsVisible": "No",
 			"SortNr":    "1",
@@ -119,6 +125,7 @@ func Test_FileToParams(t *testing.T) {
 			"Ext":       ".md",
 			"SortNr":    "1",
 			"Label":     "Simple changed",
+			"Title":     "Simple changed",
 
 			"Keywords": "defaults, file",
 			"Path":     "test-files/content/en/top-menu/1_Simple.md", //relative?

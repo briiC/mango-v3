@@ -19,7 +19,6 @@ import (
 // 3. (same depth) .defaults
 // 4 -n. (up n depth) .subdefaults
 // 5. .mango config file params
-// TODO: parallel testing
 func fileToParams(fpath string) map[string]string {
 	// get given filepath directory path
 	pwd, _ := filepath.Abs(filepath.Dir(fpath))
@@ -106,7 +105,14 @@ func fileToParams(fpath string) map[string]string {
 
 	}
 
+	// Title is tricky. We need special treatment.
+	// Title is based on Label if empty (always set)
+	if params["Title"] == "" {
+		params["Title"] = params["Label"]
+	}
+
 	// ** Merge params correctly. First param map is more important
+	// file <---- filename <---- defaults <- subdefaults
 	params = mergeParams(params, params2, params3)
 
 	return params
