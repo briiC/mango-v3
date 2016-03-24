@@ -22,9 +22,17 @@ func mergeParams(mainMap map[string]string, maps ...map[string]string) map[strin
 	// actual merge
 	for _, submap := range maps {
 		for key, val := range submap {
-			_, isKey := m[key]
-			if !isKey {
+
+			// Set if empty
+			if _, isKey := m[key]; !isKey {
+				// Not key yet, assign
 				m[key] = val
+			}
+
+			// Append +Key: Val
+			if mval, isKey := m["+"+key]; isKey {
+				m[key] += mval
+				delete(m, "+"+key) // remove param that appended (+Key)
 			}
 		}
 	}

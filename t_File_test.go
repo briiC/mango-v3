@@ -114,6 +114,8 @@ func Test_FileToParams(t *testing.T) {
 			"Ext":       ".md",
 			"SortNr":    "1",
 			"Label":     "Simple changed",
+
+			"Keywords": "defaults, file",
 		},
 	}
 
