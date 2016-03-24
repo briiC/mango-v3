@@ -103,9 +103,12 @@ func Test_FileToParams(t *testing.T) {
 			"IsVisible": "No",
 		},
 		"test-files/content/en/top-menu/1_Simple.md": map[string]string{
-			"Icon":      "default.ico", // this param comes from .defaults
-			"SubIcon":   "subicon.ico", // this param comes from .subdefaults ^1
-			"DeepIcon":  "deep.ico",    // this param comes from .subdefaults ^2
+			"Icon":     "default.ico", // this param comes from .defaults
+			"SubIcon":  "subicon.ico", // this param comes from .subdefaults ^1
+			"DeepIcon": "deep.ico",    // this param comes from .subdefaults ^2
+			"Over":     "by in-file",  //
+			"Sub":      "first",       //
+
 			"IsVisible": "Yes",
 			"Slug":      "simple-slug-oh",
 			"Ext":       ".md",
