@@ -12,13 +12,13 @@ Cyan='\e[0;36m'         # Cyan
 White='\e[0;37m'        # White
 
 
-# Simple
-echo -e "\n${Cyan}go test -v ${Color_Off}\n"
-go test -v
-
-# Simple with data recing
-echo -e "\n${Cyan}go test -v -race ${Color_Off}\n"
-go test -v -race
+# # Simple
+# echo -e "\n${Cyan}go test -v ${Color_Off}\n"
+# go test -v
+#
+# # Simple with data recing
+# echo -e "\n${Cyan}go test -v -race ${Color_Off}\n"
+# go test -v -race
 
 # Run benchmark tests
 echo -e "\n${Cyan}go test -v -bench=. ${Color_Off}\n"

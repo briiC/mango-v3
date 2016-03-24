@@ -17,7 +17,6 @@ func mergeParams(mainMap map[string]string, maps ...map[string]string) map[strin
 	for key, val := range mainMap {
 		m[key] = val
 	}
-	// m := mainMap - not in new address
 
 	// actual merge
 	for _, submap := range maps {
@@ -25,7 +24,6 @@ func mergeParams(mainMap map[string]string, maps ...map[string]string) map[strin
 
 			// Set if empty
 			if _, isKey := m[key]; !isKey {
-				// Not key yet, assign
 				m[key] = val
 			}
 

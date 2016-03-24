@@ -85,12 +85,13 @@ func Test_FileToParams(t *testing.T) {
 	// Define filenames and expected result map
 	cases := map[string]map[string]string{
 		".mango": map[string]string{
-			"Ext":         ".mango",
-			"Label":       "",
-			"Slug":        "",
-			"A":           "aaa",
-			"B":           "bbb",
-			"~StillValid": "mandatory only \":\"",
+			"Ext":        ".mango",
+			"Label":      "",
+			"Slug":       "",
+			"B":          "bbb",
+			"Valid":      "counts only first \":\"",
+			"StillValid": "ignoring prespace",
+			"A":          "rewriting key A",
 		},
 		"not-exists": map[string]string{
 			"Ext":       "",
@@ -116,6 +117,12 @@ func Test_FileToParams(t *testing.T) {
 			"Label":     "Simple changed",
 
 			"Keywords": "defaults, file",
+			"Path":     "test-files/content/en/top-menu/1_Simple.md", //relative?
+		},
+		"test-files/content/en/top-menu/2_One more.md": map[string]string{
+			"Label": "One more",
+			"Slug":  "one-more",
+			"Title": "Title is changed",
 		},
 	}
 

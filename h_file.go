@@ -35,12 +35,17 @@ func fileToParams(fpath string) map[string]string {
 		// otherwise params empty
 		return map[string]string{}
 	}
+
 	// Is it directory
 	if fErr == nil && finfo.IsDir() {
 		// Special file to find
 		fpath += "/.dir"
 		params2["IsGroup"] = "Yes" // assign if not in-file param
 	}
+
+	// Set existing file system file params
+	params2["Path"] = fpath
+	params2["ModTime"] = finfo.ModTime().Format(time.RFC3339)
 
 	// if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
 
@@ -119,13 +124,37 @@ func bufToParams(buf []byte) map[string]string {
 	// Parse keys: values
 	lines := bytes.Split(buf, nl)
 	for _, row := range lines {
-		// If have param format "Key: Val"
-		if bytes.Index(row, sep) >= 0 {
-			prop := bytes.SplitN(row, sep, 2)
-			key := bytes.TrimSpace(prop[0])
-			val := bytes.TrimSpace(prop[1])
-			params[string(key)] = string(val)
+		row = bytes.TrimSpace(row)
+
+		// Skip not valid format "Key: Val"
+		if bytes.Index(row, sep) <= 0 {
+			continue
 		}
+
+		// Skip comment style rows
+		isComment := false
+		isComment = isComment || row[0] == "#"[0]  // #
+		isComment = isComment || row[0] == "/"[0]  // // or /*
+		isComment = isComment || row[0] == "-"[0]  // --
+		isComment = isComment || row[0] == "<"[0]  // <!--
+		isComment = isComment || row[0] == "\""[0] // ""
+		isComment = isComment || row[0] == "~"[0]  // ~
+		if isComment {
+			continue
+		}
+
+		// Split to key and val
+		prop := bytes.SplitN(row, sep, 2)
+		key := bytes.TrimSpace(prop[0])
+		val := bytes.TrimSpace(prop[1])
+
+		// Key can't contain spaces
+		if bytes.Index(key, []byte(" ")) > 0 {
+			continue
+		}
+
+		// Assign valid
+		params[string(key)] = string(val)
 	}
 
 	return params
@@ -203,6 +232,7 @@ func filenameToParams(fname string) map[string]string {
 
 	// Set before visibility check
 	params["Label"] = label
+	params["Title"] = label // must be overwritten in fileToParams if have such
 
 	// Slug
 	reg, _ := regexp.Compile("[^a-zA-Zā-žĀ-Žа-яА-Я0-9]+") // en, lv, ru
