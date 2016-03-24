@@ -84,14 +84,16 @@ func Test_FilenameToParams(t *testing.T) {
 func Test_FileToParams(t *testing.T) {
 	// Define filenames and expected result map
 	cases := map[string]map[string]string{
-		".mango": map[string]string{
-			"Ext":        ".mango",
-			"Label":      "",
-			"Slug":       "",
-			"B":          "bbb",
-			"Valid":      "counts only first \":\"",
-			"StillValid": "ignoring prespace",
-			"A":          "rewriting key A",
+		"test-files/.params": map[string]string{
+			"Ext":           ".params",
+			"Label":         "",
+			"Slug":          "",
+			"B":             "bbb",
+			"Valid":         "counts only first \":\"",
+			"StillValid":    "ignoring prespace",
+			"A":             "rewriting key A",
+			"NotMultiLine":  "This not part of \"MultiLine\" param",
+			"NotMultiLine2": "have \\ but not at the end",
 		},
 		"not-exists": map[string]string{
 			"Ext":       "",

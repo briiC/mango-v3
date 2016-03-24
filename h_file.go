@@ -118,8 +118,16 @@ func bufToParams(buf []byte) map[string]string {
 	nl := []byte("\n") // new line ending
 	sep := []byte(":") // Key: Val
 
+	// for multiline
+	ml := []byte("\\\n")  // "\" proceeded with new line
+	mlglue := []byte("𐩘") // Unicode character. (U+10A58, &#68184;)
+
 	// Normalize line endings to \n
 	buf = bytes.Replace(buf, []byte("\r\n"), nl, -1)
+
+	// Make multiple line params in one line
+	// Later we will parse it back to multiline
+	buf = bytes.Replace(buf, ml, mlglue, -1)
 
 	// Parse keys: values
 	lines := bytes.Split(buf, nl)
@@ -132,13 +140,13 @@ func bufToParams(buf []byte) map[string]string {
 		}
 
 		// Skip comment style rows
-		isComment := false
-		isComment = isComment || row[0] == "#"[0]  // #
-		isComment = isComment || row[0] == "/"[0]  // // or /*
-		isComment = isComment || row[0] == "-"[0]  // --
-		isComment = isComment || row[0] == "<"[0]  // <!--
-		isComment = isComment || row[0] == "\""[0] // ""
-		isComment = isComment || row[0] == "~"[0]  // ~
+		isComment := false ||
+			row[0] == "#"[0] || // #
+			row[0] == "/"[0] || // // or /*
+			row[0] == "-"[0] || // --
+			row[0] == "<"[0] || // <!--
+			row[0] == "\""[0] || // ""
+			row[0] == "~"[0] // ~
 		if isComment {
 			continue
 		}
@@ -151,6 +159,12 @@ func bufToParams(buf []byte) map[string]string {
 		// Key can't contain spaces
 		if bytes.Index(key, []byte(" ")) > 0 {
 			continue
+		}
+
+		// Is this was multiline make it back to newlines
+		// But do not recover "\" at the end
+		if bytes.Index(val, mlglue) >= 0 {
+			val = bytes.Replace(val, mlglue, nl, -1) // nl NOT ml
 		}
 
 		// Assign valid
