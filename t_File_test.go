@@ -127,7 +127,7 @@ func Test_FileToParams(t *testing.T) {
 			"Label":     "Simple changed",
 			"Title":     "Simple changed",
 
-			"Keywords": "defaults, file",
+			"Keywords": "A, B, C, D",
 			"Path":     "test-files/content/en/top-menu/1_Simple.md", //relative?
 		},
 		"test-files/content/en/top-menu/2_One more.md": map[string]string{

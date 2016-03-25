@@ -95,13 +95,16 @@ func fileToParams(fpath string) map[string]string {
 
 		// Up level .subdefaults (until can't found)
 		subfilepath := pwd
+		// can't merge with params3 already, because param order will break
+		subparams := make(map[string]string, 0)
 	SUB:
 		subfilepath, _ = filepath.Abs(subfilepath + "/../") //one up
-		subparams := fileToParams(subfilepath + "/.subdefaults")
-		if len(subparams) > 0 {
-			params3 = mergeParams(params3, subparams)
+		_subparams := fileToParams(subfilepath + "/.subdefaults")
+		if len(_subparams) > 0 {
+			subparams = mergeParams(subparams, _subparams)
 			goto SUB
 		}
+		params3 = mergeParams(params3, subparams)
 
 	}
 
