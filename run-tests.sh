@@ -11,19 +11,26 @@ Purple='\e[0;35m'       # Purple
 Cyan='\e[0;36m'         # Cyan
 White='\e[0;37m'        # White
 
+Today=$(date +'%d-%m-%Y')
+Yesterday=$(date -d "-1 days" +"%d-%m-%Y")
 
-# # Simple
-# echo -e "\n${Cyan}go test -v ${Color_Off}\n"
-# go test -v
-#
-# # Simple with data recing
-# echo -e "\n${Cyan}go test -v -race ${Color_Off}\n"
-# go test -v -race
+
+# Simple
+echo -e "\n${Cyan}go test -v ${Color_Off}\n"
+go test -v
 
 # Run benchmark tests
-echo -e "\n${Cyan}go test -v -bench=. ${Color_Off}\n"
-go test -v -bench=.
+NewFname="$Today.bench"
+echo -e "\n${Cyan}go test -v -bench=. ${Color_Off} > ${NewFname}\n"
+go test -bench=. > $NewFname
 
 # Run benchmark tests with data race check
 echo -e "\n${Cyan}go test -v -race -bench=. ${Color_Off}\n"
-go test -v -race -bench=.
+go test -race -bench=.
+
+
+# Compare to bench profiles
+OldFname="$Yesterday.bench"
+echo -e "\n\n${Yellow}"
+benchcmp $OldFname $NewFname
+echo -e "${Color_Off}\n\n"
