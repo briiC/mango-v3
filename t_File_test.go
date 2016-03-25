@@ -137,10 +137,9 @@ func Test_FileToParams(t *testing.T) {
 			"Title":    "Title is changed",
 		},
 		"test-files/content/en/top-menu/Weather/Cold.md": map[string]string{
-			"Label":    "Cold",
-			"Slug":     "cold",
-			"Title":    "Cold",
-			"Keywords": "A, B, C",
+			"Label": "Cold",
+			"Slug":  "cold",
+			"Title": "Cold",
 		},
 		"test-files/content/en/top-menu/Sports": map[string]string{
 			"Label":       "Sports",

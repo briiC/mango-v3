@@ -227,6 +227,7 @@ func filenameToParams(fpath string) map[string]string {
 	// dd.mm.yyyy-dd.mm.yyyy)
 	// -dd.mm.yyyy
 	// Check first char for numeric 0-9
+	// TODO: remove permanently? no good for filename. Add as special param in-file
 	arr = strings.SplitN(label, "_", 2)
 	if len(arr) >= 2 && len(arr[0]) >= 10 {
 		var tFrom, tTo time.Time
