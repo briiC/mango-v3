@@ -209,7 +209,7 @@ func filenameToParams(fpath string) map[string]string {
 	}
 
 	// Remove extension (can be case sensitive)
-	label := strings.TrimRight(fname, filepath.Ext(fname)) // note: ext not lowercased
+	label := strings.TrimSuffix(fname, filepath.Ext(fname)) // note: ext not lowercased
 
 	// SortNr
 	// Must be short (because we detect if its not date dd.mm.yyyy)
