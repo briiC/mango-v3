@@ -28,7 +28,6 @@ go test -bench=. > $NewFname
 echo -e "\n${Cyan}go test -v -race -bench=. ${Color_Off}\n"
 go test -race -bench=.
 
-
 # Compare to bench profiles
 OldFname="$Yesterday.bench"
 echo -e "\n\n${Yellow}"
