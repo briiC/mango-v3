@@ -136,6 +136,34 @@ func Test_FileToParams(t *testing.T) {
 			"Keywords": "A, B, C",
 			"Title":    "Title is changed",
 		},
+		"test-files/content/en/top-menu/Sports": map[string]string{
+			"Label":       "Sports",
+			"Slug":        "sports",
+			"Title":       "Sports",
+			"IsDir":       "Yes",
+			"IsVisible":   "Yes",
+			"HaveContent": "No",
+			"Ext":         ".dir",
+			"Path":        "ENDS: /Sports",
+
+			"Icon":     "default.ico", // this param comes from .defaults
+			"SubIcon":  "subicon.ico", // this param comes from .subdefaults ^1
+			"DeepIcon": "deep.ico",    // this param comes from .subdefaults ^2
+		},
+		"test-files/content/en/top-menu/Weather": map[string]string{
+			"Label":       "Weather",
+			"Slug":        "weather",
+			"Title":       "Weather",
+			"IsDir":       "Yes",
+			"IsVisible":   "Yes",
+			"HaveContent": "No",
+			"Ext":         ".dir",
+			"Path":        "ENDS: /Weather",
+
+			"Icon":     "snow.ico",    // this param comes from .defaults
+			"SubIcon":  "subicon.ico", // this param comes from .subdefaults ^1
+			"DeepIcon": "deep.ico",    // this param comes from .subdefaults ^2
+		},
 	}
 
 	// Run test cases and verify result params
@@ -144,10 +172,21 @@ func Test_FileToParams(t *testing.T) {
 		for ckey, cval := range cParams {
 			notValid := false
 
-			// Test if value starts with correct
+			// Test if value STARTS with correct
 			if strings.Index(cval, "BEGIN:") == 0 {
 				beginVal := strings.TrimSpace(cval[6:]) // len(BEGIN:) == 6
 				if strings.Index(fParams[ckey], beginVal) != 0 {
+					notValid = true
+				} else {
+					continue
+				}
+			}
+
+			// Test if value ENDS with correct
+			if strings.Index(cval, "ENDS:") == 0 {
+				endVal := strings.TrimSpace(cval[5:]) // len(BEGIN:) == 6
+				_cval := fParams[ckey][len(fParams[ckey])-len(endVal):]
+				if _cval != endVal {
 					notValid = true
 				} else {
 					continue

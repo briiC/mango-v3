@@ -23,10 +23,6 @@ func fileToParams(fpath string) map[string]string {
 	// get given filepath directory path
 	pwd, _ := filepath.Abs(filepath.Dir(fpath))
 
-	// Get params from filename
-	// Parsing first, but assigning afer content params
-	params2 := filenameToParams(fpath)
-
 	// Check real file
 	finfo, fErr := os.Stat(fpath)
 	if os.IsNotExist(fErr) {
@@ -40,17 +36,25 @@ func fileToParams(fpath string) map[string]string {
 	if fErr == nil && finfo.IsDir() {
 		// Special file to find
 		fpath += "/.dir"
-		params2["IsGroup"] = "Yes" // assign if not in-file param
 	}
+
+	// Get params from filename
+	// Parsing first, but assigning afer content params
+	params2 := filenameToParams(fpath)
 
 	// Set existing file system file params
 	params2["Path"] = fpath
+	if finfo.IsDir() {
+		// Get original Path
+		params2["Path"] = fpath[:len(fpath)-5] // trim .dir
+	}
 	params2["ModTime"] = fmt.Sprint(finfo.ModTime().UnixNano()) //TODO: or strconv faster?
 
 	// if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
 
 	// Raw file contents
-	buf, err := ioutil.ReadFile(fpath)
+	// Not checking for read error. If can't read empty content
+	buf, _ := ioutil.ReadFile(fpath)
 	var bufHeader, bufContent []byte
 
 	// Split raw buf to variables
@@ -71,10 +75,6 @@ func fileToParams(fpath string) map[string]string {
 
 	// ** Params
 	params := bufToParams(bufHeader) // first assign what we can from buf
-	if err != nil {
-		// Error while reading file. Treat as not exists
-		params["IsVisible"] = "No"
-	}
 
 	// ** Content
 	bufContent = bytes.TrimSpace(bufContent)
@@ -87,8 +87,8 @@ func fileToParams(fpath string) map[string]string {
 	// ** Load extra file params
 	params3 := make(map[string]string)
 
-	// only for content files
-	if params2["Ext"] == ".md" {
+	// only for content files or directories
+	if params2["Ext"] == ".md" || finfo.IsDir() {
 
 		// Same depth .defaults
 		params3 = fileToParams(pwd + "/.defaults")
@@ -110,7 +110,7 @@ func fileToParams(fpath string) map[string]string {
 
 	// Title is tricky. We need special treatment.
 	// Title is based on Label if empty (always set)
-	if params["Title"] == "" {
+	if params["Title"] == "" && params["Label"] != "" {
 		params["Title"] = params["Label"]
 	}
 
@@ -186,9 +186,9 @@ func bufToParams(buf []byte) map[string]string {
 
 // Parse string (filename) to params
 // Example: 1_File name.md
-func filenameToParams(fname string) map[string]string {
+func filenameToParams(fpath string) map[string]string {
 
-	fname = filepath.Base(fname)
+	fname := filepath.Base(fpath)
 	fname = strings.TrimSpace(fname)
 
 	params := make(map[string]string, 0)
@@ -196,6 +196,17 @@ func filenameToParams(fname string) map[string]string {
 	params["Ext"] = strings.ToLower(filepath.Ext(fname))
 	params["IsVisible"] = "Yes"
 	// params["Label"] = label - set at the end
+
+	// Is it param file for directory
+	dirFname := ".dir"
+	if fname == dirFname {
+		fname, _ = filepath.Abs(strings.TrimSuffix(fpath, dirFname))
+		fname = filepath.Base(fname)
+		params["FileName"] = fname
+
+		params["Ext"] = dirFname
+		params["IsDir"] = "Yes"
+	}
 
 	// Remove extension (can be case sensitive)
 	label := strings.TrimRight(fname, filepath.Ext(fname)) // note: ext not lowercased
@@ -272,19 +283,18 @@ func filenameToParams(fname string) map[string]string {
 	// Not visible if no filename
 	if params["Label"] == "" {
 		params["IsVisible"] = "No"
-		return params
 	}
 
 	// not visible if existing extension not .md
-	if params["Ext"] != "" && params["Ext"] != ".md" {
+	if params["Ext"] != "" && params["Ext"] != ".md" && params["IsDir"] != "Yes" {
 		params["IsVisible"] = "No"
-		return params
 	}
 
 	// Filenames that starts with "." and "~" not visible (also ends with "~")
 	if fname[:1] == "." || fname[:1] == "~" || fname[len(fname)-1:] == "~" {
-		params["IsVisible"] = "No"
-		return params
+		if params["IsDir"] != "Yes" {
+			params["IsVisible"] = "No"
+		}
 	}
 
 	return params
