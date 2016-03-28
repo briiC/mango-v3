@@ -5,6 +5,7 @@ import "testing"
 // Parsing datetimes
 func Test_NewApplication(t *testing.T) {
 	app, err := NewApplication()
+	// fmt.Println(app)
 	if err != nil {
 		t.Fatal(app, err)
 	}
@@ -13,6 +14,12 @@ func Test_NewApplication(t *testing.T) {
 	if app.BinPath == "" {
 		t.Fatal("BinPath is empty")
 	}
+
+	// Must not be busy by default
+	if app.isBusy {
+		t.Fatal("App MUST NOT be busy right now")
+	}
+
 	// Trim from BinPath end to content path end
 	if app.ContentPath[len(app.BinPath):] != "/test-files/content" {
 		t.Fatal("Default ContentPath must end with /test-files/content")

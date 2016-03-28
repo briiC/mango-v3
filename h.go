@@ -2,6 +2,7 @@ package mango
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 	"time"
 
@@ -120,4 +121,27 @@ func toTime(s string) (time.Time, error) {
 	}
 
 	return dt, err
+}
+
+// Print map in human readable format
+func printMap(fname string, m map[string]string) {
+	fmt.Println("::: ", fname, " :::")
+	for key, val := range m {
+		fmt.Printf("%20s: %s \n", key, val)
+	}
+	fmt.Println()
+}
+
+// Print all pages under this page
+func (page *Page) Print(depth int) {
+	for _, p := range page.Pages {
+		fmt.Printf("%s %-30s %-30s", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"])
+		fmt.Printf(" &%p", p.Parent)
+		fmt.Println()
+
+		// printMap(p.Params["Label"], p.Params)
+		if len(p.Pages) > 0 {
+			p.Print(depth + 1)
+		}
+	}
 }

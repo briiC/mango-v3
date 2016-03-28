@@ -1,19 +1,9 @@
 package mango
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 )
-
-// Print map in human readable format
-func printMap(fname string, m map[string]string) {
-	fmt.Println("@ ---", fname, "---")
-	for key, val := range m {
-		fmt.Printf("%20s: %s \n", key, val)
-	}
-	fmt.Println()
-}
 
 // TestNew - create and check application
 func Test_FilenameToParams(t *testing.T) {

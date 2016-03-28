@@ -1,6 +1,9 @@
 package mango
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 // Parsing datetimes
 func Test_LoadConfig(t *testing.T) {
@@ -17,6 +20,23 @@ func Test_LoadConfig(t *testing.T) {
 	app.loadConfig("test-files/.mango-empty")
 	if app.ContentPath[len(app.BinPath):] != "/test-files/content" {
 		t.Fatal("Default ContentPath must end with /test-files/content")
+	}
+
+}
+
+func Test_LoadPages(t *testing.T) {
+	app, _ := NewApplication()
+
+	// pages := app.loadPages(app.ContentPath)
+	for _, p := range app.Pages {
+		p.Print(0)
+	}
+	fmt.Println()
+
+	//
+	for slug, p := range app.pageList {
+		fmt.Printf("%20s &%p &%p\n", slug, p, p.Parent)
+		// printMap("xx", p.Params)
 	}
 
 }

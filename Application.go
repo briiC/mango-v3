@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
@@ -8,6 +9,7 @@ import (
 
 // Application - mango application
 type Application struct {
+	isBusy bool
 
 	// Absolute path to where binary is
 	// config file ".mango" must be there
@@ -18,6 +20,14 @@ type Application struct {
 
 	// Absolute path to web accessable files
 	PublicPath string
+
+	// Page tree
+	Pages []*Page
+
+	// Easy count overall pages and detect duplicates
+	// Page slice (not tree)
+	// map[Slug]Page
+	pageList map[string]*Page
 }
 
 // NewApplication - create/init new application
@@ -32,6 +42,9 @@ func NewApplication() (*Application, error) {
 	// Configure app by default config file ".mango"
 	// Override defaults (as last action)
 	app.loadConfig(".mango")
+
+	// Load
+	app.LoadContent()
 
 	return app, nil
 }
@@ -55,6 +68,9 @@ func (app *Application) setBinPath() error {
 // loadConfig using given config filename
 // usually ".mango"
 func (app *Application) loadConfig(fname string) {
+	// Busy while loading config
+	app.isBusy = true
+	defer func() { app.isBusy = false }()
 
 	fpath := app.BinPath + "/" + fname
 	params := fileToParams(fpath)
@@ -73,5 +89,87 @@ func (app *Application) loadConfig(fname string) {
 		path, _ = filepath.Abs(path)
 		app.PublicPath = path
 	}
+}
+
+// LoadContent - Load files to application
+func (app *Application) LoadContent() {
+	// Busy while loading files
+	app.isBusy = true
+	defer func() { app.isBusy = false }()
+
+	// Init pageList
+	app.pageList = make(map[string]*Page, 0)
+
+	// Page tree
+	app.Pages = app.loadPages(app.ContentPath)
 
 }
+
+// NewPage for application
+func (app *Application) NewPage(fpath string) *Page {
+	return newPage(app, fpath)
+}
+
+// Directory to page tree
+func (app *Application) loadPages(fpath string) []*Page {
+
+	// Get info about fpath
+	// Only dir can be used for loading pages
+	f, fErr := os.Stat(fpath)
+	if fErr != nil || !f.IsDir() {
+		return nil
+	}
+
+	// Collect all pages
+	var pages []*Page
+	if files, dirErr := ioutil.ReadDir(fpath); dirErr == nil {
+		for _, f2 := range files {
+			if f2.Name()[:1] == "." {
+				// Skip config files (e.g. .dir, .defaults..)
+				continue
+			}
+
+			p := app.NewPage(fpath + "/" + f2.Name())
+
+			if p.Params["IsVisible"] != "Yes" {
+				// Only visible pages are added
+				continue
+			}
+
+			// Can't be duplicate slugs
+			if p.isDuplicate() {
+				p.avoidDuplicate()
+			}
+
+			if p.Params["IsDir"] == "Yes" {
+				// Load sub-pages if it's directory
+				p.Pages = app.loadPages(p.Params["Path"])
+				for _, p2 := range p.Pages {
+					// Set Parent page for all sub-pages
+					p2.Parent = p
+				}
+			}
+
+			// Add to linear pageList
+			app.pageList[p.Params["Slug"]] = p
+
+			// Add to pageTree
+			pages = append(pages, p)
+
+		}
+	}
+
+	return pages
+}
+
+//
+// // Make linear page list
+// func (app *Application) makePageList(page *Page) map[string]*Page {
+// 	var pageList map[string]*Page
+//
+// 	for _, p := range page.Pages {
+// 		pageList[p.Params["Slug"]] = p
+// 	}
+//
+// 	return pageList
+// }
