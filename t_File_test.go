@@ -130,7 +130,7 @@ func Test_FileToParams(t *testing.T) {
 			"Keywords":    "A, B, C, D",
 			"Path":        "test-files/content/en/top-menu/1_Simple.md", //relative?
 			"VisibleFrom": "1426896000000000000",
-			"VisibleTo":   "1427039097000000000",
+			"VisibleTo":   "4077877497000000000",
 		},
 		"test-files/content/en/top-menu/2_One more.md": map[string]string{
 			"Label":    "One more",
@@ -170,6 +170,21 @@ func Test_FileToParams(t *testing.T) {
 			"Icon":     "snow.ico",    // this param comes from .defaults
 			"SubIcon":  "subicon.ico", // this param comes from .subdefaults ^1
 			"DeepIcon": "deep.ico",    // this param comes from .subdefaults ^2
+		},
+		"test-files/content/en/top-menu/Sports/Baseball.md": map[string]string{
+			"IsVisible":   "Yes",
+			"VisibleFrom": "1426896000000000000",
+			"VisibleTo":   "", // or not set
+		},
+		"test-files/content/en/top-menu/Sports/Hockey.md": map[string]string{
+			"IsVisible":   "Yes",
+			"VisibleFrom": "", // or not set
+			"VisibleTo":   "4077734400000000000",
+		},
+		"test-files/content/en/top-menu/Sports/Soccer.md": map[string]string{
+			"IsVisible":   "No",
+			"VisibleFrom": "4077734400000000000",
+			"VisibleTo":   "", // or not set
 		},
 	}
 

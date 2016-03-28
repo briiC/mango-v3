@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
+	"time"
 )
 
 // Read file contents and convert to map of params
@@ -119,14 +120,30 @@ func fileToParams(fpath string) map[string]string {
 
 	// Check and format datetime to UnixNano format
 	// after all merged
-	if params["VisibleFrom"] != "" {
-		if dt, err := toTime(params["VisibleFrom"]); err == nil {
-			params["VisibleFrom"] = fmt.Sprint(dt.UnixNano())
+	if params["VisibleFrom"] != "" || params["VisibleTo"] != "" {
+		dtNow := time.Now()
+		dtFrom, dtTo := dtNow, dtNow //default is now
+		// From
+		if params["VisibleFrom"] != "" {
+			if dt, err := toTime(params["VisibleFrom"]); err == nil {
+				dtFrom = dt
+				params["VisibleFrom"] = fmt.Sprint(dt.UnixNano())
+			}
 		}
-	}
-	if params["VisibleTo"] != "" {
-		if dt, err := toTime(params["VisibleTo"]); err == nil {
-			params["VisibleTo"] = fmt.Sprint(dt.UnixNano())
+		// To
+		if params["VisibleTo"] != "" {
+			if dt, err := toTime(params["VisibleTo"]); err == nil {
+				dtTo = dt
+				params["VisibleTo"] = fmt.Sprint(dt.UnixNano())
+			}
+		}
+
+		// Check for visibility
+		// To avoid exact nano comparison use +-1sec
+		if dtNow.After(dtFrom.Add(time.Second*-1)) && dtNow.Before(dtTo.Add(time.Second*+1)) {
+			params["IsVisible"] = "Yes"
+		} else {
+			params["IsVisible"] = "No"
 		}
 	}
 
