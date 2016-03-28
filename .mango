@@ -1,2 +1,5 @@
 TODO: add all possible params for mango app
 Key: Value
+
+ContentPath: test-files/content
+PublicPath: test-files/public/

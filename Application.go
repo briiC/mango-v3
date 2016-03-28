@@ -1,7 +1,6 @@
 package mango
 
 import (
-	"log"
 	"os"
 	"path/filepath"
 	"strings"
@@ -24,9 +23,14 @@ type Application struct {
 // NewApplication - create/init new application
 func NewApplication() (*Application, error) {
 	app := &Application{}
+
+	// Set defaults
 	app.setBinPath()
+	app.ContentPath = app.BinPath + "/content"
+	app.PublicPath = app.BinPath + "/public"
 
 	// Configure app by default config file ".mango"
+	// Override defaults (as last action)
 	app.loadConfig(".mango")
 
 	return app, nil
@@ -38,6 +42,7 @@ func (app *Application) setBinPath() error {
 	if err != nil || strings.Index(path, "/tmp/") >= 0 {
 		// if user run "go run *.go" binary will be created in temp folder
 		if path, err = filepath.Abs("."); err != nil {
+			// Can't be tested because this will be only on "go run *.go"
 			return err
 		}
 	}
@@ -49,18 +54,24 @@ func (app *Application) setBinPath() error {
 
 // loadConfig using given config filename
 // usually ".mango"
-func (app *Application) loadConfig(fname string) error {
+func (app *Application) loadConfig(fname string) {
 
 	fpath := app.BinPath + "/" + fname
 	params := fileToParams(fpath)
-	if len(params) == 0 {
-		log.Printf("Error: empty %s config file", fname)
-	}
-
-	// // Apply all params to app
-	// for key, val := range params {
-	// 	fmt.Println("@", key, val)
+	// if len(params) == 0 {
+	// 	// log.Printf("Error: Empty OR not exists [%s] config file", fname)
 	// }
 
-	return nil
+	// Overwrite only allowed params
+
+	if path := params["ContentPath"]; path != "" {
+		path, _ = filepath.Abs(path)
+		app.ContentPath = path
+	}
+
+	if path := params["PublicPath"]; path != "" {
+		path, _ = filepath.Abs(path)
+		app.PublicPath = path
+	}
+
 }
