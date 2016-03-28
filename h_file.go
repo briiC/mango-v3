@@ -8,7 +8,6 @@ import (
 	"path/filepath"
 	"regexp"
 	"strings"
-	"time"
 )
 
 // Read file contents and convert to map of params
@@ -118,6 +117,19 @@ func fileToParams(fpath string) map[string]string {
 	// file <---- filename <---- defaults <- subdefaults
 	params = mergeParams(params, params2, params3)
 
+	// Check and format datetime to UnixNano format
+	// after all merged
+	if params["VisibleFrom"] != "" {
+		if dt, err := toTime(params["VisibleFrom"]); err == nil {
+			params["VisibleFrom"] = fmt.Sprint(dt.UnixNano())
+		}
+	}
+	if params["VisibleTo"] != "" {
+		if dt, err := toTime(params["VisibleTo"]); err == nil {
+			params["VisibleTo"] = fmt.Sprint(dt.UnixNano())
+		}
+	}
+
 	return params
 }
 
@@ -219,50 +231,6 @@ func filenameToParams(fpath string) map[string]string {
 		if len(arr[0]) >= 1 && arr[0][0] >= 48 && arr[0][0] <= 57 {
 			params["SortNr"] = arr[0]
 			label = label[strings.Index(label, "_")+1:] //remove sortNr from label
-		}
-	}
-
-	// Get limit dates
-	// Must be long: dd.mm.yyyy (10)
-	// dd.mm.yyyy-dd.mm.yyyy)
-	// -dd.mm.yyyy
-	// Check first char for numeric 0-9
-	// TODO: remove permanently? no good for filename. Add as special param in-file
-	arr = strings.SplitN(label, "_", 2)
-	if len(arr) >= 2 && len(arr[0]) >= 10 {
-		var tFrom, tTo time.Time
-		dates := arr[0]
-		arr = strings.SplitN(dates, "-", 2)
-
-		var dateErr error
-
-		if len(arr) == 2 {
-			// Have both: start and end date
-			if len(arr[0]) == 10 {
-				// 02.01.2006 => dd.mm.yyyy
-				tFrom, dateErr = time.Parse("02.01.2006 15:04", arr[0]+" 00:00")
-			}
-			if len(arr[1]) == 10 {
-				tTo, dateErr = time.Parse("02.01.2006 15:04", arr[1]+" 23:59")
-			}
-		} else if len(arr) == 1 && len(arr[0]) == 10 {
-			// Only one: start date
-			tFrom, dateErr = time.Parse("02.01.2006 15:04", arr[0]+" 00:00")
-		}
-
-		if dateErr == nil {
-			params["DateFrom"] = tFrom.String()
-			params["DateTo"] = tTo.String()
-			// fmt.Println("-------------", label)
-			label = label[strings.Index(label, "_")+1:] //remove date from label
-
-			// Is visible or not
-			if tFrom.Year() > 2000 && time.Since(tFrom).Seconds() < 0 {
-				params["IsVisible"] = "No"
-			}
-			if tTo.Year() > 2000 && time.Since(tTo).Seconds() >= 0 {
-				params["IsVisible"] = "No"
-			}
 		}
 	}
 

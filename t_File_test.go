@@ -54,25 +54,25 @@ func Test_FilenameToParams(t *testing.T) {
 			"IsVisible": "Yes",
 			"SortNr":    "65",
 		},
-		"1_01.01.2000-26.05.2001_Date range.md": map[string]string{
-			"Ext":       ".md",
-			"Label":     "Date range",
-			"Title":     "Date range",
-			"Slug":      "date-range",
-			"IsVisible": "No",
-			"SortNr":    "1",
-			"DateFrom":  "2000-01-01 00:00:00 +0000 UTC",
-			"DateTo":    "2001-05-26 23:59:00 +0000 UTC",
-		},
-		"1_01.01.2000-26.05.2099_Date range active.md": map[string]string{
-			"Ext":       ".md",
-			"Label":     "Date range active",
-			"Slug":      "date-range-active",
-			"IsVisible": "Yes",
-			"SortNr":    "1",
-			"DateFrom":  "2000-01-01 00:00:00 +0000 UTC",
-			"DateTo":    "2099-05-26 23:59:00 +0000 UTC",
-		},
+		// "1_01.01.2000-26.05.2001_Date range.md": map[string]string{
+		// 	"Ext":       ".md",
+		// 	"Label":     "Date range",
+		// 	"Title":     "Date range",
+		// 	"Slug":      "date-range",
+		// 	"IsVisible": "No",
+		// 	"SortNr":    "1",
+		// 	"DateFrom":  "2000-01-01 00:00:00 +0000 UTC",
+		// 	"DateTo":    "2001-05-26 23:59:00 +0000 UTC",
+		// },
+		// "1_01.01.2000-26.05.2099_Date range active.md": map[string]string{
+		// 	"Ext":       ".md",
+		// 	"Label":     "Date range active",
+		// 	"Slug":      "date-range-active",
+		// 	"IsVisible": "Yes",
+		// 	"SortNr":    "1",
+		// 	"DateFrom":  "2000-01-01 00:00:00 +0000 UTC",
+		// 	"DateTo":    "2099-05-26 23:59:00 +0000 UTC",
+		// },
 	}
 
 	// Run test cases and verify result params
@@ -127,8 +127,10 @@ func Test_FileToParams(t *testing.T) {
 			"Label":     "Simple changed",
 			"Title":     "Simple changed",
 
-			"Keywords": "A, B, C, D",
-			"Path":     "test-files/content/en/top-menu/1_Simple.md", //relative?
+			"Keywords":    "A, B, C, D",
+			"Path":        "test-files/content/en/top-menu/1_Simple.md", //relative?
+			"VisibleFrom": "1426896000000000000",
+			"VisibleTo":   "1427039097000000000",
 		},
 		"test-files/content/en/top-menu/2_One more.md": map[string]string{
 			"Label":    "One more",
