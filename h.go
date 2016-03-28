@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"errors"
 	"strings"
 	"time"
 
@@ -96,14 +97,16 @@ func toTime(s string) (time.Time, error) {
 		dt, err = time.Parse("01/02/2006", s)
 	case slashCount == 1 && timeSeps == 0:
 		dt, err = time.Parse("01/02", s)
-
+	default:
+		err = errors.New("ERROR: \"" + s + "\" not in correct datetune format")
 	}
 
 	if err != nil {
-		// On error returnnwhat you got
-		return dt, err
+		// On error return what you got
+		return dtNow, err
 	}
 
+	// Fill unset parts of datetime
 	if dt.Year() == 0 {
 		if sLen <= 8 && timeSeps > 0 {
 			// Set date for "only-time" value

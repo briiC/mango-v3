@@ -123,18 +123,19 @@ func fileToParams(fpath string) map[string]string {
 	if params["VisibleFrom"] != "" || params["VisibleTo"] != "" {
 		dtNow := time.Now()
 		dtFrom, dtTo := dtNow, dtNow //default is now
+
 		// From
 		if params["VisibleFrom"] != "" {
 			if dt, err := toTime(params["VisibleFrom"]); err == nil {
-				dtFrom = dt
 				params["VisibleFrom"] = fmt.Sprint(dt.UnixNano())
+				dtFrom = dt
 			}
 		}
 		// To
 		if params["VisibleTo"] != "" {
 			if dt, err := toTime(params["VisibleTo"]); err == nil {
-				dtTo = dt
 				params["VisibleTo"] = fmt.Sprint(dt.UnixNano())
+				dtTo = dt
 			}
 		}
 

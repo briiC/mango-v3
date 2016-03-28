@@ -133,10 +133,11 @@ func Test_FileToParams(t *testing.T) {
 			"VisibleTo":   "4077877497000000000",
 		},
 		"test-files/content/en/top-menu/2_One more.md": map[string]string{
-			"Label":    "One more",
-			"Slug":     "one-more",
-			"Keywords": "A, B, C",
-			"Title":    "Title is changed",
+			"Label":       "One more",
+			"Slug":        "one-more",
+			"Keywords":    "A, B, C",
+			"Title":       "Title is changed",
+			"VisibleFrom": "invalid:date:time",
 		},
 		"test-files/content/en/top-menu/Weather/Cold.md": map[string]string{
 			"Label": "Cold",
