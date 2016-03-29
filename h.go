@@ -6,8 +6,8 @@ import (
 	"strings"
 	"time"
 
-	gounidecode "github.com/fiam/gounidecode/unidecode"
-) // Rūķis => Rukis
+	gounidecode "github.com/fiam/gounidecode/unidecode" // Rūķis => Rukis
+)
 
 // ToASCII - UTF to Ascii characters
 func ToASCII(str string) string {

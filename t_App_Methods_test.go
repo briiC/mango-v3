@@ -35,7 +35,7 @@ func Test_LoadPages(t *testing.T) {
 
 	//
 	for slug, p := range app.pageList {
-		fmt.Printf("%20s &%p &%p\n", slug, p, p.Parent)
+		fmt.Printf("%20s &%p &%p %s\n", slug, p, p.Parent, p.Params["Level"])
 		// printMap("xx", p.Params)
 	}
 

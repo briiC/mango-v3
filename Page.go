@@ -58,6 +58,7 @@ func (page *Page) pathToParams() {
 	// Set params based on arr
 	page.Params["Lang"] = arr[0]
 	page.Params["GroupKey"] = arr[1]
+	page.Params["Level"] = strconv.Itoa(len(arr))
 
 }
 

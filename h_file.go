@@ -59,7 +59,7 @@ func fileToParams(fpath string) map[string]string {
 
 	// Split raw buf to variables
 	sep := []byte("\n+++") // it's no problem to leave \n if front of content
-	if params2["Ext"] != ".md" {
+	if params2["Ext"] != _Md {
 		// Not .md file, so use as params file
 		bufHeader = buf
 
@@ -79,16 +79,16 @@ func fileToParams(fpath string) map[string]string {
 	// ** Content
 	bufContent = bytes.TrimSpace(bufContent)
 	if bufContent == nil {
-		params["HaveContent"] = "No"
+		params["HaveContent"] = _No
 	} else {
-		params["HaveContent"] = "Yes"
+		params["HaveContent"] = _Yes
 	}
 
 	// ** Load extra file params
 	params3 := make(map[string]string)
 
 	// only for content files or directories
-	if params2["Ext"] == ".md" || finfo.IsDir() {
+	if params2["Ext"] == _Md || finfo.IsDir() {
 
 		// Same depth .defaults
 		params3 = fileToParams(pwd + "/.defaults")
@@ -142,9 +142,9 @@ func fileToParams(fpath string) map[string]string {
 		// Check for visibility
 		// To avoid exact nano comparison use +-1sec
 		if dtNow.After(dtFrom.Add(time.Second*-1)) && dtNow.Before(dtTo.Add(time.Second*+1)) {
-			params["IsVisible"] = "Yes"
+			params["IsVisible"] = _Yes
 		} else {
-			params["IsVisible"] = "No"
+			params["IsVisible"] = _No
 		}
 	}
 
@@ -224,7 +224,7 @@ func filenameToParams(fpath string) map[string]string {
 	params := make(map[string]string, 0)
 	params["FileName"] = fname
 	params["Ext"] = strings.ToLower(filepath.Ext(fname))
-	params["IsVisible"] = "Yes"
+	params["IsVisible"] = _Yes
 	// params["Label"] = label - set at the end
 
 	// Is it param file for directory
@@ -235,7 +235,7 @@ func filenameToParams(fpath string) map[string]string {
 		params["FileName"] = fname
 
 		params["Ext"] = dirFname
-		params["IsDir"] = "Yes"
+		params["IsDir"] = _Yes
 	}
 
 	// Remove extension (can be case sensitive)
@@ -269,18 +269,18 @@ func filenameToParams(fpath string) map[string]string {
 	// Visibility check - always leave it as last check
 	// Not visible if no filename
 	if params["Label"] == "" {
-		params["IsVisible"] = "No"
+		params["IsVisible"] = _No
 	}
 
 	// not visible if existing extension not .md
-	if params["Ext"] != "" && params["Ext"] != ".md" && params["IsDir"] != "Yes" {
-		params["IsVisible"] = "No"
+	if params["Ext"] != "" && params["Ext"] != _Md && params["IsDir"] != _Yes {
+		params["IsVisible"] = _No
 	}
 
 	// Filenames that starts with "." and "~" not visible (also ends with "~")
 	if fname[:1] == "." || fname[:1] == "~" || fname[len(fname)-1:] == "~" {
-		if params["IsDir"] != "Yes" {
-			params["IsVisible"] = "No"
+		if params["IsDir"] != _Yes {
+			params["IsVisible"] = _No
 		}
 	}
 

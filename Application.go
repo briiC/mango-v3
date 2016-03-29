@@ -7,6 +7,13 @@ import (
 	"strings"
 )
 
+// Constants that detected by "gometalinter (goconst)"
+const (
+	_Yes = "Yes"
+	_No  = "No"
+	_Md  = ".md"
+)
+
 // Application - mango application
 type Application struct {
 	isBusy bool
@@ -131,7 +138,7 @@ func (app *Application) loadPages(fpath string) []*Page {
 
 			p := app.NewPage(fpath + "/" + f2.Name())
 
-			if p.Params["IsVisible"] != "Yes" {
+			if p.Params["IsVisible"] != _Yes {
 				// Only visible pages are added
 				continue
 			}
@@ -141,7 +148,7 @@ func (app *Application) loadPages(fpath string) []*Page {
 				p.avoidDuplicate()
 			}
 
-			if p.Params["IsDir"] == "Yes" {
+			if p.Params["IsDir"] == _Yes {
 				// Load sub-pages if it's directory
 				p.Pages = app.loadPages(p.Params["Path"])
 				for _, p2 := range p.Pages {
@@ -161,15 +168,3 @@ func (app *Application) loadPages(fpath string) []*Page {
 
 	return pages
 }
-
-//
-// // Make linear page list
-// func (app *Application) makePageList(page *Page) map[string]*Page {
-// 	var pageList map[string]*Page
-//
-// 	for _, p := range page.Pages {
-// 		pageList[p.Params["Slug"]] = p
-// 	}
-//
-// 	return pageList
-// }

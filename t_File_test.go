@@ -91,7 +91,7 @@ func Test_FileToParams(t *testing.T) {
 			"A":             "rewriting key A",
 			"NotMultiLine":  "This not part of \"MultiLine\" param",
 			"NotMultiLine2": "have \\ but not at the end",
-			"ModTime":       "BEGIN: 14588", // 1458839061048723130
+			"ModTime":       "BEGIN: 14", // 1458839061048723130
 		},
 		"not-exists": map[string]string{
 			"Ext":       "",
