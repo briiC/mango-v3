@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"sync"
 )
 
 // Constants that detected by "gometalinter (goconst)"
@@ -18,8 +17,6 @@ const (
 
 // Application - mango application
 type Application struct {
-	isBusy bool
-
 	// Absolute path to where binary is
 	// config file ".mango" must be there
 	BinPath string
@@ -38,13 +35,19 @@ type Application struct {
 	// map[Slug]Page
 	pageList map[string]*Page
 
-	// Mutex locks
-	sync.RWMutex
+	// channel to limit access to App
+	chBusy chan bool
 }
 
 // NewApplication - create/init new application
+// Must be executed only one time
 func NewApplication() (*Application, error) {
 	app := &Application{}
+
+	// throughput: 1
+	// Only one can be manipulating with Application at one moment
+	// avoiding concurrency errors
+	app.chBusy = make(chan bool, 1)
 
 	// Set defaults
 	app.setBinPath()
@@ -59,20 +62,6 @@ func NewApplication() (*Application, error) {
 	app.LoadContent()
 
 	return app, nil
-}
-
-// SetBusy - thread-safe write
-func (app *Application) SetBusy(isBusy bool) {
-	app.Lock()
-	app.isBusy = isBusy
-	app.Unlock()
-}
-
-// IsBusy - thread-safe check
-func (app *Application) IsBusy() bool {
-	app.RLock()
-	defer app.RUnlock()
-	return app.isBusy
 }
 
 // Detect bin path from where binary executed
@@ -93,15 +82,9 @@ func (app *Application) setBinPath() error {
 
 // loadConfig using given config filename
 // usually ".mango"
+// TODO: concurrent
 func (app *Application) loadConfig(fname string) {
-	if app.IsBusy() {
-		// Do nothing if still busy
-		return
-	}
-
-	// Busy while loading config
-	app.SetBusy(true)
-	defer func() { app.SetBusy(false) }()
+	app.chBusy <- true // thread-safe
 
 	fpath := app.BinPath + "/" + fname
 	params := fileToParams(fpath)
@@ -120,18 +103,14 @@ func (app *Application) loadConfig(fname string) {
 		path, _ = filepath.Abs(path)
 		app.PublicPath = path
 	}
+
+	<-app.chBusy
 }
 
 // LoadContent - Load files to application
+// Can be executed more than once times (on .reload file creation)
 func (app *Application) LoadContent() {
-	if app.IsBusy() {
-		// Do nothing if still busy
-		return
-	}
-
-	// Busy while loading config
-	app.SetBusy(true)
-	defer func() { app.SetBusy(false) }()
+	app.chBusy <- true // thread-safe
 
 	// Init pageList
 	app.pageList = make(map[string]*Page, 0)
@@ -139,6 +118,7 @@ func (app *Application) LoadContent() {
 	// Page tree
 	app.Pages = app.loadPages(app.ContentPath)
 
+	<-app.chBusy
 }
 
 // NewPage for application

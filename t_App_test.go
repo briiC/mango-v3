@@ -15,11 +15,6 @@ func Test_NewApplication(t *testing.T) {
 		t.Fatal("BinPath is empty")
 	}
 
-	// Must not be busy by default
-	if app.isBusy {
-		t.Fatal("App MUST NOT be busy right now")
-	}
-
 	// Trim from BinPath end to content path end
 	if app.ContentPath[len(app.BinPath):] != "/test-files/content" {
 		t.Fatal("Default ContentPath must end with /test-files/content")
