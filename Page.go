@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"strconv"
 	"strings"
+	"sync"
 )
 
 // Page - page with content and params + sub-pages
 type Page struct {
+	sync.RWMutex
+
 	// Linkt to application
 	App *Application
 
@@ -43,6 +46,21 @@ func newPage(app *Application, fpath string) *Page {
 	page.pathToParams()
 
 	return page
+}
+
+// Set - set thread-safely param to Page.Params
+func (page *Page) Set(key, val string) {
+	page.Lock()
+	page.Params[key] = val
+	page.Unlock()
+}
+
+// Get - get thread-safely param to Page.Params
+func (page *Page) Get(key string) string {
+	page.RLock()
+	defer page.RUnlock()
+
+	return page.Params[key]
 }
 
 // Get some params from path
