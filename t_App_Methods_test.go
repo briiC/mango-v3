@@ -115,12 +115,14 @@ func Test_LoadPages(t *testing.T) {
 	//
 	for slug, p := range app.pageList {
 		fmt.Printf("%20s\t", slug)
-		fmt.Printf("P %-16p ", p)
-		fmt.Printf("Pr %-16p ", p.Parent)
+		// fmt.Printf("P %-16p ", p)
+		// fmt.Printf("Pr %-16p ", p.Parent)
+		fmt.Printf("%-5s ", p.Params["IsDir"])
 		fmt.Printf("L %-3s ", p.Params["Level"])
 		fmt.Printf("%5d bytes ", len(p.Content))
 		fmt.Println()
 	}
+	fmt.Println()
 
 }
 
