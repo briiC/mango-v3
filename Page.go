@@ -29,6 +29,8 @@ type Page struct {
 
 // newPage - create/init new page
 func newPage(app *Application, fpath string) *Page {
+	// TODO: add page to app-wide page list with its slug?
+	// so it could be checked (putside this func) for existance?
 
 	// Extract content
 	params := fileToParams(fpath)
@@ -48,8 +50,23 @@ func newPage(app *Application, fpath string) *Page {
 	return page
 }
 
+/*
+	TODO: more func's
+
+	page.IsYes("HaveContent") - shorthand to page.Params["HaveContent"] == "Yes"
+	page.IsNo("HaveContent") - shorthand to page.Params["HaveContent"] == "No"
+	page.IsSet("Redirect") - shorthand to page.Params["HaveContent"] != ""
+	page.IsEqual("Slug", slug) - shorthand to page.Params["Slug"] == slug
+
+*/
+
 // Set - set thread-safely param to Page.Params
 func (page *Page) Set(key, val string) {
+	if key == "Slug" {
+		// TODO: on Slug change need to change this also in app.pageList
+		// Because pageList[slug] using slug as index/key
+		return
+	}
 	page.Lock()
 	page.Params[key] = val
 	page.Unlock()

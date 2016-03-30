@@ -39,6 +39,15 @@ type Application struct {
 	chBusy chan bool
 }
 
+/*
+	TODO: new func's
+
+	app.Page("golf")
+	app.PageParam("golf", "Slug")
+	app.SetPageParam("golf", "Slug", "new-slug")
+
+*/
+
 // NewApplication - create/init new application
 // Must be executed only one time
 func NewApplication() (*Application, error) {
