@@ -122,10 +122,10 @@ func (app *Application) loadPages(fpath string) []*Page {
 
 	// Get info about fpath
 	// Only dir can be used for loading pages
-	f, fErr := os.Stat(fpath)
-	if fErr != nil || !f.IsDir() {
-		return nil
-	}
+	// f, _ := os.Stat(fpath)
+	// if fErr != nil || !f.IsDir() {
+	// 	return nil
+	// }
 
 	// Collect all pages
 	var pages []*Page
@@ -148,8 +148,8 @@ func (app *Application) loadPages(fpath string) []*Page {
 				p.avoidDuplicate()
 			}
 
+			// Load sub-pages if it's directory
 			if p.Params["IsDir"] == _Yes {
-				// Load sub-pages if it's directory
 				p.Pages = app.loadPages(p.Params["Path"])
 				for _, p2 := range p.Pages {
 					// Set Parent page for all sub-pages

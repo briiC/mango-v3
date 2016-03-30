@@ -131,17 +131,3 @@ func printMap(fname string, m map[string]string) {
 	}
 	fmt.Println()
 }
-
-// Print all pages under this page
-func (page *Page) Print(depth int) {
-	for _, p := range page.Pages {
-		fmt.Printf("%s %-30s %-30s", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"])
-		fmt.Printf(" &%p", p.Parent)
-		fmt.Println()
-
-		// printMap(p.Params["Label"], p.Params)
-		if len(p.Pages) > 0 {
-			p.Print(depth + 1)
-		}
-	}
-}

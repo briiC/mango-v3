@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -36,10 +37,6 @@ func newPage(app *Application, fpath string) *Page {
 
 // Get some params from path
 func (page *Page) pathToParams() {
-	if page.App == nil {
-		// App must be linked
-		return
-	}
 
 	// relative path from app.ContentPath
 	rpath := strings.TrimPrefix(page.Params["Path"], page.App.ContentPath)
@@ -51,6 +48,16 @@ func (page *Page) pathToParams() {
 	rpath = strings.Trim(rpath, "/")
 	arr := strings.Split(rpath, "/")
 
+	// level of depth
+	if len(arr) == 1 && arr[0] == "" {
+		// langage is in zero level depth
+		// remove empty
+		arr = make([]string, 0)
+	}
+
+	// Set Level of depth
+	page.Params["Level"] = strconv.Itoa(len(arr))
+
 	if len(arr) < 2 {
 		return
 	}
@@ -58,8 +65,6 @@ func (page *Page) pathToParams() {
 	// Set params based on arr
 	page.Params["Lang"] = arr[0]
 	page.Params["GroupKey"] = arr[1]
-	page.Params["Level"] = strconv.Itoa(len(arr))
-
 }
 
 // Check if page is duplicate slug
@@ -70,26 +75,24 @@ func (page *Page) isDuplicate() bool {
 
 // Generate unique slug based on old one
 func (page *Page) avoidDuplicate() {
-
-	// 1.  Prefix with parent slug
-	if page.isDuplicate() && page.Parent != nil {
-		page.Params["Slug"] = page.Parent.Params["Slug"] + "-" + page.Params["Slug"]
-	}
-
-	// // 2. Prefix with GroupKey
-	// if page.isDuplicate() {
-	// 	page.Params["Slug"] = page.Params["GroupKey"] + "-" + page.Params["Slug"]
-	// }
-
-	// 3. Prefix with Language
-	if page.isDuplicate() {
-		page.Params["Slug"] = page.Params["Lang"] + "-" + page.Params["Slug"]
-	}
-
-	// 4. Loop until unique
+	// Suffix loop by count until unique
 	origSlug := page.Params["Slug"]
 	for i := 2; page.isDuplicate(); i++ {
 		page.Params["Slug"] = origSlug + "-" + strconv.Itoa(i)
 	}
 
+}
+
+// PrintTree - Print all pages under this page
+func (page *Page) PrintTree(depth int) {
+	for _, p := range page.Pages {
+		fmt.Printf("%s %-30s %-30s", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"])
+		fmt.Printf(" &%p", p.Parent)
+		fmt.Println()
+
+		// printMap(p.Params["Label"], p.Params)
+		if len(p.Pages) > 0 {
+			p.PrintTree(depth + 1)
+		}
+	}
 }

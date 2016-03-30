@@ -25,11 +25,34 @@ func Test_LoadConfig(t *testing.T) {
 }
 
 func Test_LoadPages(t *testing.T) {
-	app, _ := NewApplication()
+	app, _ := NewApplication() //auto-load
+
+	// Count
+	if len(app.pageList) != 19 {
+		t.Fatalf("Must be exact number of pages. Found %d", len(app.pageList))
+	}
+
+	// Check if duplicates are correct
+	if app.pageList["one-more"] == nil ||
+		app.pageList["one-more-2"] == nil ||
+		app.pageList["one-more-3"] == nil ||
+		app.pageList["one-more-4"] == nil {
+		t.Fatalf("All wannabe-duplicates must exist with modified slug")
+	}
+
+	// Very deep file correct
+	// checking foldr
+	if app.pageList["lava"] == nil ||
+		app.pageList["lava"].Params["Level"] != "6" ||
+		app.pageList["lava"].Params["Lang"] != "lv" ||
+		app.pageList["lava"].Params["GroupKey"] != "left-menu" {
+		printMap("Lava", app.pageList["lava"].Params)
+		t.Fatal("Lava page OR Lava params not correct")
+	}
 
 	// pages := app.loadPages(app.ContentPath)
 	for _, p := range app.Pages {
-		p.Print(0)
+		p.PrintTree(0)
 	}
 	fmt.Println()
 
