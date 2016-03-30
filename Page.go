@@ -18,7 +18,7 @@ type Page struct {
 	Parent *Page
 
 	// Sub-pages for this page
-	Pages []*Page
+	Pages PageList
 }
 
 // newPage - create/init new page

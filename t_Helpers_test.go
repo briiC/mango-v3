@@ -46,5 +46,5 @@ func Test_ToTime(t *testing.T) {
 
 // Add to test onl;y for full test coverage
 func Test_Mix(t *testing.T) {
-	printMap("For test coverage", map[string]string{"Cover": "This"})
+	printMap("printMap (for test covaerage)", map[string]string{"Only": "to cover with tests"})
 }

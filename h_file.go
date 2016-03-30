@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -247,7 +248,8 @@ func filenameToParams(fpath string) map[string]string {
 	if len(arr) >= 2 && len(arr[0]) <= 9 {
 		// Check first char for numeric 0-9
 		if len(arr[0]) >= 1 && arr[0][0] >= 48 && arr[0][0] <= 57 {
-			params["SortNr"] = arr[0]
+			nr, _ := strconv.Atoi(arr[0])
+			params["SortNr"] = strconv.Itoa(nr)
 			label = label[strings.Index(label, "_")+1:] //remove sortNr from label
 		}
 	}

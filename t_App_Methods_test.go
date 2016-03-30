@@ -28,7 +28,7 @@ func Test_LoadPages(t *testing.T) {
 	app, _ := NewApplication() //auto-load
 
 	// Count
-	if len(app.pageList) != 19 {
+	if len(app.pageList) != 21 {
 		t.Fatalf("Must be exact number of pages. Found %d", len(app.pageList))
 	}
 
@@ -48,6 +48,34 @@ func Test_LoadPages(t *testing.T) {
 		app.pageList["lava"].Params["GroupKey"] != "left-menu" {
 		printMap("Lava", app.pageList["lava"].Params)
 		t.Fatal("Lava page OR Lava params not correct")
+	}
+
+	// Test order for TopMenu pages
+	tmPages := app.pageList["top-menu"].Pages
+	if tmPages[0].Params["Slug"] != "simple-slug-oh" ||
+		tmPages[1].Params["Slug"] != "one-more" ||
+		tmPages[2].Params["Slug"] != "last-in-line" {
+
+		for i, p := range tmPages {
+			fmt.Println("\t\t", i, p.Params["SortNr"], p.Params["Slug"])
+		}
+		fmt.Println()
+
+		t.Fatal("Order of TopMenu pages not correct")
+	}
+
+	// Test order for Sports pages
+	spPages := app.pageList["sports"].Pages
+	if spPages[0].Params["Slug"] != "hockey" ||
+		spPages[1].Params["Slug"] != "golf" ||
+		spPages[2].Params["Slug"] != "baseball" {
+
+		for i, p := range spPages {
+			fmt.Println("\t\t", i, p.Params["SortNr"], p.Params["Slug"])
+		}
+		fmt.Println()
+
+		t.Fatal("Order of Sports pages not correct")
 	}
 
 	// pages := app.loadPages(app.ContentPath)

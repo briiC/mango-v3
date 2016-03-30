@@ -4,6 +4,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -118,7 +119,7 @@ func (app *Application) NewPage(fpath string) *Page {
 }
 
 // Directory to page tree
-func (app *Application) loadPages(fpath string) []*Page {
+func (app *Application) loadPages(fpath string) PageList {
 
 	// Get info about fpath
 	// Only dir can be used for loading pages
@@ -128,7 +129,7 @@ func (app *Application) loadPages(fpath string) []*Page {
 	// }
 
 	// Collect all pages
-	var pages []*Page
+	var pages PageList
 	if files, dirErr := ioutil.ReadDir(fpath); dirErr == nil {
 		for _, f2 := range files {
 			if f2.Name()[:1] == "." {
@@ -151,6 +152,16 @@ func (app *Application) loadPages(fpath string) []*Page {
 			// Load sub-pages if it's directory
 			if p.Params["IsDir"] == _Yes {
 				p.Pages = app.loadPages(p.Params["Path"])
+
+				// Sort by default
+				switch p.Params["Sort"] {
+				case "Reverse":
+					sort.Sort(sort.Reverse(p.Pages))
+				default:
+					sort.Sort(p.Pages)
+				}
+
+				// Add parent to received pages
 				for _, p2 := range p.Pages {
 					// Set Parent page for all sub-pages
 					p2.Parent = p

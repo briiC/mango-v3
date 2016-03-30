@@ -162,20 +162,21 @@ func Test_FileToParams(t *testing.T) {
 			"SubIcon":  "subicon.ico", // this param comes from .subdefaults ^1
 			"DeepIcon": "deep.ico",    // this param comes from .subdefaults ^2
 		},
-		"test-files/content/en/top-menu/Sports/Baseball.md": map[string]string{
+		"test-files/content/en/top-menu/Sports/2_Baseball.md": map[string]string{
 			"IsVisible":   "Yes",
 			"VisibleFrom": "1426896000000000000",
 			"VisibleTo":   "", // or not set
 		},
-		"test-files/content/en/top-menu/Sports/Hockey.md": map[string]string{
+		"test-files/content/en/top-menu/Sports/22_Hockey.md": map[string]string{
 			"IsVisible":   "Yes",
 			"VisibleFrom": "", // or not set
 			"VisibleTo":   "4077734400000000000",
 		},
-		"test-files/content/en/top-menu/Sports/Soccer.md": map[string]string{
+		"test-files/content/en/top-menu/Sports/021_Soccer.md": map[string]string{
 			"IsVisible":   "No",
 			"VisibleFrom": "4077734400000000000",
-			"VisibleTo":   "", // or not set
+			"VisibleTo":   "",   // or not set
+			"SortNr":      "21", // not 021
 		},
 	}
 
