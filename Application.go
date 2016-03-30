@@ -137,14 +137,8 @@ func (app *Application) NewPage(fpath string) *Page {
 }
 
 // Directory to page tree
+// TODO: separate goroutine for every language directory listing ?
 func (app *Application) loadPages(fpath string) PageList {
-
-	// Get info about fpath
-	// Only dir can be used for loading pages
-	// f, _ := os.Stat(fpath)
-	// if fErr != nil || !f.IsDir() {
-	// 	return nil
-	// }
 
 	// Collect all pages
 	var pages PageList

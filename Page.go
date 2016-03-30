@@ -145,6 +145,7 @@ func (page *Page) avoidDuplicate() {
 
 // Walk all down by sub-pages and do custom stuff
 // Can be customized by custom func
+// TODO: goroutines?
 func (page *Page) Walk(fnCheck func(p *Page) bool) PageList {
 	pages := make(PageList, 0)
 
