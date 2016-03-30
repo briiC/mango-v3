@@ -1,6 +1,11 @@
 package mango
 
-import "strconv"
+import (
+	"math/rand"
+	"sort"
+	"strconv"
+	"time"
+)
 
 // PageList is slice as []*Page
 type PageList []*Page
@@ -21,8 +26,24 @@ func (pages PageList) Less(i, j int) bool {
 	jNum, _ := strconv.Atoi(pages[j].Params["SortNr"])
 
 	if iNum == 0 || jNum == 0 {
+		// unset or broken SortNr. Do nothing
 		return false
 	}
 
 	return iNum < jNum
+}
+
+// Randomize slice
+// Randomizes param SortNr for all pages and sorts
+func (pages PageList) Randomize() {
+	count := len(pages)
+	rand.Seed(time.Now().UnixNano() + int64(count))
+
+	// Make SortNr as random
+	for _, p := range pages {
+		p.Params["SortNr"] = strconv.Itoa(rand.Intn(count * 10))
+	}
+
+	// Sort now by default
+	sort.Sort(pages)
 }

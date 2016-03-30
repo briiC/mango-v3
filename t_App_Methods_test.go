@@ -28,7 +28,7 @@ func Test_LoadPages(t *testing.T) {
 	app, _ := NewApplication() //auto-load
 
 	// Count
-	if len(app.pageList) != 21 {
+	if len(app.pageList) != 26 {
 		t.Fatalf("Must be exact number of pages. Found %d", len(app.pageList))
 	}
 
@@ -50,7 +50,7 @@ func Test_LoadPages(t *testing.T) {
 		t.Fatal("Lava page OR Lava params not correct")
 	}
 
-	// Test order for TopMenu pages
+	// Test DEFAULT order for TopMenu pages
 	tmPages := app.pageList["top-menu"].Pages
 	if tmPages[0].Params["Slug"] != "simple-slug-oh" ||
 		tmPages[1].Params["Slug"] != "one-more" ||
@@ -64,7 +64,7 @@ func Test_LoadPages(t *testing.T) {
 		t.Fatal("Order of TopMenu pages not correct")
 	}
 
-	// Test order for Sports pages
+	// Test REVERSE order for Sports pages
 	spPages := app.pageList["sports"].Pages
 	if spPages[0].Params["Slug"] != "hockey" ||
 		spPages[1].Params["Slug"] != "golf" ||
@@ -76,6 +76,22 @@ func Test_LoadPages(t *testing.T) {
 		fmt.Println()
 
 		t.Fatal("Order of Sports pages not correct")
+	}
+
+	// Test RANDOM order
+	// pseudo check. If SortNr are set it could be random
+	// because by default SortNr are not set there
+	wPages := app.pageList["where-is-waldo"].Pages
+	if wPages[0].Params["SortNr"] == "" ||
+		wPages[0].Params["SortNr"] == "0" ||
+		len(wPages) != 4 {
+
+		for i, p := range wPages {
+			fmt.Println("\t\t", i, p.Params["SortNr"], p.Params["Slug"])
+		}
+		fmt.Println()
+
+		t.Fatal("Order of WALDO must be random")
 	}
 
 	// pages := app.loadPages(app.ContentPath)

@@ -154,11 +154,15 @@ func (app *Application) loadPages(fpath string) PageList {
 				p.Pages = app.loadPages(p.Params["Path"])
 
 				// Sort by default
-				switch p.Params["Sort"] {
-				case "Reverse":
-					sort.Sort(sort.Reverse(p.Pages))
-				default:
-					sort.Sort(p.Pages)
+				if len(p.Pages) >= 2 {
+					switch p.Params["Sort"] {
+					case "Reverse":
+						sort.Sort(sort.Reverse(p.Pages))
+					case "Random":
+						p.Pages.Randomize()
+					default:
+						sort.Sort(p.Pages)
+					}
 				}
 
 				// Add parent to received pages
