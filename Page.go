@@ -11,6 +11,9 @@ type Page struct {
 	// Linkt to application
 	App *Application
 
+	// Content
+	Content []byte
+
 	// Params that describe this page
 	Params map[string]string
 
@@ -24,9 +27,16 @@ type Page struct {
 // newPage - create/init new page
 func newPage(app *Application, fpath string) *Page {
 
+	// Extract content
+	params := fileToParams(fpath)
+	bufContent := []byte(params["Content"])
+	delete(params, "Content")
+
+	// Create new page
 	page := &Page{
-		App:    app,
-		Params: fileToParams(fpath),
+		App:     app,
+		Content: bufContent,
+		Params:  params,
 	}
 
 	// some params from path

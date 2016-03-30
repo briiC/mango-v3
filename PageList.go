@@ -41,7 +41,7 @@ func (pages PageList) Randomize() {
 
 	// Make SortNr as random
 	for _, p := range pages {
-		p.Params["SortNr"] = strconv.Itoa(rand.Intn(count * 10))
+		p.Params["SortNr"] = strconv.Itoa(rand.Intn(count*10) + 1)
 	}
 
 	// Sort now by default

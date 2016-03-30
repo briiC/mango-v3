@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 )
 
 // Constants that detected by "gometalinter (goconst)"
@@ -36,6 +37,9 @@ type Application struct {
 	// Page slice (not tree)
 	// map[Slug]Page
 	pageList map[string]*Page
+
+	// Mutex locks
+	sync.RWMutex
 }
 
 // NewApplication - create/init new application
@@ -57,6 +61,20 @@ func NewApplication() (*Application, error) {
 	return app, nil
 }
 
+// SetBusy - thread-safe write
+func (app *Application) SetBusy(isBusy bool) {
+	app.Lock()
+	app.isBusy = isBusy
+	app.Unlock()
+}
+
+// IsBusy - thread-safe check
+func (app *Application) IsBusy() bool {
+	app.RLock()
+	defer app.RUnlock()
+	return app.isBusy
+}
+
 // Detect bin path from where binary executed
 func (app *Application) setBinPath() error {
 	path, err := filepath.Abs(filepath.Dir(os.Args[0]))
@@ -76,9 +94,14 @@ func (app *Application) setBinPath() error {
 // loadConfig using given config filename
 // usually ".mango"
 func (app *Application) loadConfig(fname string) {
+	if app.IsBusy() {
+		// Do nothing if still busy
+		return
+	}
+
 	// Busy while loading config
-	app.isBusy = true
-	defer func() { app.isBusy = false }()
+	app.SetBusy(true)
+	defer func() { app.SetBusy(false) }()
 
 	fpath := app.BinPath + "/" + fname
 	params := fileToParams(fpath)
@@ -101,9 +124,14 @@ func (app *Application) loadConfig(fname string) {
 
 // LoadContent - Load files to application
 func (app *Application) LoadContent() {
-	// Busy while loading files
-	app.isBusy = true
-	defer func() { app.isBusy = false }()
+	if app.IsBusy() {
+		// Do nothing if still busy
+		return
+	}
+
+	// Busy while loading config
+	app.SetBusy(true)
+	defer func() { app.SetBusy(false) }()
 
 	// Init pageList
 	app.pageList = make(map[string]*Page, 0)

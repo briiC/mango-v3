@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"bytes"
 	"fmt"
 	"testing"
 )
@@ -29,7 +30,18 @@ func Test_LoadPages(t *testing.T) {
 
 	// Count
 	if len(app.pageList) != 26 {
+		// pages := app.loadPages(app.ContentPath)
+		for _, p := range app.Pages {
+			p.PrintTree(0)
+		}
+		fmt.Println()
+
 		t.Fatalf("Must be exact number of pages. Found %d", len(app.pageList))
+	}
+
+	// hidden folder must not exists
+	if app.pageList["hidden"] != nil {
+		t.Fatalf("Hidden (dot prefixed) folder must not be visible")
 	}
 
 	// Check if duplicates are correct
@@ -102,8 +114,36 @@ func Test_LoadPages(t *testing.T) {
 
 	//
 	for slug, p := range app.pageList {
-		fmt.Printf("%20s &%p &%p %s\n", slug, p, p.Parent, p.Params["Level"])
-		// printMap("xx", p.Params)
+		fmt.Printf("%20s\t", slug)
+		fmt.Printf("P %-16p ", p)
+		fmt.Printf("Pr %-16p ", p.Parent)
+		fmt.Printf("L %-3s ", p.Params["Level"])
+		fmt.Printf("%5d bytes ", len(p.Content))
+		fmt.Println()
 	}
 
+}
+
+func Test_Content(t *testing.T) {
+	app, _ := NewApplication() //auto-load
+
+	cases := map[string][]byte{
+		"lava": []byte("This is very deep file"),
+		"golf": []byte("# Golf"),
+		"cold": []byte("Winter is coming.."),
+		"one-more": []byte("# Header line\n" +
+			"\n" +
+			"- Some **markdown** syntax.\n" +
+			"- And some <b>HTML</b> synta too."),
+	}
+
+	// loop cases
+	for slug, expected := range cases {
+		content := app.pageList[slug].Content
+		if !bytes.Equal(content, expected) {
+			fmt.Printf("\n\n::: FOUND: %s\n\n", content)
+			fmt.Printf("::: EXPECTED: %s\n\n", expected)
+			t.Fatal("Invalid content in [", app.pageList[slug].Params["Path"], "]")
+		}
+	}
 }

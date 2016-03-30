@@ -83,6 +83,7 @@ func fileToParams(fpath string) map[string]string {
 		params["HaveContent"] = _No
 	} else {
 		params["HaveContent"] = _Yes
+		params["Content"] = string(bufContent)
 	}
 
 	// ** Load extra file params
