@@ -43,6 +43,7 @@ type Application struct {
 	TODO: new func's
 
 	app.Page("golf")
+	app.Page("golf").Get("Slug")
 	app.PageParam("golf", "Slug")
 	app.SetPageParam("golf", "Slug", "new-slug")
 

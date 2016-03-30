@@ -50,16 +50,6 @@ func newPage(app *Application, fpath string) *Page {
 	return page
 }
 
-/*
-	TODO: more func's
-
-	page.IsYes("HaveContent") - shorthand to page.Params["HaveContent"] == "Yes"
-	page.IsNo("HaveContent") - shorthand to page.Params["HaveContent"] == "No"
-	page.IsSet("Redirect") - shorthand to page.Params["HaveContent"] != ""
-	page.IsEqual("Slug", slug) - shorthand to page.Params["Slug"] == slug
-
-*/
-
 // Set - set thread-safely param to Page.Params
 func (page *Page) Set(key, val string) {
 	if key == "Slug" {
@@ -78,6 +68,37 @@ func (page *Page) Get(key string) string {
 	defer page.RUnlock()
 
 	return page.Params[key]
+}
+
+// IsEqual - shorthand to compare param with custom string
+func (page *Page) IsEqual(key, val string) bool {
+	return page.Get(key) == val
+}
+
+// IsYes - shorthand to compare param with "Yes"
+func (page *Page) IsYes(key string) bool {
+	return page.IsEqual(key, "Yes")
+}
+
+// IsNo - shorthand to compare param with "No"
+func (page *Page) IsNo(key string) bool {
+	return page.IsEqual(key, "No")
+}
+
+// IsSet - shorthand to find out is this val set and not empty ""
+func (page *Page) IsSet(key string) bool {
+	return !page.IsEqual(key, "")
+}
+
+// IsDir - shorthand to find out is this val set and not empty "IsDir"
+func (page *Page) IsDir() bool {
+	return page.IsYes("IsDir")
+}
+
+// Check if page is duplicate slug
+func (page *Page) isDuplicate() bool {
+	_, isDuplicate := page.App.pageList[page.Params["Slug"]]
+	return isDuplicate
 }
 
 // Get some params from path
@@ -112,12 +133,6 @@ func (page *Page) pathToParams() {
 	page.Params["GroupKey"] = arr[1]
 }
 
-// Check if page is duplicate slug
-func (page *Page) isDuplicate() bool {
-	_, isDuplicate := page.App.pageList[page.Params["Slug"]]
-	return isDuplicate
-}
-
 // Generate unique slug based on old one
 func (page *Page) avoidDuplicate() {
 	// Suffix loop by count until unique
@@ -126,6 +141,43 @@ func (page *Page) avoidDuplicate() {
 		page.Params["Slug"] = origSlug + "-" + strconv.Itoa(i)
 	}
 
+}
+
+// Walk all down by sub-pages and do custom stuff
+// Can be customized by custom func
+func (page *Page) Walk(fnCheck func(p *Page) bool) PageList {
+	pages := make(PageList, 0)
+
+	for _, p := range page.Pages {
+		if fnCheck(p) {
+			pages = append(pages, p)
+		}
+
+		// Go deeper
+		if p.IsDir() {
+			pages = append(pages, p.Walk(fnCheck)...)
+		}
+	}
+
+	return pages
+}
+
+// Search - find all pages by given search term
+// TODO: make correct search by params and content
+func (page *Page) Search(s string) PageList {
+	return page.Walk(func(p *Page) bool {
+		// Custom check
+		// TODO: add correct search by params and content. Not only slug
+		return strings.Index(p.Params["Slug"], s) >= 0
+	})
+}
+
+// SearchByParam - find all pages that search value is equal to page param
+func (page *Page) SearchByParam(key, val string) PageList {
+	return page.Walk(func(p *Page) bool {
+		// Check for equal param values
+		return p.IsEqual(key, val)
+	})
 }
 
 // PrintTree - Print all pages under this page

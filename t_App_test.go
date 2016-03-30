@@ -24,4 +24,14 @@ func Test_NewApplication(t *testing.T) {
 		t.Fatal("Default PublicPath must end with /test-files/public")
 	}
 
+	// for _, p := range app.pageList["en"].Search("w") {
+	// 	fmt.Println("\t", p.Params["Slug"])
+	// }
+	// for _, p := range app.pageList["en"].SearchByParam("IsDir", "Yes") {
+	// 	fmt.Println("\t", p.Params["Slug"])
+	// }
+	// for _, p := range app.pageList["en"].FilterWalk(func(p *Page) bool { return p.IsDir() }) {
+	// 	fmt.Println("\t", p.Params["Slug"])
+	// }
+
 }
