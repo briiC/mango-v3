@@ -1,7 +1,7 @@
 package mango
 
 import (
-	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"sync"
@@ -184,9 +184,9 @@ func (page *Page) SearchByParam(key, val string) PageList {
 // PrintTree - Print all pages under this page
 func (page *Page) PrintTree(depth int) {
 	for _, p := range page.Pages {
-		fmt.Printf("%s %-30s %-30s", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"])
-		fmt.Printf(" &%p", p.Parent)
-		fmt.Println()
+		log.Printf("%s %-30s %-30s", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"])
+		log.Printf(" &%p", p.Parent)
+		log.Println()
 
 		// printMap(p.Params["Label"], p.Params)
 		if len(p.Pages) > 0 {

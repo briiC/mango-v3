@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"log"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -46,4 +47,13 @@ func (pages PageList) Randomize() {
 
 	// Sort now by default
 	sort.Sort(pages)
+}
+
+// Print pages in list
+func (pages PageList) Print() {
+	log.Println("---------------------------------------------------")
+	for _, p := range pages {
+		log.Printf("- %20s\n", p.Get("Slug"))
+	}
+	log.Println("---------------------------------------------------")
 }

@@ -74,6 +74,12 @@ func NewApplication() (*Application, error) {
 	return app, nil
 }
 
+// Page - get one page by given slug.
+// Slug must be equal and is case-sensitive
+func (app *Application) Page(slug string) *Page {
+	return app.pageList[slug]
+}
+
 // Detect bin path from where binary executed
 func (app *Application) setBinPath() error {
 	path, err := filepath.Abs(filepath.Dir(os.Args[0]))

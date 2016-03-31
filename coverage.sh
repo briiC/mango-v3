@@ -24,3 +24,10 @@ echo -e "\n${Cyan} go tool cover -func=$FNAME ${Color_Off}\n"
 
 echo -e "\n### Analyze it by yourself using -html flag:"
 echo -e "### ${Purple}go tool cover -html=$FNAME ${Color_Off}\n"
+
+# Run now ?
+read -r -p "Run this now? [y/N] " response
+if [[ $response =~ ^([yY][eE][sS]|[yY])$ ]]
+then
+    go tool cover -html=$FNAME
+fi

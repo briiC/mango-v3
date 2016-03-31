@@ -7,7 +7,7 @@ func Benchmark_PageParamsRead_Parallel(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			slug := app.pageList["golf"].Params["Slug"]
-			slug = slug[1:] // only to avoid warning of unused variable
+			_ = slug[1:] // only to avoid warning of unused variable
 		}
 	})
 }
