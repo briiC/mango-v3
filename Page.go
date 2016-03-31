@@ -124,10 +124,12 @@ func (page *Page) isDuplicate() bool {
 func (page *Page) pathToParams() {
 
 	// relative path from app.ContentPath
-	rpath := strings.TrimPrefix(page.Params["Path"], page.App.ContentPath)
+	page.App.RLock()
+	rpath := strings.TrimPrefix(page.Get("Path"), page.App.ContentPath)
+	page.App.RUnlock()
 
 	// Remove filename
-	rpath = strings.TrimSuffix(rpath, page.Params["FileName"])
+	rpath = strings.TrimSuffix(rpath, page.Get("FileName"))
 
 	// split to parts
 	rpath = strings.Trim(rpath, "/")
@@ -141,15 +143,15 @@ func (page *Page) pathToParams() {
 	}
 
 	// Set Level of depth
-	page.Params["Level"] = strconv.Itoa(len(arr))
+	page.Set("Level", strconv.Itoa(len(arr)))
 
 	if len(arr) < 2 {
 		return
 	}
 
 	// Set params based on arr
-	page.Params["Lang"] = arr[0]
-	page.Params["GroupKey"] = arr[1]
+	page.Set("Lang", arr[0])
+	page.Set("GroupKey", arr[1])
 }
 
 // Generate unique slug based on old one

@@ -14,7 +14,9 @@ type PageMap struct {
 
 // MakeEmpty - init or clear map
 func (pm *PageMap) MakeEmpty() {
+	pm.Lock()
 	pm.m = make(map[string]*Page, 0)
+	pm.Unlock()
 }
 
 // Get from local map by key

@@ -6,6 +6,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 )
 
 // Constants that detected by "gometalinter (goconst)"
@@ -17,7 +18,7 @@ const (
 
 // Application - mango application
 type Application struct {
-	// sync.RWMutex
+	sync.RWMutex
 
 	// Absolute path to where binary is
 	// config file ".mango" must be there
@@ -85,8 +86,6 @@ func (app *Application) setBinPath() error {
 // usually ".mango"
 // TODO: concurrent
 func (app *Application) loadConfig(fname string) {
-	app.chBusy <- true // thread-safe
-
 	fpath := app.BinPath + "/" + fname
 	params := fileToParams(fpath)
 	// if len(params) == 0 {
@@ -97,15 +96,17 @@ func (app *Application) loadConfig(fname string) {
 
 	if path := params["ContentPath"]; path != "" {
 		path, _ = filepath.Abs(path)
+		app.Lock()
 		app.ContentPath = path
+		app.Unlock()
 	}
 
 	if path := params["PublicPath"]; path != "" {
 		path, _ = filepath.Abs(path)
+		app.Lock()
 		app.PublicPath = path
+		app.Unlock()
 	}
-
-	<-app.chBusy
 }
 
 // LoadContent - Load files to application
@@ -170,8 +171,8 @@ func (app *Application) loadPages(fpath string) PageList {
 				}
 			}
 
-			// Add to linear pageList
-			// app.pageList[p.Params["Slug"]] = p
+			// Add to linear slugPages
+			// app.slugPages[p.Params["Slug"]] = p
 			app.AddPage(p)
 
 			// Add to pageTree
@@ -191,6 +192,9 @@ func (app *Application) NewPage(fpath string) *Page {
 // Page - get one page by given slug.
 // Slug must be equal and is case-sensitive
 func (app *Application) Page(slug string) *Page {
+	// if len(app.chBusy) > 0 {
+	// 	return nil
+	// }
 	return app.slugPages.Get(slug)
 }
 
@@ -208,6 +212,8 @@ func (app *Application) AddPage(page *Page) {
 
 // RemovePage - remove page from app and returns (bool) if succeeded
 func (app *Application) RemovePage(slug string) {
+	// app.chBusy <- true
+
 	// remove from tree
 	page := app.Page(slug)
 	if page != nil && page.Parent != nil {
@@ -227,4 +233,6 @@ func (app *Application) RemovePage(slug string) {
 
 	// Remove from slugPages
 	app.slugPages.Remove(slug)
+
+	// <-app.chBusy
 }
