@@ -54,4 +54,33 @@ func Test_PageFuncs(t *testing.T) {
 		pages.Print()
 		t.Fatal("Incorrect SearchByParam results")
 	}
+
+	// Custom filter function
+	// Sarch only on "en" language scope
+	pages = app.Page("en").Walk(func(p *Page) bool {
+		return !p.IsSet("IsDir") || p.IsEqual("IsDir", "No")
+	})
+	if !pages[0].IsEqual("Slug", "simple-slug-oh") ||
+		!pages[1].IsEqual("Slug", "one-more") ||
+		!pages[2].IsEqual("Slug", "last-in-line") {
+
+		pages.Print()
+		t.Fatal("Incorrect Custom Walk results")
+	}
+
+	// Trye to Change Slug with setter
+	// Must NOT be changed
+	page = app.Page("golf")
+	page.Set("Slug", "golfing")
+
+	page = app.Page("golf") // Still can found
+	if page == nil {
+		t.Fatal("Slug must not be changed")
+	}
+
+	page = app.Page("golfing") // Must NOT be found
+	if page != nil {
+		t.Fatal("New slug must not be found")
+	}
+
 }

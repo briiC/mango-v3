@@ -17,6 +17,8 @@ const (
 
 // Application - mango application
 type Application struct {
+	// sync.RWMutex
+
 	// Absolute path to where binary is
 	// config file ".mango" must be there
 	BinPath string
@@ -31,23 +33,12 @@ type Application struct {
 	Pages []*Page
 
 	// Easy count overall pages and detect duplicates
-	// Page slice (not tree)
 	// map[Slug]Page
-	pageList map[string]*Page
+	slugPages PageMap
 
 	// channel to limit access to App
 	chBusy chan bool
 }
-
-/*
-	TODO: new func's
-
-	app.Page("golf")
-	app.Page("golf").Get("Slug")
-	app.PageParam("golf", "Slug")
-	app.SetPageParam("golf", "Slug", "new-slug")
-
-*/
 
 // NewApplication - create/init new application
 // Must be executed only one time
@@ -72,12 +63,6 @@ func NewApplication() (*Application, error) {
 	app.LoadContent()
 
 	return app, nil
-}
-
-// Page - get one page by given slug.
-// Slug must be equal and is case-sensitive
-func (app *Application) Page(slug string) *Page {
-	return app.pageList[slug]
 }
 
 // Detect bin path from where binary executed
@@ -129,17 +114,12 @@ func (app *Application) LoadContent() {
 	app.chBusy <- true // thread-safe
 
 	// Init pageList
-	app.pageList = make(map[string]*Page, 0)
+	app.slugPages.MakeEmpty()
 
 	// Page tree
 	app.Pages = app.loadPages(app.ContentPath)
 
 	<-app.chBusy
-}
-
-// NewPage for application
-func (app *Application) NewPage(fpath string) *Page {
-	return newPage(app, fpath)
 }
 
 // Directory to page tree
@@ -191,7 +171,8 @@ func (app *Application) loadPages(fpath string) PageList {
 			}
 
 			// Add to linear pageList
-			app.pageList[p.Params["Slug"]] = p
+			// app.pageList[p.Params["Slug"]] = p
+			app.AddPage(p)
 
 			// Add to pageTree
 			pages = append(pages, p)
@@ -200,4 +181,50 @@ func (app *Application) loadPages(fpath string) PageList {
 	}
 
 	return pages
+}
+
+// NewPage for application
+func (app *Application) NewPage(fpath string) *Page {
+	return newPage(app, fpath)
+}
+
+// Page - get one page by given slug.
+// Slug must be equal and is case-sensitive
+func (app *Application) Page(slug string) *Page {
+	return app.slugPages.Get(slug)
+}
+
+// AddPage - adds page to pageList
+// Returns (bool) if slug changed to avoid duplicates
+func (app *Application) AddPage(page *Page) {
+
+	// Do not overwrite existing slug
+	if page.isDuplicate() {
+		page.avoidDuplicate()
+	}
+
+	app.slugPages.Set(page.Get("Slug"), page)
+}
+
+// RemovePage - remove page from app and returns (bool) if succeeded
+func (app *Application) RemovePage(slug string) {
+	// remove from tree
+	page := app.Page(slug)
+	if page != nil && page.Parent != nil {
+
+		// This page is under parent pages
+		pages := page.Parent.Pages
+		for i, p := range pages {
+			// Found this page index in slice
+			if p.IsEqual("Slug", slug) {
+
+				// remove from slice
+				pages = append(pages[:i], pages[i+1:]...)
+			}
+		}
+
+	}
+
+	// Remove from slugPages
+	app.slugPages.Remove(slug)
 }

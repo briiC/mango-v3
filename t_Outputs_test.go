@@ -10,15 +10,20 @@ import (
 // but do not output anywhere. Silence.
 func Test_CoverOutputFuncs(t *testing.T) {
 	app, _ := NewApplication()
-	enPage := app.pageList["en"]
-	pages := app.pageList["en"].Search("w")
+	pages := app.Page("en").Search("w")
 
 	// Disable log outputs
 	log.SetOutput(ioutil.Discard)
+
+	// PageMap output
+	app.slugPages.Print()
 
 	// PageList output
 	pages.Print()
 
 	// *Page
-	enPage.PrintTree(0)
+	app.Page("en").PrintTree(0)
+
+	// map[string]string
+	printMap(app.Page("en").Get("Slug"), app.Page("en").Params)
 }

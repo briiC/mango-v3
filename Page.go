@@ -53,14 +53,34 @@ func newPage(app *Application, fpath string) *Page {
 // Set - set thread-safely param to Page.Params
 func (page *Page) Set(key, val string) {
 	if key == "Slug" {
-		// TODO: on Slug change need to change this also in app.pageList
-		// Because pageList[slug] using slug as index/key
+		// Slug can't be changed after loading all pages
+		// If slug must be changed:
+		// - rename file.md
+		// - add Slug: param to file.md header section
 		return
 	}
+
 	page.Lock()
 	page.Params[key] = val
 	page.Unlock()
+
 }
+
+// // because app.pageList using slug as unique id in map
+// func (page *Page) setSlug(slug string) {
+// 	oldSlug := page.Get("Slug")
+//
+// 	// Do not use page.Set(...) it will loop
+// 	page.Lock()
+// 	page.Params["Slug"] = slug
+// 	page.Unlock()
+//
+// 	// Add to list
+// 	page.App.AddPage(page)
+//
+// 	// Remove old from list
+// 	page.App.RemovePage(oldSlug)
+// }
 
 // Get - get thread-safely param to Page.Params
 func (page *Page) Get(key string) string {
@@ -97,8 +117,7 @@ func (page *Page) IsDir() bool {
 
 // Check if page is duplicate slug
 func (page *Page) isDuplicate() bool {
-	_, isDuplicate := page.App.pageList[page.Params["Slug"]]
-	return isDuplicate
+	return page.App.Page(page.Get("Slug")) != nil
 }
 
 // Get some params from path
@@ -136,9 +155,11 @@ func (page *Page) pathToParams() {
 // Generate unique slug based on old one
 func (page *Page) avoidDuplicate() {
 	// Suffix loop by count until unique
-	origSlug := page.Params["Slug"]
+	origSlug := page.Get("Slug")
 	for i := 2; page.isDuplicate(); i++ {
+		page.Lock()
 		page.Params["Slug"] = origSlug + "-" + strconv.Itoa(i)
+		page.Unlock()
 	}
 
 }
@@ -149,7 +170,11 @@ func (page *Page) avoidDuplicate() {
 func (page *Page) Walk(fnCheck func(p *Page) bool) PageList {
 	pages := make(PageList, 0)
 
-	for _, p := range page.Pages {
+	page.RLock()
+	all := page.Pages[:]
+	page.RUnlock()
+
+	for _, p := range all {
 		if fnCheck(p) {
 			pages = append(pages, p)
 		}
@@ -169,7 +194,7 @@ func (page *Page) Search(s string) PageList {
 	return page.Walk(func(p *Page) bool {
 		// Custom check
 		// TODO: add correct search by params and content. Not only slug
-		return strings.Index(p.Params["Slug"], s) >= 0
+		return strings.Index(p.Get("Slug"), s) >= 0
 	})
 }
 

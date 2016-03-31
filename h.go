@@ -2,7 +2,7 @@ package mango
 
 import (
 	"errors"
-	"fmt"
+	"log"
 	"strings"
 	"time"
 
@@ -125,9 +125,9 @@ func toTime(s string) (time.Time, error) {
 
 // Print map in human readable format
 func printMap(fname string, m map[string]string) {
-	fmt.Println("::: ", fname, " :::")
+	log.Println("::: ", fname, " :::")
 	for key, val := range m {
-		fmt.Printf("%20s: %s \n", key, val)
+		log.Printf("%20s: %s \n", key, val)
 	}
-	fmt.Println()
+	log.Println()
 }
