@@ -1,4 +1,4 @@
-.bench
-.log
-.orig
-.test
+\.bench
+\.log
+\.orig
+\.test
