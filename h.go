@@ -125,9 +125,9 @@ func toTime(s string) (time.Time, error) {
 
 // Print map in human readable format
 func printMap(fname string, m map[string]string) {
-	log.Println("::: ", fname, " :::")
+	log.Println("---", fname, "--------------------------------------------")
 	for key, val := range m {
 		log.Printf("%20s: %s \n", key, val)
 	}
-	log.Println()
+	log.Println("--------------------------------------------------------")
 }

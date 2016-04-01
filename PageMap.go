@@ -27,8 +27,10 @@ func (pm *PageMap) Get(key string) *Page {
 	return pm.m[key]
 }
 
-// Set new *Page to local map
-func (pm *PageMap) Set(key string, page *Page) {
+// Add new *Page to local map
+func (pm *PageMap) Add(page *Page) {
+	key := page.Get("Slug")
+
 	pm.Lock()
 	pm.m[key] = page
 	pm.Unlock()

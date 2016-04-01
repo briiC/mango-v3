@@ -5,7 +5,7 @@ import "testing"
 // Parsing datetimes
 func Test_NewApplication(t *testing.T) {
 	app, err := NewApplication()
-	// fmt.Println(app)
+
 	if err != nil {
 		t.Fatal(app, err)
 	}
@@ -23,15 +23,5 @@ func Test_NewApplication(t *testing.T) {
 	if app.PublicPath[len(app.BinPath):] != "/test-files/public" {
 		t.Fatal("Default PublicPath must end with /test-files/public")
 	}
-
-	// for _, p := range app.pageList["en"].Search("w") {
-	// 	fmt.Println("\t", p.Params["Slug"])
-	// }
-	// for _, p := range app.pageList["en"].SearchByParam("IsDir", "Yes") {
-	// 	fmt.Println("\t", p.Params["Slug"])
-	// }
-	// for _, p := range app.pageList["en"].FilterWalk(func(p *Page) bool { return p.IsDir() }) {
-	// 	fmt.Println("\t", p.Params["Slug"])
-	// }
 
 }

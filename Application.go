@@ -6,7 +6,6 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
-	"sync"
 )
 
 // Constants that detected by "gometalinter (goconst)"
@@ -18,7 +17,7 @@ const (
 
 // Application - mango application
 type Application struct {
-	sync.RWMutex
+	// sync.RWMutex
 
 	// Absolute path to where binary is
 	// config file ".mango" must be there
@@ -84,7 +83,7 @@ func (app *Application) setBinPath() error {
 
 // loadConfig using given config filename
 // usually ".mango"
-// TODO: concurrent
+// Should not be tested for parallel because used only once in init
 func (app *Application) loadConfig(fname string) {
 	fpath := app.BinPath + "/" + fname
 	params := fileToParams(fpath)
@@ -96,16 +95,12 @@ func (app *Application) loadConfig(fname string) {
 
 	if path := params["ContentPath"]; path != "" {
 		path, _ = filepath.Abs(path)
-		app.Lock()
 		app.ContentPath = path
-		app.Unlock()
 	}
 
 	if path := params["PublicPath"]; path != "" {
 		path, _ = filepath.Abs(path)
-		app.Lock()
 		app.PublicPath = path
-		app.Unlock()
 	}
 }
 
@@ -136,7 +131,7 @@ func (app *Application) loadPages(fpath string) PageList {
 				continue
 			}
 
-			p := app.NewPage(fpath + "/" + f2.Name())
+			p := app.FileToPage(fpath + "/" + f2.Name())
 
 			if p.Params["IsVisible"] != _Yes {
 				// Only visible pages are added
@@ -173,7 +168,7 @@ func (app *Application) loadPages(fpath string) PageList {
 
 			// Add to linear slugPages
 			// app.slugPages[p.Params["Slug"]] = p
-			app.AddPage(p)
+			app.slugPages.Add(p)
 
 			// Add to pageTree
 			pages = append(pages, p)
@@ -182,57 +177,4 @@ func (app *Application) loadPages(fpath string) PageList {
 	}
 
 	return pages
-}
-
-// NewPage for application
-func (app *Application) NewPage(fpath string) *Page {
-	return newPage(app, fpath)
-}
-
-// Page - get one page by given slug.
-// Slug must be equal and is case-sensitive
-func (app *Application) Page(slug string) *Page {
-	// if len(app.chBusy) > 0 {
-	// 	return nil
-	// }
-	return app.slugPages.Get(slug)
-}
-
-// AddPage - adds page to pageList
-// Returns (bool) if slug changed to avoid duplicates
-func (app *Application) AddPage(page *Page) {
-
-	// Do not overwrite existing slug
-	if page.isDuplicate() {
-		page.avoidDuplicate()
-	}
-
-	app.slugPages.Set(page.Get("Slug"), page)
-}
-
-// RemovePage - remove page from app and returns (bool) if succeeded
-func (app *Application) RemovePage(slug string) {
-	// app.chBusy <- true
-
-	// remove from tree
-	page := app.Page(slug)
-	if page != nil && page.Parent != nil {
-
-		// This page is under parent pages
-		pages := page.Parent.Pages
-		for i, p := range pages {
-			// Found this page index in slice
-			if p.IsEqual("Slug", slug) {
-
-				// remove from slice
-				pages = append(pages[:i], pages[i+1:]...)
-			}
-		}
-
-	}
-
-	// Remove from slugPages
-	app.slugPages.Remove(slug)
-
-	// <-app.chBusy
 }

@@ -27,10 +27,28 @@ type Page struct {
 	Pages PageList
 }
 
-// newPage - create/init new page
-func newPage(app *Application, fpath string) *Page {
-	// TODO: add page to app-wide page list with its slug?
-	// so it could be checked (putside this func) for existance?
+// newPage - create page from label
+// Other params can be set after return *Page
+// client must use app.NewPage("Label") to create new virtual page
+func newPage(label string) *Page {
+	page := &Page{
+		// We creating pseuode Page (not exists on filesystem)
+		// so need to make it look like filename so it can be parsed properly
+		Params: filenameToParams(label + ".md"),
+	}
+
+	// Mark that this page is create not from file
+	page.Params["IsVirtual"] = "Yes"
+
+	// Slug is used for real pages
+	page.Params["VirtualSlug"] = page.Params["Slug"]
+	delete(page.Params, "Slug")
+
+	return page
+}
+
+// fileToPage - create/init new page from existing file
+func fileToPage(fpath string) *Page {
 
 	// Extract content
 	params := fileToParams(fpath)
@@ -38,16 +56,18 @@ func newPage(app *Application, fpath string) *Page {
 	delete(params, "Content")
 
 	// Create new page
-	page := &Page{
-		App:     app,
-		Content: bufContent,
-		Params:  params,
-	}
-
-	// some params from path
-	page.pathToParams()
+	page := newPage("")
+	page.Content = bufContent
+	page.Params = params // assign original params
 
 	return page
+}
+
+// Assign *Application to page
+// and add some app related params
+func (page *Page) linkToApp(app *Application) {
+	page.App = app
+	page.setPathParams()
 }
 
 // Set - set thread-safely param to Page.Params
@@ -121,12 +141,10 @@ func (page *Page) isDuplicate() bool {
 }
 
 // Get some params from path
-func (page *Page) pathToParams() {
+func (page *Page) setPathParams() {
 
 	// relative path from app.ContentPath
-	page.App.RLock()
 	rpath := strings.TrimPrefix(page.Get("Path"), page.App.ContentPath)
-	page.App.RUnlock()
 
 	// Remove filename
 	rpath = strings.TrimSuffix(rpath, page.Get("FileName"))
@@ -143,7 +161,9 @@ func (page *Page) pathToParams() {
 	}
 
 	// Set Level of depth
-	page.Set("Level", strconv.Itoa(len(arr)))
+	if len(arr) > 0 {
+		page.Set("Level", strconv.Itoa(len(arr)))
+	}
 
 	if len(arr) < 2 {
 		return

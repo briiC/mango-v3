@@ -132,24 +132,54 @@ func Test_Content(t *testing.T) {
 	}
 }
 
-func Test_ManipulateLinearList(t *testing.T) {
+func Test_AppNewPage(t *testing.T) {
 	app, _ := NewApplication()
-	page := app.Page("golf")
 
-	// Add the same slug page
-	app.AddPage(page)
-
-	// Slug must be modified
-	if page.Get("Slug") != "golf-2" {
-		t.Fatal("Page Slug should be changed")
+	// Empty label
+	p := app.NewPage("")
+	// printMap("", p.Params)
+	if p.Params["IsVirtual"] != "Yes" ||
+		p.Params["VirtualSlug"] != "" ||
+		p.App == nil {
+		t.Fatal("Empty labeled NewPage")
 	}
 
-	// Remove by slug
-	app.RemovePage("golf-2")
+	// Labeled
+	p = app.NewPage("Hello page!")
+	// printMap("Hello page!", p.Params)
+	if p.Params["IsVirtual"] != "Yes" ||
+		p.Params["Label"] != "Hello page!" ||
+		p.Params["VirtualSlug"] != "hello-page" ||
+		p.App == nil {
+		t.Fatal("Labeled NewPage")
+	}
+}
 
-	// Must no be found
-	if app.Page("golf-2") != nil {
-		t.Fatal("Page Slug should be removed")
+func Test_AppFileToPage(t *testing.T) {
+	app, _ := NewApplication()
+
+	// Empty label
+	p := app.FileToPage("")
+	if len(p.Params) != 0 ||
+		p.App == nil {
+		printMap("", p.Params)
+		t.Fatal("Empty labeled FileToPage")
 	}
 
+	// Labeled
+	p = app.FileToPage("Hello page!")
+	if len(p.Params) != 0 ||
+		p.App == nil {
+		printMap("Hello page!", p.Params)
+		t.Fatal("Labeled FileToPage")
+	}
+
+	// Existing
+	p = app.FileToPage("test-files/content/en/top-menu/1_Simple.md")
+	if len(p.Params) == 0 ||
+		p.Params["Slug"] != "simple-slug-oh" ||
+		p.App == nil {
+		printMap("Existing", p.Params)
+		t.Fatal("Existing path for FileToPage")
+	}
 }
