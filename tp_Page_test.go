@@ -6,7 +6,7 @@ func Benchmark_PageParamsRead_Parallel(b *testing.B) {
 	app, _ := NewApplication()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			slug := app.Page("golf").Params["Slug"]
+			slug := app.Page("golf").Get("Slug")
 			_ = slug[1:] // only to avoid warning of unused variable
 		}
 	})

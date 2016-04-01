@@ -21,12 +21,12 @@ go test -v
 
 # Run benchmark tests
 NewFname="$Today.bench"
-echo -e "\n ${Purple}GORACE=\"halt_on_error=1\" ${Cyan}go test -v -bench=. -benchmem ${Color_Off} > ${NewFname}\n"
+echo -e "\n ${Cyan}go test -v -bench=. -benchmem ${Color_Off} > ${NewFname}\n"
 go test -bench=. -benchmem > $NewFname
 
 # Run benchmark tests with data race check
-echo -e "\n${Cyan}go test -v -race -bench=. -benchmem ${Color_Off}\n"
-GORACE="halt_on_error=1" go test -race -bench=. -benchmem
+echo -e "\n${Purple}GORACE=\"halt_on_error=1\" ${Cyan}go test -v -race -bench=. ${Color_Off}\n"
+GORACE="halt_on_error=1" go test -race -bench=.
 
 # Compare to bench profiles
 OldFname="$Yesterday.bench"
