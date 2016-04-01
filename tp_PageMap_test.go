@@ -9,9 +9,7 @@ func Benchmark_PageMapOperations_Parallel(b *testing.B) {
 		for pb.Next() {
 
 			// Add
-			app.slugPages.Add(&Page{
-				Params: map[string]string{"Slug": "slug-x"},
-			})
+			app.slugPages.Add("slug-x", &Page{})
 
 			// Get
 			app.slugPages.Get("slug-x")

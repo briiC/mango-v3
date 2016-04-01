@@ -1,6 +1,9 @@
 package mango
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 // Parsing datetimes
 func Test_NewApplication(t *testing.T) {
@@ -23,6 +26,11 @@ func Test_NewApplication(t *testing.T) {
 	// Trim from binPath end to public path end
 	if app.PublicPath[len(app.binPath):] != "/test-files/public" {
 		t.Fatal("Default PublicPath must end with /test-files/public")
+	}
+
+	// ---------
+	for key, pages := range app.collections["Tag"] {
+		fmt.Printf("- %10s (%d) \n", key, len(pages))
 	}
 
 }

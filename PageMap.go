@@ -12,6 +12,13 @@ type PageMap struct {
 	m map[string]*Page
 }
 
+// NewPageMap - create and init as empty
+func NewPageMap() *PageMap {
+	pm := &PageMap{}
+	pm.MakeEmpty()
+	return pm
+}
+
 // MakeEmpty - init or clear map
 func (pm *PageMap) MakeEmpty() {
 	pm.Lock()
@@ -28,9 +35,9 @@ func (pm *PageMap) Get(key string) *Page {
 }
 
 // Add new *Page to local map
-func (pm *PageMap) Add(page *Page) {
-	key := page.Get("Slug")
-
+// Can't use only Slug, because PageMap can be used for many purposes
+func (pm *PageMap) Add(key string, page *Page) {
+	// key := page.Get("Slug")
 	pm.Lock()
 	pm.m[key] = page
 	pm.Unlock()
@@ -66,6 +73,10 @@ func (pm *PageMap) Filter(fnCheck func(p *Page) bool) PageList {
 // Print pages in list
 func (pm *PageMap) Print() {
 	pages := pm.m
+
+	if len(pages) == 0 {
+		return
+	}
 
 	log.Println("------------------------------------------------------------")
 	for slug, p := range pages {

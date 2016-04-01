@@ -45,9 +45,7 @@ func Benchmark_AppMixed_Parallel(b *testing.B) {
 			app.Page("golf")
 
 			// Add
-			app.slugPages.Add(&Page{
-				Params: map[string]string{"Slug": "slug-x"},
-			})
+			app.slugPages.Add("slug-x", &Page{})
 
 			// Remove
 			app.slugPages.Remove("slug-x")

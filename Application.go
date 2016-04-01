@@ -38,6 +38,11 @@ type Application struct {
 	// map[Slug]Page
 	slugPages PageMap
 
+	// Collectables - pages that are collected
+	// Example: "Tag: dog, cat, mouse" --> every tag will point to one *Page
+	// Case sensitive
+	collections map[string]map[string]PageList
+
 	// channel to limit access to App
 	chBusy chan bool
 }
@@ -104,6 +109,26 @@ func (app *Application) loadConfig(fname string) {
 		path, _ = filepath.Abs(path)
 		app.PublicPath = path
 	}
+
+	// Init collections
+	// Collections: Tag, Category --> init 2 collection page maps
+	app.collections = make(map[string]map[string]PageList, 0) // make anyways
+	if params["Collections"] == "" {
+		params["Collections"] = "Tag, Category" // default collections
+	}
+	if ckeys := strings.Split(params["Collections"], ","); len(ckeys) > 0 {
+		for _, ckey := range ckeys {
+			ckey = strings.TrimSpace(ckey)
+
+			if ckey == "" {
+				continue
+			}
+
+			// Init
+			app.collections[ckey] = make(map[string]PageList, 0)
+		}
+	}
+
 }
 
 // LoadContent - Load files to application
@@ -113,6 +138,11 @@ func (app *Application) LoadContent() {
 
 	// Init pageList
 	app.slugPages.MakeEmpty()
+
+	// Clear collections
+	for ckey := range app.collections {
+		app.collections[ckey] = make(map[string]PageList, 0)
+	}
 
 	// Page tree
 	app.Pages = app.loadPages(app.ContentPath)
@@ -174,7 +204,7 @@ func (app *Application) loadPages(fpath string) PageList {
 
 			// Add to linear slugPages
 			// app.slugPages[p.Params["Slug"]] = p
-			app.slugPages.Add(p)
+			app.slugPages.Add(p.Get("Slug"), p)
 
 			// Add to pageTree
 			pages = append(pages, p)

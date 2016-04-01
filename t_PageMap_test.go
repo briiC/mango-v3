@@ -15,9 +15,7 @@ func Test_PageMap(t *testing.T) {
 	}
 
 	// Add
-	app.slugPages.Add(&Page{
-		Params: map[string]string{"Slug": "slug-x"},
-	})
+	app.slugPages.Add("slug-x", &Page{})
 	if count+1 != app.slugPages.Len() {
 		t.Fatal("Page must be added")
 	}

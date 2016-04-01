@@ -63,14 +63,6 @@ func fileToPage(fpath string) *Page {
 	return page
 }
 
-// Assign *Application to page
-// and add some app related params
-// TODO: maybe app should link page not page-to-app
-func (page *Page) linkToApp(app *Application) {
-	page.App = app
-	page.setPathParams()
-}
-
 // Set - set thread-safely param to Page.Params
 func (page *Page) Set(key, val string) {
 	if key == "Slug" {
@@ -87,28 +79,30 @@ func (page *Page) Set(key, val string) {
 
 }
 
-// // because app.pageList using slug as unique id in map
-// func (page *Page) setSlug(slug string) {
-// 	oldSlug := page.Get("Slug")
-//
-// 	// Do not use page.Set(...) it will loop
-// 	page.Lock()
-// 	page.Params["Slug"] = slug
-// 	page.Unlock()
-//
-// 	// Add to list
-// 	page.App.AddPage(page)
-//
-// 	// Remove old from list
-// 	page.App.RemovePage(oldSlug)
-// }
-
 // Get - get thread-safely param to Page.Params
 func (page *Page) Get(key string) string {
 	page.RLock()
 	defer page.RUnlock()
 
 	return page.Params[key]
+}
+
+// Split - get param as slice splitted by given separator
+func (page *Page) Split(key, sep string) []string {
+	val := page.Get(key)
+
+	// A, B,,,,C --> results in 3 items
+	arr := strings.Split(val, sep) // dirty list
+	var _arr []string              // validated list
+	for _, v := range arr {
+		v := strings.TrimSpace(v)
+		if v != "" {
+			// Only with content are added
+			_arr = append(_arr, v)
+		}
+	}
+
+	return _arr
 }
 
 // IsEqual - shorthand to compare param with custom string
