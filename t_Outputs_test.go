@@ -3,6 +3,7 @@ package mango
 import (
 	"io/ioutil"
 	"log"
+	"os"
 	"testing"
 )
 
@@ -14,6 +15,9 @@ func Test_CoverOutputFuncs(t *testing.T) {
 
 	// *** Disable log outputs
 	log.SetOutput(ioutil.Discard)
+
+	// enable it after tests done, to not discard logs in other tests
+	defer log.SetOutput(os.Stdout)
 
 	// App output
 	app.Print()

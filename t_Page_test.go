@@ -1,6 +1,37 @@
 package mango
 
-import "testing"
+import (
+	"bytes"
+	"fmt"
+	"testing"
+)
+
+// Parsing datetimes
+func Test_PageContent(t *testing.T) {
+	app, _ := NewApplication()
+
+	cases := map[string][]byte{
+		"lava": []byte("This is very deep file"),
+		"golf": []byte("# Golf"),
+		"cold": []byte("Winter is coming.."),
+		"one-more": []byte("# Header line\n" +
+			"\n" +
+			"- Some **markdown** syntax.\n" +
+			"- And some <b>HTML</b> synta too."),
+		// "copy-cat": []byte("# Waldo here"),
+	}
+
+	// loop cases
+	for slug, expected := range cases {
+		content := app.Page(slug).Content
+		if !bytes.Equal(content, expected) {
+			fmt.Printf("\n\n::: FOUND: %s\n\n", content)
+			fmt.Printf("::: EXPECTED: %s\n\n", expected)
+			t.Fatal("Invalid content in [", app.Page(slug).Params["Path"], "]")
+		}
+	}
+
+}
 
 // Parsing datetimes
 func Test_PageFuncs(t *testing.T) {
@@ -60,9 +91,10 @@ func Test_PageFuncs(t *testing.T) {
 	pages = app.Page("en").Walk(func(p *Page) bool {
 		return !p.IsSet("IsDir") || p.IsEqual("IsDir", "No")
 	})
-	if !pages[0].IsEqual("Slug", "simple-slug-oh") ||
-		!pages[1].IsEqual("Slug", "one-more") ||
-		!pages[2].IsEqual("Slug", "last-in-line") {
+	if !pages[0].IsEqual("Slug", "copy-cat") ||
+		!pages[1].IsEqual("Slug", "simple-slug-oh") ||
+		!pages[2].IsEqual("Slug", "one-more") ||
+		!pages[3].IsEqual("Slug", "last-in-line") {
 
 		pages.Print()
 		t.Fatal("Incorrect Custom Walk results")

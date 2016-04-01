@@ -173,7 +173,7 @@ func (page *Page) setPathParams() {
 	// 2. is group keys. Every language folder have same groupkeys
 	// so we need to prefix these slugs with language
 	// en-top-menu
-	if page.IsEqual("Level", "1") {
+	if page.IsEqual("Level", "1") && page.IsDir() {
 		page.Params["Slug"] = page.Get("Lang") + "-" + page.Get("Slug")
 	}
 

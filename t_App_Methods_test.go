@@ -1,7 +1,6 @@
 package mango
 
 import (
-	"bytes"
 	"fmt"
 	"testing"
 )
@@ -29,7 +28,7 @@ func Test_LoadPages(t *testing.T) {
 	app, _ := NewApplication() //auto-load
 
 	// Count
-	if app.slugPages.Len() != 26 {
+	if app.slugPages.Len() != 27 {
 		// pages := app.loadPages(app.ContentPath)
 		for _, p := range app.Pages {
 			p.PrintTree(0)
@@ -106,30 +105,6 @@ func Test_LoadPages(t *testing.T) {
 		t.Fatal("Order of WALDO must be random")
 	}
 
-}
-
-func Test_Content(t *testing.T) {
-	app, _ := NewApplication() //auto-load
-
-	cases := map[string][]byte{
-		"lava": []byte("This is very deep file"),
-		"golf": []byte("# Golf"),
-		"cold": []byte("Winter is coming.."),
-		"one-more": []byte("# Header line\n" +
-			"\n" +
-			"- Some **markdown** syntax.\n" +
-			"- And some <b>HTML</b> synta too."),
-	}
-
-	// loop cases
-	for slug, expected := range cases {
-		content := app.Page(slug).Content
-		if !bytes.Equal(content, expected) {
-			fmt.Printf("\n\n::: FOUND: %s\n\n", content)
-			fmt.Printf("::: EXPECTED: %s\n\n", expected)
-			t.Fatal("Invalid content in [", app.Page(slug).Params["Path"], "]")
-		}
-	}
 }
 
 func Test_AppNewPage(t *testing.T) {
