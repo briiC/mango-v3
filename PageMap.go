@@ -54,10 +54,7 @@ func (pm *PageMap) Filter(fnCheck func(p *Page) bool) PageList {
 
 	pm.RLock()
 	for _, p := range pm.m {
-		if p == nil {
-			continue
-		}
-		if fnCheck(p) {
+		if p != nil && fnCheck(p) {
 			pages = append(pages, p)
 		}
 	}
@@ -80,13 +77,13 @@ func (pm *PageMap) Print() {
 			dir = "/"
 		}
 
-		if p.IsSet("Redirect") {
-			redirect = "R"
-		}
-
-		if p.IsSet("ContentFrom") {
-			contentFrom = "^"
-		}
+		// if p.IsSet("Redirect") {
+		// 	redirect = "R"
+		// }
+		//
+		// if p.IsSet("ContentFrom") {
+		// 	contentFrom = "^"
+		// }
 
 		log.Printf("- %-24s %2s%2s%2s%2s %24s\n", slug, dir, redirect, contentFrom, p.Get("Level"), p.Get("Title"))
 	}
