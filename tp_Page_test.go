@@ -14,6 +14,7 @@ func Benchmark_PageParamsRead_Parallel(b *testing.B) {
 
 func Benchmark_PageParamsGetSet_Parallel(b *testing.B) {
 	app, _ := NewApplication()
+
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			// Get some page

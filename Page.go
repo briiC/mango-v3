@@ -160,17 +160,29 @@ func (page *Page) setPathParams() {
 		arr = make([]string, 0)
 	}
 
-	// Set Level of depth
-	if len(arr) > 0 {
-		page.Set("Level", strconv.Itoa(len(arr)))
+	// Need at least 1
+	if len(arr) == 0 {
+		return
 	}
 
+	// Set Level of depth
+	page.Set("Lang", arr[0])
+	page.Set("Level", strconv.Itoa(len(arr)))
+
+	// 1. en -> 2. top-menu -> 3-n.pages...
+	// 2. is group keys. Every language folder have same groupkeys
+	// so we need to prefix these slugs with language
+	// en-top-menu
+	if page.IsEqual("Level", "1") {
+		page.Params["Slug"] = page.Get("Lang") + "-" + page.Get("Slug")
+	}
+
+	// Need at least 2
 	if len(arr) < 2 {
 		return
 	}
 
 	// Set params based on arr
-	page.Set("Lang", arr[0])
 	page.Set("GroupKey", arr[1])
 }
 
@@ -231,9 +243,7 @@ func (page *Page) SearchByParam(key, val string) PageList {
 // PrintTree - Print all pages under this page
 func (page *Page) PrintTree(depth int) {
 	for _, p := range page.Pages {
-		log.Printf("%s %-30s %-30s", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"])
-		log.Printf(" &%p", p.Parent)
-		log.Println()
+		log.Printf("%s %-30s %-30s %3d bytes", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"], len(p.Content))
 
 		// printMap(p.Params["Label"], p.Params)
 		if len(p.Pages) > 0 {

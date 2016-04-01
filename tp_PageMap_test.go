@@ -18,6 +18,9 @@ func Benchmark_PageMapOperations_Parallel(b *testing.B) {
 
 			// Remove
 			app.slugPages.Remove("slug-x")
+
+			// Filter
+			app.slugPages.Filter(func(p *Page) bool { return p.IsDir() })
 		}
 	})
 }

@@ -8,6 +8,12 @@ func Test_PageMap(t *testing.T) {
 
 	count := app.slugPages.Len()
 
+	// Filter
+	pages := app.slugPages.Filter(func(p *Page) bool { return p.IsDir() })
+	if len(pages) != 11 {
+		t.Fatal("Expected 11 filtered pages. Found:", len(pages))
+	}
+
 	// Add
 	app.slugPages.Add(&Page{
 		Params: map[string]string{"Slug": "slug-x"},

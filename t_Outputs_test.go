@@ -12,8 +12,11 @@ func Test_CoverOutputFuncs(t *testing.T) {
 	app, _ := NewApplication()
 	pages := app.Page("en").Search("w")
 
-	// Disable log outputs
+	// *** Disable log outputs
 	log.SetOutput(ioutil.Discard)
+
+	// App output
+	app.Print()
 
 	// PageMap output
 	app.slugPages.Print()
@@ -26,4 +29,5 @@ func Test_CoverOutputFuncs(t *testing.T) {
 
 	// map[string]string
 	printMap(app.Page("en").Get("Slug"), app.Page("en").Params)
+
 }

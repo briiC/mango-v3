@@ -2,6 +2,7 @@ package mango
 
 import (
 	"io/ioutil"
+	"log"
 	"os"
 	"path/filepath"
 	"sort"
@@ -21,7 +22,7 @@ type Application struct {
 
 	// Absolute path to where binary is
 	// config file ".mango" must be there
-	BinPath string
+	binPath string
 
 	// Absolute path to content (folders with .md files)
 	ContentPath string
@@ -52,8 +53,8 @@ func NewApplication() (*Application, error) {
 
 	// Set defaults
 	app.setBinPath()
-	app.ContentPath = app.BinPath + "/content"
-	app.PublicPath = app.BinPath + "/public"
+	app.ContentPath = app.binPath + "/content"
+	app.PublicPath = app.binPath + "/public"
 
 	// Configure app by default config file ".mango"
 	// Override defaults (as last action)
@@ -76,7 +77,7 @@ func (app *Application) setBinPath() error {
 		}
 	}
 
-	app.BinPath = path
+	app.binPath = path
 
 	return nil
 }
@@ -85,7 +86,7 @@ func (app *Application) setBinPath() error {
 // usually ".mango"
 // Should not be tested for parallel because used only once in init
 func (app *Application) loadConfig(fname string) {
-	fpath := app.BinPath + "/" + fname
+	fpath := app.binPath + "/" + fname
 	params := fileToParams(fpath)
 	// if len(params) == 0 {
 	// 	// log.Printf("Error: Empty OR not exists [%s] config file", fname)
@@ -177,4 +178,24 @@ func (app *Application) loadPages(fpath string) PageList {
 	}
 
 	return pages
+}
+
+// Print - output app highlights
+func (app *Application) Print() {
+	log.Println(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .")
+	log.Printf("%20s: %s", "ContentPath", app.ContentPath)
+	log.Printf("%20s: %s", "PublicPath", app.PublicPath)
+	log.Printf("%20s: %d", "Page count", app.slugPages.Len())
+	log.Printf("%20s: %d", "Page (dir) count", len(app.slugPages.Filter(func(p *Page) bool { return p.IsDir() })))
+	log.Printf("%20s: %d", "Page (.md) count", len(app.slugPages.Filter(func(p *Page) bool { return !p.IsDir() })))
+	log.Println(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .")
+
+	// Print every language folder tree
+	for _, p := range app.Pages {
+		p.PrintTree(0)
+	}
+
+	// Print linear pages by slugs
+	app.slugPages.Print()
+
 }

@@ -13,13 +13,13 @@ func Test_LoadConfig(t *testing.T) {
 	// App runs .mango by default
 	// this is just comfort code as example
 	app.loadConfig(".mango")
-	if app.ContentPath[len(app.BinPath):] != "/test-files/content" {
+	if app.ContentPath[len(app.binPath):] != "/test-files/content" {
 		t.Fatal("Default ContentPath must end with /test-files/content")
 	}
 
 	// override with new params
 	app.loadConfig("test-files/.mango-empty")
-	if app.ContentPath[len(app.BinPath):] != "/test-files/content" {
+	if app.ContentPath[len(app.binPath):] != "/test-files/content" {
 		t.Fatal("Default ContentPath must end with /test-files/content")
 	}
 
@@ -57,13 +57,13 @@ func Test_LoadPages(t *testing.T) {
 	if app.Page("lava") == nil ||
 		app.Page("lava").Params["Level"] != "6" ||
 		app.Page("lava").Params["Lang"] != "lv" ||
-		app.Page("lava").Params["GroupKey"] != "left-menu" {
+		app.Page("lava").Params["GroupKey"] != "top-menu" {
 		printMap("Lava", app.Page("lava").Params)
 		t.Fatal("Lava page OR Lava params not correct")
 	}
 
 	// Test DEFAULT order for TopMenu pages
-	tmPages := app.Page("top-menu").Pages
+	tmPages := app.Page("en-top-menu").Pages
 	if tmPages[0].Params["Slug"] != "simple-slug-oh" ||
 		tmPages[1].Params["Slug"] != "one-more" ||
 		tmPages[2].Params["Slug"] != "last-in-line" {

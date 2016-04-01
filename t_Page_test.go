@@ -46,7 +46,7 @@ func Test_PageFuncs(t *testing.T) {
 	// Sarch only on "en" language scope
 	// Order of search must not change because using slice not map
 	pages = app.Page("en").SearchByParam("IsDir", "Yes")
-	if !pages[0].IsEqual("Slug", "top-menu") ||
+	if !pages[0].IsEqual("Slug", "en-top-menu") ||
 		!pages[1].IsEqual("Slug", "sports") ||
 		!pages[2].IsEqual("Slug", "weather") ||
 		!pages[3].IsEqual("Slug", "where-is-waldo") {

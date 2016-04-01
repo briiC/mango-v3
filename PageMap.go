@@ -48,13 +48,47 @@ func (pm *PageMap) Len() int {
 	return len(pm.m)
 }
 
+// Filter - filter by custom func
+func (pm *PageMap) Filter(fnCheck func(p *Page) bool) PageList {
+	pages := make(PageList, 0)
+
+	pm.RLock()
+	for _, p := range pm.m {
+		if p == nil {
+			continue
+		}
+		if fnCheck(p) {
+			pages = append(pages, p)
+		}
+	}
+	pm.RUnlock()
+
+	return pages
+}
+
 // Print pages in list
 func (pm *PageMap) Print() {
 	pages := pm.m
 
-	log.Println("---------------------------------------------------")
+	log.Println("------------------------------------------------------------")
 	for slug, p := range pages {
-		log.Printf("- %20s - %s \n", slug, p.Get("Title"))
+		dir := ""
+		redirect := ""
+		contentFrom := ""
+
+		if p.IsDir() {
+			dir = "/"
+		}
+
+		if p.IsSet("Redirect") {
+			redirect = "R"
+		}
+
+		if p.IsSet("ContentFrom") {
+			contentFrom = "^"
+		}
+
+		log.Printf("- %-24s %2s%2s%2s%2s %24s\n", slug, dir, redirect, contentFrom, p.Get("Level"), p.Get("Title"))
 	}
-	log.Println("---------------------------------------------------")
+	log.Println("------------------------------------------------------------")
 }
