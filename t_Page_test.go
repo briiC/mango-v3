@@ -18,15 +18,20 @@ func Test_PageContent(t *testing.T) {
 			"\n" +
 			"- Some **markdown** syntax.\n" +
 			"- And some <b>HTML</b> synta too."),
-		// "copy-cat": []byte("# Waldo here"),
+		"copy-cat": []byte("# Copy from another page\n" +
+			"# Waldo here"),
+		"copy-dog": []byte("# Content from directory\n" +
+			"<div># This is Hockey</div>\n<hr/>\n" +
+			"<div># Golf</div>\n<hr/>\n" +
+			"<div># This is Baseball</div>\n<hr/>"),
 	}
 
 	// loop cases
 	for slug, expected := range cases {
 		content := app.Page(slug).Content
 		if !bytes.Equal(content, expected) {
-			fmt.Printf("\n\n::: FOUND: %s\n\n", content)
-			fmt.Printf("::: EXPECTED: %s\n\n", expected)
+			fmt.Printf("\n\n::: FOUND: %s %d\n\n", content, len(content))
+			fmt.Printf("::: EXPECTED: %s %d\n\n", expected, len(expected))
 			t.Fatal("Invalid content in [", app.Page(slug).Params["Path"], "]")
 		}
 	}
@@ -92,9 +97,10 @@ func Test_PageFuncs(t *testing.T) {
 		return !p.IsSet("IsDir") || p.IsEqual("IsDir", "No")
 	})
 	if !pages[0].IsEqual("Slug", "copy-cat") ||
-		!pages[1].IsEqual("Slug", "simple-slug-oh") ||
-		!pages[2].IsEqual("Slug", "one-more") ||
-		!pages[3].IsEqual("Slug", "last-in-line") {
+		!pages[1].IsEqual("Slug", "copy-dog") ||
+		!pages[2].IsEqual("Slug", "simple-slug-oh") ||
+		!pages[3].IsEqual("Slug", "one-more") ||
+		!pages[4].IsEqual("Slug", "last-in-line") {
 
 		pages.Print()
 		t.Fatal("Incorrect Custom Walk results")

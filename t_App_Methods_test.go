@@ -28,7 +28,7 @@ func Test_LoadPages(t *testing.T) {
 	app, _ := NewApplication() //auto-load
 
 	// Count
-	if app.slugPages.Len() != 27 {
+	if app.slugPages.Len() != 28 {
 		// pages := app.loadPages(app.ContentPath)
 		for _, p := range app.Pages {
 			p.PrintTree(0)

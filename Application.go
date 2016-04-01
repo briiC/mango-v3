@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"bytes"
 	"io/ioutil"
 	"log"
 	"os"
@@ -116,6 +117,10 @@ func (app *Application) LoadContent() {
 	// Page tree
 	app.Pages = app.loadPages(app.ContentPath)
 
+	// Post-load operations
+	// Edit page after all pages loaded
+	app.afterLoadContent()
+
 	<-app.chBusy
 }
 
@@ -178,6 +183,45 @@ func (app *Application) loadPages(fpath string) PageList {
 	}
 
 	return pages
+}
+
+// Post-load operations
+// Edit page after all pages loaded
+// For example param: ContentFrom, can be used only after all pages loaded
+func (app *Application) afterLoadContent() {
+	// Do filter walk but don't collect pages
+	app.slugPages.Filter(func(p *Page) bool {
+
+		// Content from slug
+		if slug := p.Get("ContentFrom"); slug != "" {
+			if page2 := app.Page(slug); page2 != nil {
+
+				// What seperator to use by appending content
+				sepTemplate := []byte("\n{{ Content }}")
+				if _sepTemplate := p.Get("ContentTemplate"); _sepTemplate != "" {
+					sepTemplate = []byte(_sepTemplate)
+				}
+
+				// Make content
+				if page2.IsDir() {
+
+					// Load content from sub-pages
+					for _, p3 := range page2.Pages {
+						content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), p3.Content, 1)
+						p.Content = append(p.Content, content...)
+
+					}
+
+				} else {
+					// Content from one page
+					content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), page2.Content, 1)
+					p.Content = append(p.Content, content...)
+				}
+			}
+		}
+
+		return false
+	})
 }
 
 // Print - output app highlights

@@ -65,6 +65,7 @@ func fileToPage(fpath string) *Page {
 
 // Assign *Application to page
 // and add some app related params
+// TODO: maybe app should link page not page-to-app
 func (page *Page) linkToApp(app *Application) {
 	page.App = app
 	page.setPathParams()
