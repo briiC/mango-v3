@@ -22,11 +22,12 @@ func Benchmark_AppPage_Parallel(b *testing.B) {
 	})
 }
 
-func Benchmark_AppLoadPage_Parallel(b *testing.B) {
+func Benchmark_AppVirtualPage_Parallel(b *testing.B) {
 	app, _ := NewApplication()
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
-			app.FileToPage("Page.md")
+			app.NewPage("Page.md")
+			app.FileToPage("test-files/content/en/top-menu/1_Simple.md")
 		}
 	})
 }
@@ -37,8 +38,20 @@ func Benchmark_AppMixed_Parallel(b *testing.B) {
 	b.RunParallel(func(pb *testing.PB) {
 		for pb.Next() {
 			app.LoadContent()
+
+			app.NewPage("Page.md")
+			app.FileToPage("test-files/content/en/top-menu/1_Simple.md")
+
 			app.Page("golf")
-			app.FileToPage("Page.md")
+
+			// Add
+			app.slugPages.Add(&Page{
+				Params: map[string]string{"Slug": "slug-x"},
+			})
+
+			// Remove
+			app.slugPages.Remove("slug-x")
+
 		}
 	})
 }
