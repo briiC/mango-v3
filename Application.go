@@ -207,8 +207,14 @@ func (app *Application) loadPages(fpath string) PageList {
 			// app.slugPages[p.Params["Slug"]] = p
 			app.slugPages.Add(p.Get("Slug"), p)
 
-			// Add to pageTree
-			pages = append(pages, p)
+			// If page is unlisted do not add it to tree
+			// (but leave in linear list of pages)
+			// That means it can be found by slug,
+			// but can't be found among parent childrens
+			if !p.IsYes("IsUnlisted") {
+				// Add to pageTree
+				pages = append(pages, p)
+			}
 
 		}
 	}

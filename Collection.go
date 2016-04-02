@@ -2,6 +2,7 @@ package mango
 
 import (
 	"log"
+	"strings"
 	"sync"
 )
 
@@ -28,6 +29,8 @@ func (c *Collection) MakeEmpty() {
 
 // Get from local map by key
 func (c *Collection) Get(key string) PageList {
+	key = c.normalizeKey(key)
+
 	c.RLock()
 	defer c.RUnlock()
 
@@ -36,6 +39,8 @@ func (c *Collection) Get(key string) PageList {
 
 // Append new page to PageList under key
 func (c *Collection) Append(key string, page *Page) {
+	key = c.normalizeKey(key)
+
 	c.Lock()
 	c.m[key] = append(c.m[key], page)
 	c.Unlock()
@@ -43,9 +48,18 @@ func (c *Collection) Append(key string, page *Page) {
 
 // Remove by key
 func (c *Collection) Remove(key string) {
+	key = c.normalizeKey(key)
+
 	c.Lock()
 	delete(c.m, key)
 	c.Unlock()
+}
+
+// Make key lowercased and trimmed
+func (c *Collection) normalizeKey(key string) string {
+	key = strings.TrimSpace(key)
+	key = strings.ToLower(key)
+	return key
 }
 
 // Print collection items
