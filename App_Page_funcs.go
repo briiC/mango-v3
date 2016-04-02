@@ -34,11 +34,9 @@ func (app *Application) linkPage(page *Page) {
 			arr := page.Split(ckey, ",")
 
 			// Every [value: *Page] added to collection by c.key
-			for _, val := range arr {
-				// fmt.Println(page.Get("Slug"), "\t", val)
-				// Add to app.collections[ckey][val] []*Page
-				// 	      app.collections[Tag][my-tag] []*Page
-				app.collections[ckey][val] = append(app.collections[ckey][val], page)
+			for _, itemKey := range arr {
+				// Add to app.collections[ckey][itemKey]-> [page1, page2, ..]
+				app.collections[ckey].Append(itemKey, page)
 			}
 		}
 	}

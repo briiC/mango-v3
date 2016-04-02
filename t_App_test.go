@@ -1,9 +1,6 @@
 package mango
 
-import (
-	"fmt"
-	"testing"
-)
+import "testing"
 
 // Parsing datetimes
 func Test_NewApplication(t *testing.T) {
@@ -29,8 +26,8 @@ func Test_NewApplication(t *testing.T) {
 	}
 
 	// ---------
-	for key, pages := range app.collections["Tag"] {
-		fmt.Printf("- %10s (%d) \n", key, len(pages))
+	for ckey, c := range app.collections {
+		c.Print(ckey)
 	}
 
 }

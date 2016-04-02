@@ -41,7 +41,7 @@ type Application struct {
 	// Collectables - pages that are collected
 	// Example: "Tag: dog, cat, mouse" --> every tag will point to one *Page
 	// Case sensitive
-	collections map[string]map[string]PageList
+	collections map[string]*Collection
 
 	// channel to limit access to App
 	chBusy chan bool
@@ -112,7 +112,7 @@ func (app *Application) loadConfig(fname string) {
 
 	// Init collections
 	// Collections: Tag, Category --> init 2 collection page maps
-	app.collections = make(map[string]map[string]PageList, 0) // make anyways
+	app.collections = make(map[string]*Collection, 0) // make anyways
 	if params["Collections"] == "" {
 		params["Collections"] = "Tag, Category" // default collections
 	}
@@ -125,7 +125,8 @@ func (app *Application) loadConfig(fname string) {
 			}
 
 			// Init
-			app.collections[ckey] = make(map[string]PageList, 0)
+			// Add empty to later know what we are collecting (in app.LoadContent)
+			app.collections[ckey] = NewCollection()
 		}
 	}
 
@@ -141,7 +142,7 @@ func (app *Application) LoadContent() {
 
 	// Clear collections
 	for ckey := range app.collections {
-		app.collections[ckey] = make(map[string]PageList, 0)
+		app.collections[ckey].MakeEmpty()
 	}
 
 	// Page tree
