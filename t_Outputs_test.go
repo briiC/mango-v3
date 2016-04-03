@@ -29,6 +29,7 @@ func Test_CoverOutputFuncs(t *testing.T) {
 	pages.Print()
 
 	// *Page
+	app.Page("en").Print()
 	app.Page("en").PrintTree(0)
 
 	// map[string]string

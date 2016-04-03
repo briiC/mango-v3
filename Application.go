@@ -111,10 +111,10 @@ func (app *Application) loadConfig(fname string) {
 	}
 
 	// Init collections
-	// Collections: Tag, Category --> init 2 collection page maps
+	// Collections: Tags, Categories, Keywords--> init 3 collection page maps
 	app.collections = make(map[string]*Collection, 0) // make anyways
 	if params["Collections"] == "" {
-		params["Collections"] = "Tag, Category" // default collections
+		params["Collections"] = "Tags, Categories, Keywords" // default collections
 	}
 	if ckeys := strings.Split(params["Collections"], ","); len(ckeys) > 0 {
 		for _, ckey := range ckeys {
@@ -246,7 +246,6 @@ func (app *Application) afterLoadContent() {
 					for _, p3 := range page2.Pages {
 						content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), p3.Content, 1)
 						p.Content = append(p.Content, content...)
-
 					}
 
 				} else {
@@ -254,6 +253,9 @@ func (app *Application) afterLoadContent() {
 					content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), page2.Content, 1)
 					p.Content = append(p.Content, content...)
 				}
+
+				p.Set("HaveContent", "Yes")
+
 			}
 		}
 
@@ -269,14 +271,24 @@ func (app *Application) Print() {
 	log.Printf("%20s: %d", "Page count", app.slugPages.Len())
 	log.Printf("%20s: %d", "Page (dir) count", len(app.slugPages.Filter(func(p *Page) bool { return p.IsDir() })))
 	log.Printf("%20s: %d", "Page (.md) count", len(app.slugPages.Filter(func(p *Page) bool { return !p.IsDir() })))
+	log.Printf("%20s: %d", "Collections", len(app.collections))
 	log.Println(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .")
+	log.Println()
 
 	// Print every language folder tree
 	for _, p := range app.Pages {
 		p.PrintTree(0)
 	}
+	log.Println()
 
 	// Print linear pages by slugs
 	app.slugPages.Print()
+	log.Println()
+
+	// Print linear pages by slugs
+	for ckey, c := range app.collections {
+		c.Print(ckey)
+		log.Println()
+	}
 
 }

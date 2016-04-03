@@ -219,11 +219,23 @@ func (page *Page) Walk(fnCheck func(p *Page) bool) PageList {
 
 // Search - find all pages by given search term
 // TODO: make correct search by params and content
-func (page *Page) Search(s string) PageList {
+func (page *Page) Search(sterm string) PageList {
+	sterm = strings.TrimSpace(sterm)
+	sterm = strings.ToLower(sterm)
+
 	return page.Walk(func(p *Page) bool {
+		// TODO: skip unlisted pages?
+
 		// Custom check
 		// TODO: add correct search by params and content. Not only slug
-		return strings.Index(p.Get("Slug"), s) >= 0
+		s := p.Get("Slug") +
+			p.Get("Label") +
+			p.Get("Title") +
+			string(p.Content)
+		s = strings.ToLower(s)
+
+		isFound := strings.Index(s, sterm) >= 0
+		return isFound
 	})
 }
 
@@ -233,6 +245,11 @@ func (page *Page) SearchByParam(key, val string) PageList {
 		// Check for equal param values
 		return p.IsEqual(key, val)
 	})
+}
+
+// Print pages in list
+func (page *Page) Print() {
+	printMap(page.Get("Slug"), page.Params)
 }
 
 // PrintTree - Print all pages under this page

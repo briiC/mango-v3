@@ -51,7 +51,7 @@ func (pages PageList) Randomize() {
 
 // Print pages in list
 func (pages PageList) Print() {
-	log.Println("---------------------------------------------------")
+	log.Printf("--- %d pages ------------------------------------------------", len(pages))
 	for _, p := range pages {
 		log.Printf("- %20s", p.Get("Slug"))
 	}

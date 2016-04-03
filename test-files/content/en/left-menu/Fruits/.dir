@@ -1,0 +1,3 @@
+ContentFrom: fruits
+ContentTemplate: \
+{{ Content }}</hr>

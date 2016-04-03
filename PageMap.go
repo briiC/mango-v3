@@ -2,6 +2,7 @@ package mango
 
 import (
 	"log"
+	"strings"
 	"sync"
 )
 
@@ -78,25 +79,43 @@ func (pm *PageMap) Print() {
 		return
 	}
 
-	log.Println("------------------------------------------------------------")
+	log.Printf("--- %d pages ------------------------------------------------", len(pages))
 	for slug, p := range pages {
-		dir := ""
-		redirect := ""
-		contentFrom := ""
+		prefix := ""
 
-		if p.IsDir() {
-			dir = "/"
+		if p.IsSet("ContentFrom") {
+			prefix += "^"
 		}
 
-		// if p.IsSet("Redirect") {
-		// 	redirect = "R"
-		// }
-		//
-		// if p.IsSet("ContentFrom") {
-		// 	contentFrom = "^"
-		// }
+		if p.IsYes("IsUnlisted") {
+			prefix += ".."
+		}
 
-		log.Printf("- %-24s %2s%2s%2s%2s %24s\n", slug, dir, redirect, contentFrom, p.Get("Level"), p.Get("Title"))
+		if p.IsEqual("Sort", "Reverse") {
+			prefix += "[z-a]"
+		} else if p.IsEqual("Sort", "Random") {
+			prefix += "[?-?]"
+		}
+
+		if p.Parent == nil && !p.IsSet("Level") {
+			prefix += strings.ToUpper(p.Get("Slug"))
+		} else if p.IsEqual("Level", "1") {
+			// prefix += "*"
+		}
+
+		if p.IsDir() {
+			prefix += " /"
+		}
+
+		collectionStr := ""
+		for ckey := range p.App.collections {
+			if p.IsSet(ckey) {
+				collectionStr += "[" + ckey[:1] + "]: "
+				collectionStr += p.Get(ckey) + " "
+			}
+		}
+
+		log.Printf(" %10s %-30s %s\n", prefix, slug, collectionStr)
 	}
 	log.Println("------------------------------------------------------------")
 }

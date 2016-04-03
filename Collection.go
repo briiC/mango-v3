@@ -62,12 +62,16 @@ func (c *Collection) normalizeKey(key string) string {
 	return key
 }
 
+// Len is part of sort.Interface.
+func (c *Collection) Len() int {
+	return len(c.m)
+}
+
 // Print collection items
 func (c *Collection) Print(label string) {
 	items := c.m
-	log.Printf("=== %s (%d) ===============", label, len(items))
+	log.Printf("--- %s (%d) ---------------------------", label, len(items))
 	for itemKey, pages := range items {
-		log.Printf("- %s: %-12s (%d pages)", label, itemKey, len(pages))
+		log.Printf("# %-20s (%d pages)", itemKey, len(pages))
 	}
-	log.Println()
 }

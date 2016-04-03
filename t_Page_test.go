@@ -1,56 +1,20 @@
 package mango
 
-import (
-	"bytes"
-	"fmt"
-	"testing"
-)
-
-// Parsing datetimes
-func Test_PageContent(t *testing.T) {
-	app, _ := NewApplication()
-
-	cases := map[string][]byte{
-		"lava": []byte("This is very deep file"),
-		"golf": []byte("# Golf"),
-		"cold": []byte("Winter is coming.."),
-		"one-more": []byte("# Header line\n" +
-			"\n" +
-			"- Some **markdown** syntax.\n" +
-			"- And some <b>HTML</b> synta too."),
-		"copy-cat": []byte("# Copy from another page\n" +
-			"# Waldo here"),
-		"copy-dog": []byte("# Content from directory\n" +
-			"<div># This is Hockey</div>\n<hr/>\n" +
-			"<div># Golf</div>\n<hr/>\n" +
-			"<div># This is Baseball</div>\n<hr/>"),
-	}
-
-	// loop cases
-	for slug, expected := range cases {
-		content := app.Page(slug).Content
-		if !bytes.Equal(content, expected) {
-			fmt.Printf("\n\n::: FOUND: %s %d\n\n", content, len(content))
-			fmt.Printf("::: EXPECTED: %s %d\n\n", expected, len(expected))
-			t.Fatal("Invalid content in [", app.Page(slug).Params["Path"], "]")
-		}
-	}
-
-}
+import "testing"
 
 // Parsing datetimes
 func Test_PageFuncs(t *testing.T) {
 	app, _ := NewApplication()
-	page := app.Page("golf")
+	page := app.Page("hello")
 
 	// Set/Get param
-	page.Set("Label", "Golfing") //was Golf
-	if page.Get("Label") != "Golfing" {
+	page.Set("Label", "Hello again!") //was Golf
+	if page.Get("Label") != "Hello again!" {
 		t.Fatal("Label must be changed")
 	}
 
 	// Param helpers
-	if !page.IsEqual("Label", "Golfing") {
+	if !page.IsEqual("Label", "Hello again!") {
 		t.Fatal("ERROR: IsEqual")
 	}
 	if !page.IsSet("Label") {
@@ -66,59 +30,18 @@ func Test_PageFuncs(t *testing.T) {
 		t.Fatal("ERROR: IsDir: Must not be directory")
 	}
 
-	// Search functions
-	// Sarch only on "en" language scope
-	// Order of search must not change because using slice not map
-	pages := app.Page("en").Search("w")
-	if !pages[0].IsEqual("Slug", "weather") ||
-		!pages[1].IsEqual("Slug", "where-is-waldo") ||
-		!pages[2].IsEqual("Slug", "waldo") {
-
-		pages.Print()
-		t.Fatal("Incorrect Search results")
-	}
-
-	// Search functions
-	// Sarch only on "en" language scope
-	// Order of search must not change because using slice not map
-	pages = app.Page("en").SearchByParam("IsDir", "Yes")
-	if !pages[0].IsEqual("Slug", "en-top-menu") ||
-		!pages[1].IsEqual("Slug", "sports") ||
-		!pages[2].IsEqual("Slug", "weather") ||
-		!pages[3].IsEqual("Slug", "where-is-waldo") {
-
-		pages.Print()
-		t.Fatal("Incorrect SearchByParam results")
-	}
-
-	// Custom filter function
-	// Sarch only on "en" language scope
-	pages = app.Page("en").Walk(func(p *Page) bool {
-		return !p.IsSet("IsDir") || p.IsEqual("IsDir", "No")
-	})
-	if !pages[0].IsEqual("Slug", "copy-cat") ||
-		!pages[1].IsEqual("Slug", "copy-dog") ||
-		!pages[2].IsEqual("Slug", "simple-slug-oh") ||
-		!pages[3].IsEqual("Slug", "one-more") ||
-		!pages[4].IsEqual("Slug", "last-in-line") {
-
-		pages.Print()
-		t.Fatal("Incorrect Custom Walk results")
-	}
-
 	// Trye to Change Slug with setter
 	// Must NOT be changed
-	page = app.Page("golf")
-	page.Set("Slug", "golfing")
+	page = app.Page("hello")
+	page.Set("Slug", "goodbye")
 
-	page = app.Page("golf") // Still can found
+	page = app.Page("hello") // Still can found
 	if page == nil {
 		t.Fatal("Slug must not be changed")
 	}
 
-	page = app.Page("golfing") // Must NOT be found
+	page = app.Page("goodbye") // Must NOT be found
 	if page != nil {
 		t.Fatal("New slug must not be found")
 	}
-
 }

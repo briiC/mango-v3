@@ -1,3 +1,0 @@
-Category: sport, ball
-+++
-# Golf

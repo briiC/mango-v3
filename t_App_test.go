@@ -2,7 +2,6 @@ package mango
 
 import "testing"
 
-// Parsing datetimes
 func Test_NewApplication(t *testing.T) {
 	app, err := NewApplication()
 	// app.Print()
@@ -25,9 +24,32 @@ func Test_NewApplication(t *testing.T) {
 		t.Fatal("Default PublicPath must end with /test-files/public")
 	}
 
-	// ---------
-	for ckey, c := range app.collections {
-		c.Print(ckey)
+}
+
+func Test_NewApplicationFuncs(t *testing.T) {
+	app, _ := NewApplication()
+
+	// new virtual page
+	// linked to app, but no parents
+	// not listed anywhere
+	p := app.NewPage("Virtual reality!")
+	p.Set("Custom", "param")
+	if p.Params["IsVirtual"] != "Yes" ||
+		p.Params["Label"] != "Virtual reality!" ||
+		p.Params["VirtualSlug"] != "virtual-reality" ||
+		p.App == nil {
+		p.Print()
+		t.Fatal("Labeled NewPage")
+	}
+
+	// Empty label
+	p = app.NewPage("")
+	p.Set("Custom", "param")
+	if p.Params["IsVirtual"] != "Yes" ||
+		p.Params["VirtualSlug"] != "" ||
+		p.App == nil {
+		p.Print()
+		t.Fatal("Empty labeled NewPage")
 	}
 
 }

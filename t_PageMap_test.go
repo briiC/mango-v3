@@ -4,36 +4,39 @@ import "testing"
 
 // Parsing datetimes
 func Test_PageMap(t *testing.T) {
-	app, _ := NewApplication()
+	pm := NewPageMap()
 
-	count := app.slugPages.Len()
-
-	// Filter
-	pages := app.slugPages.Filter(func(p *Page) bool { return p.IsDir() })
-	if len(pages) != 11 {
-		t.Fatal("Expected 11 filtered pages. Found:", len(pages))
-	}
-
-	// Add
-	app.slugPages.Add("slug-x", &Page{})
-	if count+1 != app.slugPages.Len() {
-		t.Fatal("Page must be added")
+	// Add +3
+	pm.Add("slug-x", &Page{})
+	pm.Add("slug-y", &Page{})
+	pm.Add("slug-z", &Page{})
+	if pm.Len() != 3 {
+		t.Fatal("Pages must be added")
 	}
 
 	// Get
-	if page := app.slugPages.Get("slug-x"); !page.IsEqual("Slug", "slug-x") {
+	if page := pm.Get("slug-x"); page == nil {
+		t.Fatal("Page must be found")
+	}
+	if page := pm.Get("slug-y"); page == nil {
+		t.Fatal("Page must be found")
+	}
+	if page := pm.Get("slug-z"); page == nil {
 		t.Fatal("Page must be found")
 	}
 
-	// Remove
-	app.slugPages.Remove("slug-x")
-	if count != app.slugPages.Len() {
-		t.Fatal("Page must be removed")
+	//TODO: pm.Filter
+
+	// Remove -2
+	pm.Remove("slug-y")
+	pm.Remove("slug-z")
+	if pm.Len() != 1 {
+		t.Fatal("Pages must be removed")
 	}
 
 	// Clear
-	app.slugPages.MakeEmpty()
-	if app.slugPages.Len() != 0 {
+	pm.MakeEmpty()
+	if pm.Len() != 0 {
 		t.Fatal("All pages must be cleared")
 	}
 }
