@@ -263,6 +263,20 @@ func (app *Application) afterLoadContent() {
 	})
 }
 
+// Search pages from given top page
+func (app *Application) Search(pageSlug, sterm string) PageList {
+	page := app.Page(pageSlug) // from where to start search
+
+	// If search is activated when app.LoadContent is in process
+	// there could be situation where app.Page(slug) is empty
+	if page == nil {
+		return nil
+	}
+
+	// Success results
+	return page.Search(sterm)
+}
+
 // Print - output app highlights
 func (app *Application) Print() {
 	log.Println(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .")

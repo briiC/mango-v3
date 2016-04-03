@@ -55,6 +55,12 @@ func Test_NewApplication(t *testing.T) {
 func Test_NewApplicationFuncs(t *testing.T) {
 	app, _ := NewApplication()
 
+	// Search
+	pages := app.Search("en", "oc") // hOCkey, sOCcer
+	if len(pages) != 2 {
+		t.Fatal("Must be found 2 pages")
+	}
+
 	// new virtual page
 	// linked to app, but no parents
 	// not listed anywhere
