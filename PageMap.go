@@ -53,6 +53,9 @@ func (pm *PageMap) Remove(key string) {
 
 // Len - map item count
 func (pm *PageMap) Len() int {
+	pm.RLock()
+	defer pm.RUnlock()
+
 	return len(pm.m)
 }
 

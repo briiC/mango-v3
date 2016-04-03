@@ -15,7 +15,7 @@ type Page struct {
 	App *Application
 
 	// Content
-	Content []byte
+	content []byte
 
 	// Params that describe this page
 	Params map[string]string
@@ -57,10 +57,31 @@ func fileToPage(fpath string) *Page {
 
 	// Create new page
 	page := newPage("")
-	page.Content = bufContent
+	page.SetContent(bufContent)
 	page.Params = params // assign original params
 
 	return page
+}
+
+// SetContent set content for page
+func (page *Page) SetContent(content []byte) {
+	page.Lock()
+	page.content = content
+	page.Unlock()
+}
+
+// AppendContent - append to content
+func (page *Page) AppendContent(content []byte) {
+	pageContent := page.Content()
+	page.SetContent(append(pageContent, content...))
+}
+
+// Content - get content for page
+func (page *Page) Content() []byte {
+	page.RLock()
+	defer page.RUnlock()
+
+	return page.content
 }
 
 // Set - set thread-safely param to Page.Params
@@ -231,7 +252,7 @@ func (page *Page) Search(sterm string) PageList {
 		s := p.Get("Slug") +
 			p.Get("Label") +
 			p.Get("Title") +
-			string(p.Content)
+			string(p.Content())
 		s = strings.ToLower(s)
 
 		isFound := strings.Index(s, sterm) >= 0
@@ -255,7 +276,7 @@ func (page *Page) Print() {
 // PrintTree - Print all pages under this page
 func (page *Page) PrintTree(depth int) {
 	for _, p := range page.Pages {
-		log.Printf("%s %-30s %-30s %3d bytes", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"], len(p.Content))
+		log.Printf("%s %-30s %-30s %3d bytes", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"], len(p.Content()))
 
 		// printMap(p.Params["Label"], p.Params)
 		if len(p.Pages) > 0 {

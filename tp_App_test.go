@@ -23,13 +23,15 @@ func Benchmark_App_Parallel(b *testing.B) {
 			p := &Page{}
 			p.Set("Slug", "slug-x") // slug must be set for  slugPages
 			app.slugPages.Add("slug-x", p)
-			app.slugPages.Len()
+			app.PageCount()
 			app.slugPages.Remove("slug-x")
 
 			// Collection
-			app.collections["Tags"].Append("tag-x", &Page{})
-			app.collections["Tags"].Len()
-			app.collections["Tags"].Remove("tag-x")
+			app.CollectionCount()
+			app.Collection("Tags").Append("tag-x", &Page{})
+			app.Collection("Tags").Get("tag-x")
+			app.Collection("Tags").Len() //count of items insife Tags
+			app.Collection("Tags").Remove("tag-x")
 
 		}
 	})

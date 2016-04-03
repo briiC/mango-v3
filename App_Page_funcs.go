@@ -41,3 +41,8 @@ func (app *Application) linkPage(page *Page) {
 		}
 	}
 }
+
+// PageCount - total count of pages
+func (app *Application) PageCount() int {
+	return app.slugPages.Len()
+}

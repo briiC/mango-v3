@@ -244,14 +244,14 @@ func (app *Application) afterLoadContent() {
 
 					// Load content from sub-pages
 					for _, p3 := range page2.Pages {
-						content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), p3.Content, 1)
-						p.Content = append(p.Content, content...)
+						content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), p3.Content(), 1)
+						p.AppendContent(content)
 					}
 
 				} else {
 					// Content from one page
-					content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), page2.Content, 1)
-					p.Content = append(p.Content, content...)
+					content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), page2.Content(), 1)
+					p.AppendContent(content)
 				}
 
 				p.Set("HaveContent", "Yes")

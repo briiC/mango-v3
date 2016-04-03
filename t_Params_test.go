@@ -86,8 +86,8 @@ func Test_Params(t *testing.T) {
 
 		for ckey, cval := range cParams {
 			if ckey == "CONTENT" {
-				if string(p.Content) != cval {
-					fmt.Printf("\n\n%s [%d]\n\n", p.Content, len(p.Content))
+				if string(p.Content()) != cval {
+					fmt.Printf("\n\n%s [%d]\n\n", p.Content(), len(p.Content()))
 					t.Fatal(slug, "expected CONTENT: \""+cval+"\"", len(cval))
 				}
 			} else {

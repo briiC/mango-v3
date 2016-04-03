@@ -64,6 +64,9 @@ func (c *Collection) normalizeKey(key string) string {
 
 // Len is part of sort.Interface.
 func (c *Collection) Len() int {
+	c.RLock()
+	defer c.RUnlock()
+
 	return len(c.m)
 }
 
