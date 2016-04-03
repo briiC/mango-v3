@@ -61,7 +61,7 @@ func Test_KeywordsCounts(t *testing.T) {
 	app, _ := NewApplication()
 
 	// Collections: Keywords
-	if count := app.collections["Keywords"].Len(); count != 1 {
+	if count := app.collections["Keywords"].Len(); count != 7 {
 		app.Print()
 		t.Fatal("[Keywords] count incorrect. Found:", count)
 	}

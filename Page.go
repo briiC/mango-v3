@@ -284,3 +284,16 @@ func (page *Page) PrintTree(depth int) {
 		}
 	}
 }
+
+// MergeParams - merge some more params
+func (page *Page) MergeParams(moreParams map[string]string) {
+	page.RLock()
+	pageParams := page.Params
+	page.RUnlock()
+
+	pageParams = mergeParams(pageParams, moreParams)
+
+	page.Lock()
+	page.Params = pageParams
+	page.Unlock()
+}

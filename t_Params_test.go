@@ -18,6 +18,8 @@ func Test_Params(t *testing.T) {
 			"Title":       "Hello",
 			"Label":       "Hello",
 			"Slug":        "hello",
+			"Keywords":    "top, keywords, hello, markdown", // top defaults
+			"Author":      "Mango",                          // top defaults
 			"Lang":        "en",
 			"Ext":         ".md",
 			"IsVisible":   "Yes",
@@ -25,9 +27,9 @@ func Test_Params(t *testing.T) {
 			"HaveContent": "Yes",
 			"SortNr":      "1",
 			"VisibleFrom": "1420070400000000000", // past
-			"VisibleTo":   "{invalid format}",    // past
-			"Spaced key":  "",                    // past
-			"Spaced":      "",                    // past
+			"VisibleTo":   "{invalid format}",
+			"Spaced key":  "",
+			"Spaced":      "",
 		},
 		"hello-2": map[string]string{
 			"FileName":    "6_Hello.md",
@@ -44,6 +46,8 @@ func Test_Params(t *testing.T) {
 			"Categories": "Housepets",
 			"SortNr":     "",
 			"Icon":       "cat.png",
+			"Keywords":   "top, keywords", // top defaults
+			"Author":     "Mango",         // top defaults
 		},
 		"about-cats": map[string]string{
 			"CONTENT": "# Here are info about cats\n",
@@ -63,6 +67,8 @@ func Test_Params(t *testing.T) {
 			"Ext":         ".dir",
 			"HaveContent": "No",
 			"Icon":        "sports.png",
+			"Keywords":    "fun, play", // override top defaults
+			"Author":      "Sportsman", // top defaults
 		},
 		"soccer": map[string]string{
 			"Icon": "ball.png",

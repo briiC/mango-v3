@@ -24,7 +24,13 @@ func (app *Application) Page(slug string) *Page {
 // and add some app related params
 func (app *Application) linkPage(page *Page) {
 	page.App = app
+
+	// Add more params from absolute path
 	page.setPathParams()
+
+	// Load page defaults from language root
+	defaults := fileToParams(app.ContentPath + "/" + page.Get("Lang") + "/.defaults")
+	page.MergeParams(defaults) // fill empty params with defaults
 
 	// Add to collections
 	for ckey := range app.collections {
