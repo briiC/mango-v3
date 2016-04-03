@@ -37,6 +37,7 @@ func Test_PageMap(t *testing.T) {
 	// Clear
 	pm.MakeEmpty()
 	if pm.Len() != 0 {
+		pm.Print()
 		t.Fatal("All pages must be cleared")
 	}
 }

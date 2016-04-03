@@ -75,10 +75,6 @@ func (pm *PageMap) Filter(fnCheck func(p *Page) bool) PageList {
 func (pm *PageMap) Print() {
 	pages := pm.m
 
-	if len(pages) == 0 {
-		return
-	}
-
 	log.Printf("--- %d pages ------------------------------------------------", len(pages))
 	for slug, p := range pages {
 		prefix := ""
@@ -117,5 +113,5 @@ func (pm *PageMap) Print() {
 
 		log.Printf(" %10s %-30s %s\n", prefix, slug, collectionStr)
 	}
-	log.Println("------------------------------------------------------------")
+	log.Println()
 }

@@ -7,4 +7,4 @@ PublicPath: test-files/public/
 # Collectable pages by tags. Pages that have "Tag: my-tag, your-tag, any-tag"
 # app.collectables["Tag"]["my-tag"] --> PageList of this tag
 # app.CollectablePages("Tag", "my-tag")
-Collections: Tags, Categories, Keywords
+Collections: Tags, Categories, Keywords,,,,
