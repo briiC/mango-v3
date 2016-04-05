@@ -13,7 +13,7 @@ func Test_PageFuncs(t *testing.T) {
 	// 	_p = _p.Parent
 	// }
 
-	page.Print()
+	// app.Page("sakums").Print()
 
 	// Set/Get param
 	page.Set("Label", "Hello again!") //was Golf
