@@ -52,7 +52,7 @@ func Test_NewApplication(t *testing.T) {
 
 }
 
-func Test_NewApplicationFuncs(t *testing.T) {
+func Test_AppPageFuncs(t *testing.T) {
 	app, _ := NewApplication()
 
 	// Search
@@ -84,4 +84,20 @@ func Test_NewApplicationFuncs(t *testing.T) {
 		t.Fatal("Empty labeled NewPage")
 	}
 
+}
+
+func Test_AppCollectionFuncs(t *testing.T) {
+	app, _ := NewApplication()
+
+	if count := app.CollectionCount(); count != 3 {
+		t.Fatal("Collections: incorrect count. Found:", count)
+	}
+
+	if count := app.Collection("Tags").Len(); count != 3 {
+		t.Fatal("Tags: incorrect count. Found:", count)
+	}
+
+	if count := app.Collection("Categories").Len(); count != 4 {
+		t.Fatal("Categories: incorrect count. Found:", count)
+	}
 }
