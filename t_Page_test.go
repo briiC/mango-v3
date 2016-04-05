@@ -7,6 +7,14 @@ func Test_PageFuncs(t *testing.T) {
 	app, _ := NewApplication()
 	page := app.Page("hello")
 
+	// _p := page
+	// for _p.Parent != nil {
+	// 	page.Set("B", _p.Get("Slug")+" / "+page.Get("B"))
+	// 	_p = _p.Parent
+	// }
+
+	page.Print()
+
 	// Set/Get param
 	page.Set("Label", "Hello again!") //was Golf
 	if page.Get("Label") != "Hello again!" {

@@ -30,6 +30,7 @@ func Test_Params(t *testing.T) {
 			"VisibleTo":   "{invalid format}",
 			"Spaced key":  "",
 			"Spaced":      "",
+			"BreadCrumbs": "en / en-top-menu / news / ",
 		},
 		"hello-2": map[string]string{
 			"FileName":    "6_Hello.md",

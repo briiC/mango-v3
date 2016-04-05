@@ -238,6 +238,14 @@ func (page *Page) Walk(fnCheck func(p *Page) bool) PageList {
 	return pages
 }
 
+// WalkTop - from current page to all parents on top
+func (page *Page) WalkTop(fn func(parent *Page)) {
+	if page.Parent != nil {
+		fn(page.Parent)
+		page.Parent.WalkTop(fn)
+	}
+}
+
 // Search - find all pages by given search term
 // TODO: make correct search by params and content
 func (page *Page) Search(sterm string) PageList {

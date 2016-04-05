@@ -229,6 +229,7 @@ func (app *Application) afterLoadContent() {
 	// Do filter walk but don't collect pages
 	app.slugPages.Filter(func(p *Page) bool {
 
+		// *** ContentFrom:
 		// Content from slug
 		if slug := p.Get("ContentFrom"); slug != "" {
 			if page2 := app.Page(slug); page2 != nil {
@@ -258,6 +259,14 @@ func (app *Application) afterLoadContent() {
 
 			}
 		}
+
+		// *** BreadCrumbs:
+		// Add breadcrumb by walking to top by parents
+		// For breadcrumbs cant use only filepath because slugs can be different
+		p.WalkTop(func(parent *Page) {
+			crumbs := parent.Get("Slug") + " / " + p.Get("BreadCrumbs")
+			p.Set("BreadCrumbs", crumbs)
+		})
 
 		return false
 	})
