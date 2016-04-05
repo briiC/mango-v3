@@ -6,7 +6,7 @@ func Test_Counts(t *testing.T) {
 	app, _ := NewApplication()
 
 	// Pages
-	if count := app.slugPages.Len(); count != 30 {
+	if count := app.slugPages.Len(); count != 33 {
 		app.Print()
 		t.Fatal("Page count incorrect. Found:", count)
 	}
@@ -91,7 +91,7 @@ func Test_SearchCounts(t *testing.T) {
 	results = app.Page("en").Walk(func(p *Page) bool {
 		return !p.IsSet("IsDir") || p.IsEqual("IsDir", "No")
 	})
-	if count := len(results); count != 20 {
+	if count := len(results); count != 22 {
 		app.Print()
 		results.Print()
 		t.Fatal("[Search: IsDir] count incorrect. Found:", count)

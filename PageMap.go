@@ -82,12 +82,21 @@ func (pm *PageMap) Print() {
 	for slug, p := range pages {
 		prefix := ""
 
-		if p.IsSet("ContentFrom") {
-			prefix += "^"
+		if contentFrom := p.Get("ContentFrom"); contentFrom != "" {
+			prefix += contentFrom + " >>"
 		}
 
 		if p.IsYes("IsUnlisted") {
-			prefix += ".."
+			prefix += "..."
+		}
+
+		if redirect := p.Get("Redirect"); redirect != "" {
+			if len(redirect) > 20 {
+				redirect = strings.TrimPrefix(redirect, "https://")
+				redirect = strings.TrimPrefix(redirect, "http://")
+				redirect = redirect[:18] + ".."
+			}
+			prefix += redirect + " <-"
 		}
 
 		if p.IsEqual("Sort", "Reverse") {
@@ -102,10 +111,6 @@ func (pm *PageMap) Print() {
 			// prefix += "*"
 		}
 
-		if p.IsDir() {
-			prefix += " /"
-		}
-
 		collectionStr := ""
 		for ckey := range p.App.collections {
 			if p.IsSet(ckey) {
@@ -114,7 +119,10 @@ func (pm *PageMap) Print() {
 			}
 		}
 
-		log.Printf(" %10s %-30s %s\n", prefix, slug, collectionStr)
+		if p.IsDir() {
+			slug = "/" + slug
+		}
+		log.Printf(" %12s  %-30s %s\n", prefix, slug, collectionStr)
 	}
 	log.Println()
 }
