@@ -6,7 +6,7 @@ func Test_Counts(t *testing.T) {
 	app, _ := NewApplication()
 
 	// Pages
-	if count := app.slugPages.Len(); count != 33 {
+	if count := app.PageCount(); count != 33 {
 		app.Print()
 		t.Fatal("Page count incorrect. Found:", count)
 	}
@@ -80,7 +80,7 @@ func Test_SearchCounts(t *testing.T) {
 	}
 
 	//Search: by param
-	results = app.Page("en").SearchByParam("IsDir", "Yes")
+	results = app.Page("en").SearchByParam("IsDir", _Yes)
 	if count := len(results); count != 6 {
 		app.Print()
 		results.Print()

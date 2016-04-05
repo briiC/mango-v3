@@ -254,7 +254,7 @@ func (app *Application) afterLoadContent() {
 					p.AppendContent(content)
 				}
 
-				p.Set("HaveContent", "Yes")
+				p.Set("HaveContent", _Yes)
 
 			}
 		}
@@ -282,7 +282,7 @@ func (app *Application) Print() {
 	log.Println(". . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .")
 	log.Printf("%20s: %s", "ContentPath", app.ContentPath)
 	log.Printf("%20s: %s", "PublicPath", app.PublicPath)
-	log.Printf("%20s: %d", "Page count", app.slugPages.Len())
+	log.Printf("%20s: %d", "Page count", app.PageCount())
 	log.Printf("%20s: %d", "Page (dir) count", len(app.slugPages.Filter(func(p *Page) bool { return p.IsDir() })))
 	log.Printf("%20s: %d", "Page (.md) count", len(app.slugPages.Filter(func(p *Page) bool { return !p.IsDir() })))
 	log.Printf("%20s: %d", "Collections", len(app.collections))

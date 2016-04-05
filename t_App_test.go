@@ -66,7 +66,7 @@ func Test_NewApplicationFuncs(t *testing.T) {
 	// not listed anywhere
 	p := app.NewPage("Virtual reality!")
 	p.Set("Custom", "param")
-	if p.Params["IsVirtual"] != "Yes" ||
+	if p.Params["IsVirtual"] != _Yes ||
 		p.Params["Label"] != "Virtual reality!" ||
 		p.Params["VirtualSlug"] != "virtual-reality" ||
 		p.App == nil {
@@ -77,7 +77,7 @@ func Test_NewApplicationFuncs(t *testing.T) {
 	// Empty label
 	p = app.NewPage("")
 	p.Set("Custom", "param")
-	if p.Params["IsVirtual"] != "Yes" ||
+	if p.Params["IsVirtual"] != _Yes ||
 		p.Params["VirtualSlug"] != "" ||
 		p.App == nil {
 		p.Print()

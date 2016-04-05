@@ -34,11 +34,11 @@ func newPage(label string) *Page {
 	page := &Page{
 		// We creating pseuode Page (not exists on filesystem)
 		// so need to make it look like filename so it can be parsed properly
-		Params: filenameToParams(label + ".md"),
+		Params: filenameToParams(label + _Md),
 	}
 
 	// Mark that this page is create not from file
-	page.Params["IsVirtual"] = "Yes"
+	page.Params["IsVirtual"] = _Yes
 
 	// Slug is used for real pages
 	page.Params["VirtualSlug"] = page.Params["Slug"]
@@ -133,12 +133,12 @@ func (page *Page) IsEqual(key, val string) bool {
 
 // IsYes - shorthand to compare param with "Yes"
 func (page *Page) IsYes(key string) bool {
-	return page.IsEqual(key, "Yes")
+	return page.IsEqual(key, _Yes)
 }
 
 // IsNo - shorthand to compare param with "No"
 func (page *Page) IsNo(key string) bool {
-	return page.IsEqual(key, "No")
+	return page.IsEqual(key, _No)
 }
 
 // IsSet - shorthand to find out is this val set and not empty ""
