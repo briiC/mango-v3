@@ -88,6 +88,11 @@ func (app *Application) setBinPath() error {
 	return nil
 }
 
+// BinPath - get bin path
+func (app *Application) BinPath() string {
+	return app.binPath
+}
+
 // loadConfig using given config filename
 // usually ".mango"
 // Should not be tested for parallel because used only once in init
