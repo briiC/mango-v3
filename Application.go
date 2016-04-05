@@ -170,7 +170,7 @@ func (app *Application) loadPages(fpath string) PageList {
 
 			p := app.FileToPage(fpath + "/" + f2.Name())
 
-			if p.Params["IsVisible"] != _Yes {
+			if !p.IsYes("IsVisible") {
 				// Only visible pages are added
 				continue
 			}
@@ -181,12 +181,12 @@ func (app *Application) loadPages(fpath string) PageList {
 			}
 
 			// Load sub-pages if it's directory
-			if p.Params["IsDir"] == _Yes {
-				p.Pages = app.loadPages(p.Params["Path"])
+			if p.IsDir() {
+				p.Pages = app.loadPages(p.Get("Path"))
 
 				// Sort by default
 				if len(p.Pages) >= 2 {
-					switch p.Params["Sort"] {
+					switch p.Get("Sort") {
 					case "Reverse":
 						sort.Sort(sort.Reverse(p.Pages))
 					case "Random":

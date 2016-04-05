@@ -33,6 +33,6 @@ func Test_CoverOutputFuncs(t *testing.T) {
 	app.Page("en").PrintTree(0)
 
 	// map[string]string
-	printMap(app.Page("en").Get("Slug"), app.Page("en").Params)
+	printMap(app.Page("en").Get("Slug"), app.Page("en").params)
 
 }

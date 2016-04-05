@@ -18,7 +18,7 @@ type Page struct {
 	content []byte
 
 	// Params that describe this page
-	Params map[string]string
+	params map[string]string
 
 	// Parent page
 	Parent *Page
@@ -34,15 +34,15 @@ func newPage(label string) *Page {
 	page := &Page{
 		// We creating pseuode Page (not exists on filesystem)
 		// so need to make it look like filename so it can be parsed properly
-		Params: filenameToParams(label + _Md),
+		params: filenameToParams(label + _Md),
 	}
 
 	// Mark that this page is create not from file
-	page.Params["IsVirtual"] = _Yes
+	page.Set("IsVirtual", _Yes)
 
 	// Slug is used for real pages
-	page.Params["VirtualSlug"] = page.Params["Slug"]
-	delete(page.Params, "Slug")
+	page.Set("VirtualSlug", page.Get("Slug"))
+	delete(page.params, "Slug")
 
 	return page
 }
@@ -58,7 +58,7 @@ func fileToPage(fpath string) *Page {
 	// Create new page
 	page := newPage("")
 	page.SetContent(bufContent)
-	page.Params = params // assign original params
+	page.params = params // assign original params
 
 	return page
 }
@@ -95,7 +95,7 @@ func (page *Page) Set(key, val string) {
 	}
 
 	page.Lock()
-	page.Params[key] = val
+	page.params[key] = val
 	page.Unlock()
 
 }
@@ -105,7 +105,7 @@ func (page *Page) Get(key string) string {
 	page.RLock()
 	defer page.RUnlock()
 
-	return page.Params[key]
+	return page.params[key]
 }
 
 // Split - get param as slice splitted by given separator
@@ -138,7 +138,7 @@ func (page *Page) IsYes(key string) bool {
 
 // IsNo - shorthand to compare param with "No"
 func (page *Page) IsNo(key string) bool {
-	return page.IsEqual(key, _No)
+	return page.IsEqual(key, _No) || !page.IsYes(key)
 }
 
 // IsSet - shorthand to find out is this val set and not empty ""
@@ -190,7 +190,11 @@ func (page *Page) setPathParams() {
 	// so we need to prefix these slugs with language
 	// en-top-menu
 	if page.IsEqual("Level", "1") && page.IsDir() {
-		page.Params["Slug"] = page.Get("Lang") + "-" + page.Get("Slug")
+		newSlug := page.Get("Lang") + "-" + page.Get("Slug")
+		page.Lock()
+		// Do not use page.Set() to change Slug
+		page.params["Slug"] = newSlug
+		page.Unlock()
 	}
 
 	// Need at least 2
@@ -208,7 +212,8 @@ func (page *Page) avoidDuplicate() {
 	origSlug := page.Get("Slug")
 	for i := 2; page.isDuplicate(); i++ {
 		page.Lock()
-		page.Params["Slug"] = origSlug + "-" + strconv.Itoa(i)
+		// Do not use page.Set() to change Slug
+		page.params["Slug"] = origSlug + "-" + strconv.Itoa(i)
 		page.Unlock()
 	}
 
@@ -278,13 +283,13 @@ func (page *Page) SearchByParam(key, val string) PageList {
 
 // Print pages in list
 func (page *Page) Print() {
-	printMap(page.Get("Slug"), page.Params)
+	printMap(page.Get("Slug"), page.params)
 }
 
 // PrintTree - Print all pages under this page
 func (page *Page) PrintTree(depth int) {
 	for _, p := range page.Pages {
-		log.Printf("%s %-30s %-30s %3d bytes", strings.Repeat("    ", depth), p.Params["Label"], p.Params["Slug"], len(p.Content()))
+		log.Printf("%s %-30s %-30s %3d bytes", strings.Repeat("    ", depth), p.Get("Label"), p.Get("Slug"), len(p.Content()))
 
 		// printMap(p.Params["Label"], p.Params)
 		if len(p.Pages) > 0 {
@@ -296,12 +301,12 @@ func (page *Page) PrintTree(depth int) {
 // MergeParams - merge some more params
 func (page *Page) MergeParams(moreParams map[string]string) {
 	page.RLock()
-	pageParams := page.Params
+	pageParams := page.params
 	page.RUnlock()
 
 	pageParams = mergeParams(pageParams, moreParams)
 
 	page.Lock()
-	page.Params = pageParams
+	page.params = pageParams
 	page.Unlock()
 }

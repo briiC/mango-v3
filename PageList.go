@@ -23,8 +23,8 @@ func (pages PageList) Swap(i, j int) {
 
 // Less is part of sort.Interface. We use count as the value to sort by
 func (pages PageList) Less(i, j int) bool {
-	iNum, _ := strconv.Atoi(pages[i].Params["SortNr"])
-	jNum, _ := strconv.Atoi(pages[j].Params["SortNr"])
+	iNum, _ := strconv.Atoi(pages[i].Get("SortNr"))
+	jNum, _ := strconv.Atoi(pages[j].Get("SortNr"))
 
 	if iNum == 0 || jNum == 0 {
 		// unset or broken SortNr. Do nothing
@@ -42,7 +42,7 @@ func (pages PageList) Randomize() {
 
 	// Make SortNr as random
 	for _, p := range pages {
-		p.Params["SortNr"] = strconv.Itoa(rand.Intn(count*10) + 1)
+		p.Set("SortNr", strconv.Itoa(rand.Intn(count*10)+1))
 	}
 
 	// Sort now by default

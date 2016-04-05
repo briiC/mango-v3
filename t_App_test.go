@@ -66,9 +66,9 @@ func Test_AppPageFuncs(t *testing.T) {
 	// not listed anywhere
 	p := app.NewPage("Virtual reality!")
 	p.Set("Custom", "param")
-	if p.Params["IsVirtual"] != _Yes ||
-		p.Params["Label"] != "Virtual reality!" ||
-		p.Params["VirtualSlug"] != "virtual-reality" ||
+	if !p.IsYes("IsVirtual") ||
+		!p.IsEqual("Label", "Virtual reality!") ||
+		!p.IsEqual("VirtualSlug", "virtual-reality") ||
 		p.App == nil {
 		p.Print()
 		t.Fatal("Labeled NewPage")
@@ -77,8 +77,8 @@ func Test_AppPageFuncs(t *testing.T) {
 	// Empty label
 	p = app.NewPage("")
 	p.Set("Custom", "param")
-	if p.Params["IsVirtual"] != _Yes ||
-		p.Params["VirtualSlug"] != "" ||
+	if !p.IsYes("IsVirtual") ||
+		!p.IsEqual("VirtualSlug", "") ||
 		p.App == nil {
 		p.Print()
 		t.Fatal("Empty labeled NewPage")
