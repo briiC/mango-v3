@@ -5,6 +5,8 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+
+	"github.com/russross/blackfriday"
 )
 
 // Page - page with content and params + sub-pages
@@ -54,6 +56,9 @@ func fileToPage(fpath string) *Page {
 	params := fileToParams(fpath)
 	bufContent := []byte(params["Content"])
 	delete(params, "Content")
+
+	// To markdown
+	bufContent = blackfriday.MarkdownCommon(bufContent)
 
 	// Create new page
 	page := newPage("")
