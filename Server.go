@@ -85,6 +85,7 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 // TODO: make tru 404
 func (srv *Server) run404(w http.ResponseWriter, r *http.Request) {
 	page := srv.App.NewPage("404")
+	page.Set("Lang", "lv")
 	srv.Render(w, page, "404")
 }
 

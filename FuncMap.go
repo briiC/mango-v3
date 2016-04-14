@@ -44,9 +44,9 @@ func tContent(page *Page) template.HTML {
 }
 
 // Get Page by given slug
-func tPage(slug string) string {
-	// NEED App!!!
-	return "TODO: need App!!!"
+// Give Application context
+func tPage(app *Application, slug string) *Page {
+	return app.Page(slug)
 }
 
 // Convert given params to HTML

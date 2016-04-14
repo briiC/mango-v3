@@ -3,6 +3,15 @@ package mango
 // NewPage already linked to app
 func (app *Application) NewPage(label string) *Page {
 	page := newPage(label)
+
+	// Set default language
+	// Check only depth=0 for language
+	if len(app.Pages) >= 1 {
+		lang := app.Pages[0].Get("Slug")
+		page.Set("Lang", lang)
+	}
+
+	// Link page to app
 	app.linkPage(page)
 	return page
 }
