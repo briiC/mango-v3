@@ -47,8 +47,10 @@ func (srv *Server) Start() error {
 
 	// doesn't overwrites if user defined same before
 	r.HandleFunc("/", srv.runIndex)
-	r.HandleFunc("/{slug}", srv.runOne)
+	r.HandleFunc("/{slug:[a-z0-9\\-]+}", srv.runOne)
+	r.PathPrefix("/{file:.+\\..+}").Handler(http.FileServer(http.Dir(srv.App.PublicPath)))
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
+
 	http.Handle("/", r)
 
 	srv.Templates = template.Must(template.New("").
@@ -72,10 +74,17 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["slug"]
 
+	// fmt.Println("runOne:", slug)
+
 	page := srv.App.Page(slug)
 	if page == nil {
 		srv.run404(w, r)
 		return
+	}
+
+	// Redirect detected by param
+	if redirectURL := page.Get("Redirect"); redirectURL != "" {
+		http.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
 	}
 
 	srv.Render(w, page, "one")

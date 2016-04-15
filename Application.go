@@ -311,7 +311,6 @@ func (app *Application) Print() {
 
 	// Print linear pages by slugs
 	app.slugPages.Print()
-	log.Println()
 
 	// Print linear pages by slugs
 	for ckey, c := range app.collections {

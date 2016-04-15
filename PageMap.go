@@ -115,7 +115,13 @@ func (pm *PageMap) Print() {
 		for ckey := range p.App.collections {
 			if p.IsSet(ckey) {
 				collectionStr += "[" + ckey[:1] + "]: "
-				collectionStr += p.Get(ckey) + " "
+				cval := p.Get(ckey)
+				if len(cval) > 25 {
+					// Make shorter and skip middle. Show only start/end values
+					v := cval[:5] + " .. " + cval[len(cval)-20:]
+					cval = v
+				}
+				collectionStr += cval + " "
 			}
 		}
 

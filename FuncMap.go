@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"strings"
+	"time"
 
 	"github.com/russross/blackfriday"
 )
@@ -21,7 +22,8 @@ var (
 		// "PageURL":        PageURL,
 		// "FileURL":        FileURL,
 		// "GetParams":      GetParams,
-		"ToTags": tParseToTags,
+		"ToTags":      tParseToTags,
+		"CurrentYear": tCurrentYear,
 	}
 )
 
@@ -154,4 +156,9 @@ func tParseToTags(codeLang string, params ...string) template.HTML {
 	htmlStr = strings.Replace(htmlStr, "%%COMMA%%", ",", -1)
 
 	return template.HTML(htmlStr)
+}
+
+func tCurrentYear() int {
+	year := time.Now().Year()
+	return year
 }
