@@ -150,6 +150,11 @@ func fileToParams(fpath string) map[string]string {
 		}
 	}
 
+	// Assign params that not set but must be set
+	if params["IsCache"] != "No" {
+		params["IsCache"] = "Yes" // default "Yes"
+	}
+
 	return params
 }
 

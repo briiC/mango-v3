@@ -38,6 +38,11 @@ func Benchmark_App_Parallel(b *testing.B) {
 			app.Collection("Categories").Len() //count of items insife Tags
 			app.Collection("Categories").Remove("cat-x")
 
+			// Reload page
+			if p := app.Page("monkey"); p != nil {
+				p.ReloadContent()
+			}
+
 		}
 	})
 }

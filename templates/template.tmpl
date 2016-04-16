@@ -1,0 +1,6 @@
+{{ define "layout" }}
+{{ $Page := . }}
+{{ $App := $Page.App }}
+<h1>Layout</h1>
+{{ Get $Page "Template" }}
+{{ end }}

@@ -39,8 +39,9 @@ func NewServer() *Server {
 	return srv
 }
 
-// Start listening to port (default)
-func (srv *Server) Start() error {
+// Prepare all for start
+// Separated func for easy testing
+func (srv *Server) preStart() {
 
 	// Set default routes
 	r := srv.Router
@@ -57,6 +58,11 @@ func (srv *Server) Start() error {
 		Funcs(defaultFuncMap). // fill with defaults
 		Funcs(srv.FuncMap).    // user adds/overwrites his own
 		ParseGlob(srv.App.BinPath() + "/templates/*.tmpl"))
+}
+
+// Start listening to port (default)
+func (srv *Server) Start() error {
+	srv.preStart()
 
 	// Start listening
 	log.Println("Start listening on", ":"+srv.Port)
@@ -74,11 +80,15 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["slug"]
 
-	// fmt.Println("runOne:", slug)
-
 	page := srv.App.Page(slug)
 	if page == nil {
 		srv.run404(w, r)
+		return
+	}
+
+	// Is group
+	if page.IsDir() {
+		srv.runGroup(w, r)
 		return
 	}
 
@@ -90,11 +100,24 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	srv.Render(w, page, "one")
 }
 
+// Group
+func (srv *Server) runGroup(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	slug := vars["slug"]
+
+	page := srv.App.Page(slug)
+	if page == nil || !page.IsDir() {
+		srv.run404(w, r)
+		return
+	}
+
+	srv.Render(w, page, "group")
+}
+
 // 404
-// TODO: make tru 404
 func (srv *Server) run404(w http.ResponseWriter, r *http.Request) {
 	page := srv.App.NewPage("404")
-	page.Set("Lang", "lv")
+	w.WriteHeader(http.StatusNotFound)
 	srv.Render(w, page, "404")
 }
 

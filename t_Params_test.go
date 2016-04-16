@@ -51,7 +51,7 @@ func Test_Params(t *testing.T) {
 			"Author":     "Mango",         // top defaults
 		},
 		"about-cats": map[string]string{
-			"CONTENT": "# Here are info about cats\n",
+			"CONTENT": "<h1>Here are info about cats</h1>\n\n",
 		},
 		"dog": map[string]string{
 			"Icon": "animal.png",
@@ -94,7 +94,7 @@ func Test_Params(t *testing.T) {
 		for ckey, cval := range cParams {
 			if ckey == "CONTENT" {
 				if string(p.Content()) != cval {
-					fmt.Printf("\n\n%s [%d]\n\n", p.Content(), len(p.Content()))
+					fmt.Printf("\n\n[%s] [%d]\n\n", p.Content(), len(p.Content()))
 					t.Fatal(slug, "expected CONTENT: \""+cval+"\"", len(cval))
 				}
 			} else {

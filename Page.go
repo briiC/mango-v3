@@ -83,6 +83,13 @@ func (page *Page) AppendContent(content []byte) {
 
 // Content - get content for page
 func (page *Page) Content() []byte {
+	// cache can be disabled only for real pages not virtual
+	noCache := !page.IsYes("IsCache") && !page.IsYes("IsVirtual")
+	if noCache {
+		// Read again from actual file
+		page.ReloadContent()
+	}
+
 	page.RLock()
 	defer page.RUnlock()
 
@@ -314,4 +321,22 @@ func (page *Page) MergeParams(moreParams map[string]string) {
 	page.Lock()
 	page.params = pageParams
 	page.Unlock()
+}
+
+// ReloadContent file Content (only)
+func (page *Page) ReloadContent() bool {
+	if page.IsDir() {
+		// TODO: make content reaload for folders too.
+		// Keep in mind "ContentFrom: " param
+		return false
+	}
+
+	// Read file
+	p2 := fileToPage(page.Get("Path"))
+
+	// Set content
+	// Do not use p2.Content() as it will loop forever
+	page.SetContent(p2.content)
+
+	return true
 }
