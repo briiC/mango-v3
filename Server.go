@@ -2,7 +2,6 @@ package mango
 
 import (
 	"flag"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -55,7 +54,7 @@ func (srv *Server) preStart() {
 	}
 
 	if route := srv.App.URLTemplates["Group"]; route != "" {
-		r.HandleFunc(route, srv.runGroup)
+		r.HandleFunc(route, srv.runOne)
 	}
 
 	// r.HandleFunc("/{slug:[a-z0-9\\-]+}", srv.runOne)
@@ -96,34 +95,16 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// Is group
-	if page.IsDir() {
-		srv.runGroup(w, r)
-		return
-	}
-
 	// Redirect detected by param
 	if redirectURL := page.Get("Redirect"); redirectURL != "" {
 		http.Redirect(w, r, redirectURL, http.StatusTemporaryRedirect)
 	}
 
-	srv.Render(w, page, "one")
-}
-
-// Group
-func (srv *Server) runGroup(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	slug := vars["Slug"]
-
-	fmt.Println(slug)
-
-	page := srv.App.Page(slug)
-	if page == nil || !page.IsDir() {
-		srv.run404(w, r)
-		return
+	templateID := "one"
+	if page.IsDir() {
+		templateID = "group"
 	}
-
-	srv.Render(w, page, "group")
+	srv.Render(w, page, templateID)
 }
 
 // 404
