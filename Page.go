@@ -1,7 +1,10 @@
 package mango
 
 import (
+	"fmt"
 	"log"
+	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"sync"
@@ -331,12 +334,43 @@ func (page *Page) ReloadContent() bool {
 		return false
 	}
 
+	fpath := page.Get("Path")
+	finfo, _ := os.Stat(fpath)
+
+	// Reload if ModTime changed
+	fModTime := fmt.Sprint(finfo.ModTime().UnixNano())
+	if fModTime == page.Get("ModTime") {
+		// File not changed
+		return false
+	}
+	page.Set("ModTime", fModTime) // set new modtime
+
 	// Read file
-	p2 := fileToPage(page.Get("Path"))
+	p2 := fileToPage(fpath)
 
 	// Set content
 	// Do not use p2.Content() as it will loop forever
 	page.SetContent(p2.content)
 
 	return true
+}
+
+// PopulateParams - replace given string with templated params
+// Use figure brackets "{}" as param placeholders
+// /{Slug}.html withh be replaced with actual page slug
+func (page *Page) PopulateParams(s string) string {
+	re := regexp.MustCompile("{(.+?)}")
+	matches := re.FindAllStringSubmatch(s, -1)
+	for _, m := range matches {
+		if len(m) == 2 {
+			placeholder := m[0]
+
+			key := m[1]                        // Slug
+			arr := strings.SplitN(key, ":", 2) // Slug:[a-z]
+			key = arr[0]
+
+			s = strings.Replace(s, placeholder, page.Get(key), -1)
+		}
+	}
+	return s
 }

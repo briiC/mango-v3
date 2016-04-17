@@ -1,5 +1,7 @@
 package mango
 
+import "strings"
+
 // NewPage already linked to app
 func (app *Application) NewPage(label string) *Page {
 	page := newPage(label)
@@ -40,6 +42,15 @@ func (app *Application) linkPage(page *Page) {
 	// Load page defaults from language root
 	defaults := fileToParams(app.ContentPath + "/" + page.Get("Lang") + "/.defaults")
 	page.MergeParams(defaults) // fill empty params with defaults
+
+	// Add "URL" param
+	url := app.URLTemplates["Page"]
+	if page.IsDir() {
+		url = app.URLTemplates["Group"]
+	}
+	url = page.PopulateParams(url)
+	url = "/" + strings.TrimLeft(url, "/") // Fix broken url "//slug/" to "/slug"
+	page.Set("URL", url)
 
 	// Add to collections
 	for ckey := range app.collections {

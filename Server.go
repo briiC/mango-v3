@@ -2,6 +2,7 @@ package mango
 
 import (
 	"flag"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -48,7 +49,16 @@ func (srv *Server) preStart() {
 
 	// doesn't overwrites if user defined same before
 	r.HandleFunc("/", srv.runIndex)
-	r.HandleFunc("/{slug:[a-z0-9\\-]+}", srv.runOne)
+
+	if route := srv.App.URLTemplates["Page"]; route != "" {
+		r.HandleFunc(route, srv.runOne)
+	}
+
+	if route := srv.App.URLTemplates["Group"]; route != "" {
+		r.HandleFunc(route, srv.runGroup)
+	}
+
+	// r.HandleFunc("/{slug:[a-z0-9\\-]+}", srv.runOne)
 	r.PathPrefix("/{file:.+\\..+}").Handler(http.FileServer(http.Dir(srv.App.PublicPath)))
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
 
@@ -78,7 +88,7 @@ func (srv *Server) runIndex(w http.ResponseWriter, r *http.Request) {
 // One
 func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	slug := vars["slug"]
+	slug := vars["Slug"]
 
 	page := srv.App.Page(slug)
 	if page == nil {
@@ -103,7 +113,9 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 // Group
 func (srv *Server) runGroup(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
-	slug := vars["slug"]
+	slug := vars["Slug"]
+
+	fmt.Println(slug)
 
 	page := srv.App.Page(slug)
 	if page == nil || !page.IsDir() {

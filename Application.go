@@ -43,6 +43,9 @@ type Application struct {
 	// Case sensitive
 	collections map[string]*Collection
 
+	// URLTemplates - url templates for pages
+	URLTemplates map[string]string
+
 	// channel to limit access to App
 	chBusy chan bool
 }
@@ -61,6 +64,13 @@ func NewApplication() (*Application, error) {
 	app.setBinPath()
 	app.ContentPath = app.binPath + "/content"
 	app.PublicPath = app.binPath + "/public"
+
+	// Default url templates
+	// Use {Param} with any Page param
+	app.URLTemplates = map[string]string{
+		"Page":  "/{Lang}/{Slug:[a-z0-9\\-]+}.html",
+		"Group": "/{Lang}/{Slug:[a-z0-9\\-]+}",
+	}
 
 	// Configure app by default config file ".mango"
 	// Override defaults (as last action)
@@ -113,6 +123,20 @@ func (app *Application) loadConfig(fname string) {
 	if path := params["PublicPath"]; path != "" {
 		path, _ = filepath.Abs(path)
 		app.PublicPath = path
+	}
+
+	if urlTemplate := params["PageURL"]; urlTemplate != "" {
+		// Slug must be very specific
+		urlTemplate = strings.Replace(urlTemplate, "{Slug}", "{Slug:[a-z0-9\\-]+}", -1)
+		app.URLTemplates["Page"] = urlTemplate
+		// By default page is same as group
+		app.URLTemplates["Group"] = urlTemplate
+	}
+
+	if urlTemplate := params["GroupURL"]; urlTemplate != "" {
+		// Slug must be very specific
+		urlTemplate = strings.Replace(urlTemplate, "{Slug}", "{Slug:[a-z0-9\\-]+}", -1)
+		app.URLTemplates["Group"] = urlTemplate
 	}
 
 	// Init collections
