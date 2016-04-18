@@ -49,6 +49,20 @@ func (pages PageList) Randomize() {
 	sort.Sort(pages)
 }
 
+// Sort list by given sortType
+func (pages PageList) Sort(sortType string) {
+	if len(pages) >= 2 {
+		switch sortType {
+		case "Reverse":
+			sort.Sort(sort.Reverse(pages))
+		case "Random":
+			pages.Randomize()
+		default:
+			sort.Sort(pages)
+		}
+	}
+}
+
 // Print pages in list
 func (pages PageList) Print() {
 	log.Printf("--- %d pages ------------------------------------------------", len(pages))

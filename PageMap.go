@@ -83,20 +83,27 @@ func (pm *PageMap) Print() {
 		prefix := ""
 
 		if contentFrom := p.Get("ContentFrom"); contentFrom != "" {
-			prefix += contentFrom + " >>"
+			prefix += contentFrom + " ⏩"
 		}
 
 		if p.IsYes("IsUnlisted") {
-			prefix += "..."
+			prefix += "🔎" // ⛬ ⋱ ⍉ ⛳ 🔎 🔓 🔒 🎩
+		}
+
+		if p.IsNo("IsCache") {
+			// Not cached
+			prefix += " ⟳"
 		}
 
 		if redirect := p.Get("Redirect"); redirect != "" {
 			if len(redirect) > 20 {
 				redirect = strings.TrimPrefix(redirect, "https://")
 				redirect = strings.TrimPrefix(redirect, "http://")
-				redirect = redirect[:18] + ".."
+				if len(redirect) > 20 {
+					redirect = redirect[:18] + ".."
+				}
 			}
-			prefix += redirect + " <-"
+			prefix += redirect + " ⏮"
 		}
 
 		if p.IsEqual("Sort", "Reverse") {

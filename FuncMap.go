@@ -12,12 +12,13 @@ import (
 var (
 	// FuncMap - To use in html/template FuncMap
 	defaultFuncMap = template.FuncMap{
+		"T":         tT,
 		"Get":       tGet,
 		"Content":   tContent,
 		"Page":      tPage,
 		"HTML":      tHTML,
 		"MdToHTML":  tMdToHTML,
-		"Slice":     tSliceFrom,
+		"Slice":     tSlice,
 		"SliceFrom": tSliceFrom,
 		// "PageURL":        PageURL,
 		// "FileURL":        FileURL,
@@ -26,6 +27,19 @@ var (
 		"CurrentYear": tCurrentYear,
 	}
 )
+
+// Translate string to given language
+func tT(page *Page, s string) string {
+	if page.App == nil {
+		return s // cant translate w/o app
+	}
+
+	if translated, ok := page.App.translations[page.Get("Lang")][s]; ok {
+		return translated
+	}
+
+	return s
+}
 
 // Get param from Page or params map
 func tGet(page interface{}, key string) string {
@@ -47,8 +61,12 @@ func tContent(page *Page) template.HTML {
 
 // Get Page by given slug
 // Give Application context
-func tPage(app *Application, slug string) *Page {
-	return app.Page(slug)
+func tPage(page *Page, slug string) *Page {
+	p := page.App.Page(slug)
+	if p == nil {
+		p = page.App.Page(page.Get("Lang") + "-" + slug)
+	}
+	return p
 }
 
 // Convert given params to HTML

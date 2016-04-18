@@ -75,7 +75,7 @@ func fileToParams(fpath string) map[string]string {
 	}
 
 	// ** Params
-	params := bufToParams(bufHeader) // first assign what we can from buf
+	params := bufToParams(bufHeader, true) // first assign what we can from buf
 
 	// ** Content
 	bufContent = bytes.TrimSpace(bufContent)
@@ -159,7 +159,9 @@ func fileToParams(fpath string) map[string]string {
 }
 
 // Parse given bytes to map of params
-func bufToParams(buf []byte) map[string]string {
+// strict - validate left side (keys) to be as variable
+// set strict=false when loading translations
+func bufToParams(buf []byte, strict bool) map[string]string {
 	params := make(map[string]string, 0)
 
 	nl := []byte("\n") // new line ending
@@ -194,7 +196,7 @@ func bufToParams(buf []byte) map[string]string {
 			row[0] == "<"[0] || // <!--
 			row[0] == "\""[0] || // ""
 			row[0] == "~"[0] // ~
-		if isComment {
+		if strict && isComment {
 			continue
 		}
 
@@ -204,7 +206,7 @@ func bufToParams(buf []byte) map[string]string {
 		val := bytes.TrimSpace(prop[1])
 
 		// Key can't contain spaces
-		if bytes.Index(key, []byte(" ")) > 0 {
+		if strict && bytes.Index(key, []byte(" ")) > 0 {
 			continue
 		}
 

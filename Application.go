@@ -6,7 +6,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"sort"
 	"strings"
 )
 
@@ -32,7 +31,7 @@ type Application struct {
 	PublicPath string
 
 	// Page tree
-	Pages []*Page
+	Pages PageList
 
 	// Easy count overall pages and detect duplicates
 	// map[Slug]Page
@@ -42,6 +41,11 @@ type Application struct {
 	// Example: "Tag: dog, cat, mouse" --> every tag will point to one *Page
 	// Case sensitive
 	collections map[string]*Collection
+
+	// Translations
+	// If no need to create new .md file but need translate one string
+	// Translations[lv][Hello] = "Labdien!"
+	translations map[string]map[string]string
 
 	// URLTemplates - url templates for pages
 	URLTemplates map[string]string
@@ -67,9 +71,11 @@ func NewApplication() (*Application, error) {
 
 	// Default url templates
 	// Use {Param} with any Page param
+	// TODO: make as string var, not map ?
 	app.URLTemplates = map[string]string{
-		"Page":  "/{Lang}/{Slug:[a-z0-9\\-]+}.html",
-		"Group": "/{Lang}/{Slug:[a-z0-9\\-]+}",
+		"Page": "/{Lang}/{Slug:[a-z0-9\\-]+}",
+		// "Collection": "/{collection}/{key}", // /tag/my-tag , /category/Dogs
+		// "Group": "/{Lang}/{Slug:[a-z0-9\\-]+}",
 	}
 
 	// Configure app by default config file ".mango"
@@ -129,14 +135,6 @@ func (app *Application) loadConfig(fname string) {
 		// Slug must be very specific
 		urlTemplate = strings.Replace(urlTemplate, "{Slug}", "{Slug:[a-z0-9\\-]+}", -1)
 		app.URLTemplates["Page"] = urlTemplate
-		// By default page is same as group
-		app.URLTemplates["Group"] = urlTemplate
-	}
-
-	if urlTemplate := params["GroupURL"]; urlTemplate != "" {
-		// Slug must be very specific
-		urlTemplate = strings.Replace(urlTemplate, "{Slug}", "{Slug:[a-z0-9\\-]+}", -1)
-		app.URLTemplates["Group"] = urlTemplate
 	}
 
 	// Init collections
@@ -181,6 +179,9 @@ func (app *Application) LoadContent() {
 	// Edit page after all pages loaded
 	app.afterLoadContent()
 
+	// Load translations from every language folder
+	app.loadTranslations()
+
 	<-app.chBusy
 }
 
@@ -212,18 +213,7 @@ func (app *Application) loadPages(fpath string) PageList {
 			// Load sub-pages if it's directory
 			if p.IsDir() {
 				p.Pages = app.loadPages(p.Get("Path"))
-
-				// Sort by default
-				if len(p.Pages) >= 2 {
-					switch p.Get("Sort") {
-					case "Reverse":
-						sort.Sort(sort.Reverse(p.Pages))
-					case "Random":
-						p.Pages.Randomize()
-					default:
-						sort.Sort(p.Pages)
-					}
-				}
+				p.Pages.Sort(p.Get("Sort"))
 
 				// Add parent to received pages
 				for _, p2 := range p.Pages {
@@ -258,16 +248,31 @@ func (app *Application) afterLoadContent() {
 	// Do filter walk but don't collect pages
 	app.slugPages.Filter(func(p *Page) bool {
 
-		// *** ContentFrom:
-		// Content from slug
-		if slug := p.Get("ContentFrom"); slug != "" {
-			if page2 := app.Page(slug); page2 != nil {
+		// What seperator to use by appending content
+		sepTemplate := []byte("\n{{ Content }}")
+		if _sepTemplate := p.Get("ContentTemplate"); _sepTemplate != "" {
+			sepTemplate = []byte(_sepTemplate)
+		}
 
-				// What seperator to use by appending content
-				sepTemplate := []byte("\n{{ Content }}")
-				if _sepTemplate := p.Get("ContentTemplate"); _sepTemplate != "" {
-					sepTemplate = []byte(_sepTemplate)
+		// *** ContentFrom:
+		if cfrom := p.Get("ContentFrom"); cfrom != "" {
+			if strings.Index(cfrom, ":") > 0 {
+				// From collection
+				arr := strings.SplitN(cfrom, ":", 2)
+				ckey := arr[0]
+				citem := arr[1]
+
+				pages := app.Collection(ckey).Get(citem)
+				pages.Sort(p.Get("Sort"))
+
+				// Load content from sub-pages
+				for _, p3 := range pages {
+					content := bytes.Replace(sepTemplate, []byte("{{ Content }}"), p3.Content(), 1)
+					p.AppendContent(content)
 				}
+
+			} else if page2 := app.Page(cfrom); page2 != nil {
+				// From slug
 
 				// Make content
 				if page2.IsDir() {
@@ -285,8 +290,8 @@ func (app *Application) afterLoadContent() {
 				}
 
 				p.Set("HaveContent", _Yes)
-
 			}
+
 		}
 
 		// *** BreadCrumbs:
@@ -299,6 +304,20 @@ func (app *Application) afterLoadContent() {
 
 		return false
 	})
+}
+
+// Load translations from every language folder
+func (app *Application) loadTranslations() {
+	app.translations = make(map[string]map[string]string, 0)
+
+	// Loop only first level (it's langauge folders)
+	for _, p := range app.Pages {
+		fpath := p.Get("Path") + "/.translations"
+		buf, _ := ioutil.ReadFile(fpath)
+
+		translations := bufToParams(buf, false)
+		app.translations[p.Get("Slug")] = translations
+	}
 }
 
 // Search pages from given top page

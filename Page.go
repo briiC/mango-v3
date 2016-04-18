@@ -197,7 +197,7 @@ func (page *Page) setPathParams() {
 	}
 
 	// Set Level of depth
-	page.Set("Lang", arr[0])
+	page.Set("Lang", arr[0][len(arr[0])-2:])
 	page.Set("Level", strconv.Itoa(len(arr)))
 
 	// 1. en -> 2. top-menu -> 3-n.pages...

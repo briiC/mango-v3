@@ -45,9 +45,6 @@ func (app *Application) linkPage(page *Page) {
 
 	// Add "URL" param
 	url := app.URLTemplates["Page"]
-	if page.IsDir() {
-		url = app.URLTemplates["Group"]
-	}
 	url = page.PopulateParams(url)
 	url = "/" + strings.TrimLeft(url, "/") // Fix broken url "//slug/" to "/slug"
 	page.Set("URL", url)

@@ -3,6 +3,7 @@ package mango
 import (
 	"flag"
 	"html/template"
+	"io/ioutil"
 	"log"
 	"net/http"
 
@@ -48,12 +49,9 @@ func (srv *Server) preStart() {
 
 	// doesn't overwrites if user defined same before
 	r.HandleFunc("/", srv.runIndex)
+	r.HandleFunc("/{Lang:[a-z]{2}}/", srv.runIndex)
 
 	if route := srv.App.URLTemplates["Page"]; route != "" {
-		r.HandleFunc(route, srv.runOne)
-	}
-
-	if route := srv.App.URLTemplates["Group"]; route != "" {
 		r.HandleFunc(route, srv.runOne)
 	}
 
@@ -63,10 +61,16 @@ func (srv *Server) preStart() {
 
 	http.Handle("/", r)
 
+	// Try minified templates first
+	// If not found use originals
+	templatePath := srv.App.BinPath() + "/templates/min"
+	if _, err := ioutil.ReadFile(templatePath + "/layout.tmpl"); err != nil {
+		templatePath = srv.App.BinPath() + "/templates"
+	}
 	srv.Templates = template.Must(template.New("").
 		Funcs(defaultFuncMap). // fill with defaults
 		Funcs(srv.FuncMap).    // user adds/overwrites his own
-		ParseGlob(srv.App.BinPath() + "/templates/*.tmpl"))
+		ParseGlob(templatePath + "/*.tmpl"))
 }
 
 // Start listening to port (default)
@@ -80,11 +84,20 @@ func (srv *Server) Start() error {
 
 // Index
 func (srv *Server) runIndex(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	lang := vars["Lang"]
+
+	if _, isValid := srv.App.translations[lang]; !isValid {
+		// Set default lang if given lang invalid
+		lang = srv.App.Pages[0].Get("Slug")
+	}
+
 	page := srv.App.NewPage("Home")
+	page.Set("Lang", lang)
 	srv.Render(w, page, "index")
 }
 
-// One
+// *Page
 func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["Slug"]
