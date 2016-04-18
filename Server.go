@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -55,8 +56,14 @@ func (srv *Server) preStart() {
 		r.HandleFunc(route, srv.runOne)
 	}
 
-	// FileURL: /static/{FilePath:.+\\..+}
-	// r.PathPrefix("/static/{file:.+\\..+}").Handler(http.FileServer(http.Dir(srv.App.PublicPath)))
+	if route := srv.App.URLTemplates["File"]; route != "" {
+		// get prefix to strip
+		arr := strings.SplitN(route, "{File", 2)
+		prefix := arr[0]
+
+		fs := http.FileServer(http.Dir(srv.App.PublicPath))
+		r.Handle(route, http.StripPrefix(prefix, fs))
+	}
 
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
 

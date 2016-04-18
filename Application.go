@@ -73,7 +73,8 @@ func NewApplication() (*Application, error) {
 	// Use {Param} with any Page param
 	// TODO: make as string var, not map ?
 	app.URLTemplates = map[string]string{
-		"Page": "/{Lang}/{Slug:[a-z0-9\\-]+}",
+		"Page": "/{Lang}/{Slug}",
+		"File": "/static/{File}",
 		// "Collection": "/{collection}/{key}", // /tag/my-tag , /category/Dogs
 		// "Group": "/{Lang}/{Slug:[a-z0-9\\-]+}",
 	}
@@ -133,9 +134,14 @@ func (app *Application) loadConfig(fname string) {
 
 	if urlTemplate := params["PageURL"]; urlTemplate != "" {
 		// Slug must be very specific
-		urlTemplate = strings.Replace(urlTemplate, "{Slug}", "{Slug:[a-z0-9\\-]+}", -1)
 		app.URLTemplates["Page"] = urlTemplate
 	}
+	app.URLTemplates["Page"] = strings.Replace(app.URLTemplates["Page"], "{Slug}", "{Slug:[a-z0-9\\-]+}", -1)
+
+	if urlTemplate := params["FileURL"]; urlTemplate != "" {
+		app.URLTemplates["File"] = urlTemplate
+	}
+	app.URLTemplates["File"] = strings.Replace(app.URLTemplates["File"], "{File}", "{File:.+}", -1)
 
 	// Init collections
 	// Collections: Tags, Categories, Keywords--> init 3 collection page maps

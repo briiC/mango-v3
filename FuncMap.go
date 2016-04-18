@@ -3,6 +3,7 @@ package mango
 import (
 	"fmt"
 	"html/template"
+	"path"
 	"strings"
 	"time"
 
@@ -25,6 +26,7 @@ var (
 		// "GetParams":      GetParams,
 		"ToTags":      tParseToTags,
 		"CurrentYear": tCurrentYear,
+		"FileURL":     tFileURL,
 	}
 )
 
@@ -179,4 +181,14 @@ func tParseToTags(codeLang string, params ...string) template.HTML {
 func tCurrentYear() int {
 	year := time.Now().Year()
 	return year
+}
+
+func tFileURL(page *Page, s string) string {
+	// get prefix
+	arr := strings.SplitN(page.App.URLTemplates["File"], "{File", 2)
+	prefix := arr[0]
+
+	// construct based on url file template
+	s = prefix + s
+	return path.Clean(s)
 }
