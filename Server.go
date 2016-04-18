@@ -55,8 +55,9 @@ func (srv *Server) preStart() {
 		r.HandleFunc(route, srv.runOne)
 	}
 
-	// r.HandleFunc("/{slug:[a-z0-9\\-]+}", srv.runOne)
-	r.PathPrefix("/{file:.+\\..+}").Handler(http.FileServer(http.Dir(srv.App.PublicPath)))
+	// FileURL: /static/{FilePath:.+\\..+}
+	// r.PathPrefix("/static/{file:.+\\..+}").Handler(http.FileServer(http.Dir(srv.App.PublicPath)))
+
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
 
 	http.Handle("/", r)
