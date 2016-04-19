@@ -73,6 +73,31 @@ func fileToPage(fpath string) *Page {
 
 // SetContent set content for page
 func (page *Page) SetContent(content []byte) {
+
+	if page.App != nil {
+		// Make full path based on FileURL
+
+		// No ned image prefix src="/images/ ==> src="
+		// content = bytes.Replace(content, []byte(" src=\"/images/"), []byte(" src=\""), -1)
+		// content = bytes.Replace(content, []byte(" href=\"/data/"), []byte(" href=\""), -1)
+
+		// Get FileURl prefix
+		arr := strings.SplitN(page.App.URLTemplates["File"], "{File", 2)
+		prefix := arr[0]
+
+		// Now replace with FileURL prefix
+		reg, _ := regexp.Compile(" src=[\"images\\/|\"\\/images\\/|\"]+([^\\/][^http][^ftp].+?)\"")
+		url := " src=\"" + prefix + "images/$1\""
+		// url = path.Clean(url)
+		content = reg.ReplaceAll(content, []byte(url))
+
+		// Data URLs
+		reg, _ = regexp.Compile(" href=[\"data\\/|\"\\/data\\/|\"]+([^\\/][^http][^ftp].+?)\"")
+		url = " href=\"" + prefix + "data/$1\""
+		// url = path.Clean(url)
+		content = reg.ReplaceAll(content, []byte(url))
+	}
+
 	page.Lock()
 	page.content = content
 	page.Unlock()

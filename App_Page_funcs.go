@@ -63,6 +63,11 @@ func (app *Application) linkPage(page *Page) {
 			}
 		}
 	}
+
+	// Reset content because that function holds content normalizer
+	// adds correct image and data urls
+	page.SetContent(page.Content())
+
 }
 
 // PageCount - total count of pages
