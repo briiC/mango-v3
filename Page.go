@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"bytes"
 	"fmt"
 	"log"
 	"os"
@@ -92,7 +93,8 @@ func (page *Page) SetContent(content []byte) {
 		content = reg.ReplaceAll(content, []byte(url))
 
 		// Data URLs
-		reg, _ = regexp.Compile(" href=[\"data\\/|\"\\/data\\/|\"]+([^\\/][^http][^ftp].+?)\"")
+		content = bytes.Replace(content, []byte(" href=\"/data/"), []byte(" href=\""), -1)
+		reg, _ = regexp.Compile(" href=\"[^\\/](.+?)\"") //go doesnt have negative lookup (?!: ...)
 		url = " href=\"" + prefix + "data/$1\""
 		// url = path.Clean(url)
 		content = reg.ReplaceAll(content, []byte(url))
