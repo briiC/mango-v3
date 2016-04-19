@@ -78,26 +78,62 @@ func (page *Page) SetContent(content []byte) {
 	if page.App != nil {
 		// Make full path based on FileURL
 
-		// No ned image prefix src="/images/ ==> src="
-		// content = bytes.Replace(content, []byte(" src=\"/images/"), []byte(" src=\""), -1)
-		// content = bytes.Replace(content, []byte(" href=\"/data/"), []byte(" href=\""), -1)
-
 		// Get FileURl prefix
 		arr := strings.SplitN(page.App.URLTemplates["File"], "{File", 2)
 		prefix := arr[0]
 
-		// Now replace with FileURL prefix
-		reg, _ := regexp.Compile(" src=[\"images\\/|\"\\/images\\/|\"]+([^\\/][^http][^ftp].+?)\"")
-		url := " src=\"" + prefix + "images/$1\""
-		// url = path.Clean(url)
-		content = reg.ReplaceAll(content, []byte(url))
+		// Image URLs
+		/*
+			ALTER -- logo.png
+			ALTER -- images/logo.png
+			ALTER -- /images/logo.png
+			NO -- /logo.png
+			NO -- http://example.com/logo.png
+		*/
+		re := regexp.MustCompile(` src="(.+?)"`)
+		all := re.FindAllSubmatch(content, -1)
+		for _, match := range all {
+			src := match[1]
+			if src[0] == '/' || bytes.Index(src, []byte(":")) >= 0 {
+				// starts with "/" or have schema (http://, ftp://)
+				// then skip
+				continue
+			}
+			src = bytes.TrimPrefix(src, []byte("images/"))
+			// construct valid url
+			src = []byte(prefix + "images/" + string(src))
+			old := []byte(fmt.Sprintf("src=\"%s\"", match[1]))
+			new := []byte(fmt.Sprintf("src=\"%s\"", src))
+			content = bytes.Replace(content, old, new, 1)
+			// fmt.Printf("src=\"%s\" ---> src=\"%s\"\n", match[1], src)
+		}
 
 		// Data URLs
-		content = bytes.Replace(content, []byte(" href=\"/data/"), []byte(" href=\""), -1)
-		reg, _ = regexp.Compile(" href=\"[^\\/](.+?)\"") //go doesnt have negative lookup (?!: ...)
-		url = " href=\"" + prefix + "data/$1\""
-		// url = path.Clean(url)
-		content = reg.ReplaceAll(content, []byte(url))
+		/*
+			ALTER -- file.pdf
+			ALTER -- data/file.pdf
+			ALTER -- /data/file.pdf
+			NO -- /file.pdf
+			NO -- http://example.com/file.pdf
+		*/
+		re = regexp.MustCompile(` href="(.+?)"`)
+		all = re.FindAllSubmatch(content, -1)
+		for _, match := range all {
+			href := match[1]
+			if href[0] == '/' || bytes.Index(href, []byte(":")) >= 0 {
+				// starts with "/" or have schema (http://, ftp://)
+				// then skip
+				continue
+			}
+			href = bytes.TrimPrefix(href, []byte("data/"))
+			// construct valid url
+			href = []byte(prefix + "data/" + string(href))
+			old := []byte(fmt.Sprintf("href=\"%s\"", match[1]))
+			new := []byte(fmt.Sprintf("href=\"%s\"", href))
+			content = bytes.Replace(content, old, new, 1)
+			// fmt.Printf("href=\"%s\" ---> href=\"%s\"\n", match[1], href)
+		}
+
 	}
 
 	page.Lock()
