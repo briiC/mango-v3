@@ -124,13 +124,15 @@ func (app *Application) loadConfig(fname string) {
 
 	if path := params["ContentPath"]; path != "" {
 		path, _ = filepath.Abs(path)
-		app.ContentPath = path
+		app.ContentPath = filepath.Clean(path)
 	}
 
 	if path := params["PublicPath"]; path != "" {
 		path, _ = filepath.Abs(path)
-		app.PublicPath = path
+		app.PublicPath = filepath.Clean(path)
 	}
+	os.MkdirAll(app.PublicPath+"/images/", 0755) // where all images from content path moved
+	os.MkdirAll(app.PublicPath+"/data/", 0755)   // other file smoved here
 
 	if urlTemplate := params["PageURL"]; urlTemplate != "" {
 		// Slug must be very specific
@@ -199,11 +201,27 @@ func (app *Application) loadPages(fpath string) PageList {
 	var pages PageList
 	if files, dirErr := ioutil.ReadDir(fpath); dirErr == nil {
 		for _, f2 := range files {
-			if f2.Name()[:1] == "." {
+			if f2.Name()[0] == '.' {
 				// Skip config files (e.g. .dir, .defaults..)
 				continue
 			}
 
+			// Not dir and not .md
+			// move to public path
+			ext := filepath.Ext(f2.Name())
+			ext = strings.ToLower(ext)
+			if !f2.IsDir() && ext != _Md {
+				images := ".png, .gif, .jpg, .jpeg, .svg,"
+				mvPath := app.PublicPath + "/data/" + f2.Name()
+				if strings.Index(images, ext) >= 0 {
+					// Images move to /public/images/
+					mvPath = app.PublicPath + "/images/" + f2.Name()
+				}
+				os.Rename(fpath+"/"+f2.Name(), mvPath)
+				continue
+			}
+
+			// Parse valid page file
 			p := app.FileToPage(fpath + "/" + f2.Name())
 
 			if !p.IsYes("IsVisible") {

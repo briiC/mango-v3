@@ -1,6 +1,13 @@
 package mango
 
-import "testing"
+import (
+	"fmt"
+	"io/ioutil"
+	"os"
+	"path/filepath"
+	"testing"
+	"time"
+)
 
 func Test_NewApplication(t *testing.T) {
 	// .mango ------------------------------------------------------
@@ -99,5 +106,35 @@ func Test_AppCollectionFuncs(t *testing.T) {
 
 	if count := app.Collection("Categories").Len(); count != 4 {
 		t.Fatal("Categories: incorrect count. Found:", count)
+	}
+}
+
+func Test_ContentFiles(t *testing.T) {
+	fid := fmt.Sprintf("f-%d", time.Now().UnixNano())
+	paths := map[string]string{
+		"test-files/content/en/" + fid + ".png":  "imagesx",
+		"test-files/content/en/" + fid + ".JPeg": "images",
+		"test-files/content/en/" + fid + ".pdf":  "data",
+		"test-files/content/en/" + fid + ".Pdf":  "data",
+	}
+
+	// Crete temp content files
+	for fpath := range paths {
+		ioutil.WriteFile(fpath, []byte("content"), 0644)
+	}
+
+	app, _ := NewApplication()
+
+	// Test location where files must be located after loading app
+	for fpath, dirScope := range paths {
+		fname := filepath.Base(fpath)
+		destPath := app.PublicPath + "/" + dirScope + "/" + fname
+
+		if finfo, _ := os.Stat(destPath); finfo == nil {
+			t.Fatalf("[%s] must be moved to [%s]", fname, dirScope)
+		}
+
+		os.Remove(fpath)
+		os.Remove(destPath)
 	}
 }
