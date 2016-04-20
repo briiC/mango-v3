@@ -19,6 +19,9 @@ type Server struct {
 	Templates *template.Template
 	Router    *mux.Router
 	FuncMap   template.FuncMap // user can define its
+
+	// slice of middlewares
+	Middlewares map[string]func(next http.Handler) http.Handler
 }
 
 // NewServer - create server instance
@@ -38,6 +41,8 @@ func NewServer() *Server {
 
 	srv.Router = mux.NewRouter()
 
+	srv.Middlewares = make(map[string]func(next http.Handler) http.Handler, 0)
+
 	return srv
 }
 
@@ -49,7 +54,6 @@ func (srv *Server) preStart() {
 	r := srv.Router
 
 	// doesn't overwrites if user defined same before
-	r.HandleFunc("/", srv.runIndex)
 	r.HandleFunc("/{Lang:[a-z]{2}}/", srv.runIndex)
 
 	if route := srv.App.URLTemplates["Page"]; route != "" {
@@ -62,13 +66,25 @@ func (srv *Server) preStart() {
 		prefix := arr[0]
 
 		fs := http.FileServer(http.Dir(srv.App.PublicPath))
-		r.Handle(route, http.StripPrefix(prefix, fs))
+
+		// User middleware for fileserver
+		if mw, haveMw := srv.Middlewares["File"]; haveMw {
+			fs = mw(fs)
+		}
+
+		fs = http.StripPrefix(prefix, fs)
+		r.Handle(route, fs)
 	}
 
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
 
-	http.Handle("/", r)
-	// http.Handle("/", srv.mwCheckReload(r))
+	// Add user defined middlewares
+	var rh http.Handler
+	rh = r
+	if mw, haveMw := srv.Middlewares["Page"]; haveMw {
+		rh = mw(rh)
+	}
+	http.Handle("/", rh)
 
 	// Try minified templates first
 	// If not found use originals
