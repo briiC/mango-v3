@@ -77,6 +77,8 @@ func (page *Page) SetContent(content []byte) {
 
 	if page.App != nil {
 		// Make full path based on FileURL
+		// Ugly fix but go doesnt support negative lookup
+		// (?!:\\/|http?:ftp) to doesnt select strings that starts with these
 
 		// Get FileURl prefix
 		arr := strings.SplitN(page.App.URLTemplates["File"], "{File", 2)
@@ -94,7 +96,7 @@ func (page *Page) SetContent(content []byte) {
 		all := re.FindAllSubmatch(content, -1)
 		for _, match := range all {
 			src := match[1]
-			if src[0] == '/' || bytes.Index(src, []byte(":")) >= 0 {
+			if string(src[:8]) != "/images/" && (src[0] == '/' || bytes.Index(src, []byte(":")) >= 0) {
 				// starts with "/" or have schema (http://, ftp://)
 				// then skip
 				continue
@@ -120,7 +122,7 @@ func (page *Page) SetContent(content []byte) {
 		all = re.FindAllSubmatch(content, -1)
 		for _, match := range all {
 			href := match[1]
-			if href[0] == '/' || bytes.Index(href, []byte(":")) >= 0 {
+			if string(href[:6]) != "/data/" && (href[0] == '/' || bytes.Index(href, []byte(":")) >= 0) {
 				// starts with "/" or have schema (http://, ftp://)
 				// then skip
 				continue
