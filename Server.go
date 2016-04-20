@@ -68,6 +68,7 @@ func (srv *Server) preStart() {
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
 
 	http.Handle("/", r)
+	// http.Handle("/", srv.mwCheckReload(r))
 
 	// Try minified templates first
 	// If not found use originals
@@ -84,11 +85,21 @@ func (srv *Server) preStart() {
 // Start listening to port (default)
 func (srv *Server) Start() error {
 	srv.preStart()
-
 	// Start listening
 	log.Println("Start listening on", ":"+srv.Port)
 	return http.ListenAndServe(":"+srv.Port, nil)
 }
+
+//
+// func (srv *Server) mwCheckReload(next http.Handler) http.Handler {
+// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+// 		if _, err := os.Stat(srv.App.BinPath() + "/.reload"); err != nil {
+//			os.Remove(App.ReloadFile)
+//			srv.App.LoadContent() // Reload
+// 		}
+// 		next.ServeHTTP(w, r)
+// 	})
+// }
 
 // Index
 func (srv *Server) runIndex(w http.ResponseWriter, r *http.Request) {

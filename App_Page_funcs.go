@@ -1,17 +1,29 @@
 package mango
 
-import "strings"
+import (
+	"log"
+	"os"
+	"strings"
+)
 
 // NewPage already linked to app
 func (app *Application) NewPage(label string) *Page {
 	page := newPage(label)
 
+	// Reload all conent for app if "".reload" file is created in bin path
+	reloadFpath := app.BinPath() + "/.reload"
+	if _, err := os.Stat(reloadFpath); err == nil {
+		log.Println("[.reload] Reload all pages")
+		os.Remove(reloadFpath)
+		app.LoadContent() // Reload
+		// time.Sleep(time.Second * 1)
+		// time.Sleep(time.Millisecond * 1)
+	}
+
 	// Set default language
 	// Check only depth=0 for language
-	if len(app.Pages) >= 1 {
-		lang := app.Pages[0].Get("Slug")
-		page.Set("Lang", lang)
-	}
+	lang := app.Pages[0].Get("Slug")
+	page.Set("Lang", lang)
 
 	// Link page to app
 	app.linkPage(page)

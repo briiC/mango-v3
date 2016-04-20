@@ -392,6 +392,7 @@ func (page *Page) MergeParams(moreParams map[string]string) {
 }
 
 // ReloadContent file Content (only)
+// TODO: reload params too? changing Slug is dangerous
 func (page *Page) ReloadContent() bool {
 	if page.IsDir() {
 		// TODO: make content reaload for folders too.
