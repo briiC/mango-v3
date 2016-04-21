@@ -1,7 +1,6 @@
 package mango
 
 import (
-	"log"
 	"os"
 	"strings"
 )
@@ -13,7 +12,7 @@ func (app *Application) NewPage(label string) *Page {
 	// Reload all conent for app if "".reload" file is created in bin path
 	reloadFpath := app.BinPath() + "/.reload"
 	if _, err := os.Stat(reloadFpath); err == nil {
-		log.Println("[.reload] Reload all pages")
+		// log.Println("[.reload] Reload all pages")
 		os.Remove(reloadFpath)
 		app.LoadContent() // Reload
 		// time.Sleep(time.Second * 1)

@@ -19,31 +19,31 @@ func Test_Server(t *testing.T) {
 
 	// Define urls to check
 	urls := map[string]map[string]string{
-		"/": map[string]string{
-			"Code": "200",
-			"Body": "</h1>\nindex", // contains
-		},
-		"/hello": map[string]string{
-			"Code": "200",
-			"Body": "</h1>\none",
-		},
-		"/en": map[string]string{
-			"Code": "200",
-			"Body": "</h1>\ngroup",
-		},
-		"/en-top-menu": map[string]string{
-			"Code": "200",
-			"Body": "</h1>\ngroup",
-		},
-		"/about-cats": map[string]string{ // content from
+		// "/": map[string]string{
+		// 	"Code": "200",
+		// 	"Body": "</h1>\nindex", // contains
+		// },
+		"/en/hello.html": map[string]string{
 			"Code": "200",
 			"Body": "</h1>\none",
 		},
-		"/go-to-lv": map[string]string{ // rediret
+		"/en/": map[string]string{
+			"Code": "200",
+			"Body": "</h1>\nindex",
+		},
+		"/en/en-top-menu.html": map[string]string{
 			"Code": "200",
 			"Body": "</h1>\ngroup",
 		},
-		"/Hello": map[string]string{
+		"/en/about-cats.html": map[string]string{ // content from
+			"Code": "200",
+			"Body": "</h1>\none",
+		},
+		// "/en/go-to-lv.html": map[string]string{ // rediret
+		// 	"Code": "200",
+		// 	"Body": "</h1>\ngroup",
+		// },
+		"/en/Hello.html": map[string]string{
 			"Code": "404",
 			"Body": "404",
 		},
@@ -51,11 +51,13 @@ func Test_Server(t *testing.T) {
 
 	// Check all urls
 	for url, m := range urls {
+		// fmt.Println(ts.URL + url)
 		res, err := http.Get(ts.URL + url)
 		if err != nil {
 			t.Fatal(url, err)
 		}
 		body, _ := ioutil.ReadAll(res.Body)
+		// fmt.Printf("%s\n", body)
 
 		// HTTP codecheck
 		if strconv.Itoa(res.StatusCode) != m["Code"] {

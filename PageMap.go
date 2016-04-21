@@ -96,7 +96,7 @@ func (pm *PageMap) Print() {
 
 		if p.IsNo("IsCache") {
 			// Not cached
-			prefix += " ⟳"
+			prefix += " ⟳" //↺ ⟲ ⥀ ◖ ◶ 𝌇 ⍟ ⩺ ⛣ ⨷ 🔃 🔁 🔄 🔂
 		}
 
 		if redirect := p.Get("Redirect"); redirect != "" {
@@ -117,8 +117,8 @@ func (pm *PageMap) Print() {
 		}
 
 		if p.Parent == nil && !p.IsSet("Level") {
-			prefix += strings.ToUpper(p.Get("Slug")) + " ⛿"
-			// prefix += "⛿"
+			// prefix += strings.ToUpper(p.Get("Slug")) + " ⛿"
+			prefix += "⛿"
 		} else if p.IsEqual("Level", "1") {
 			// prefix += "*"
 		}
@@ -138,7 +138,7 @@ func (pm *PageMap) Print() {
 		}
 
 		if p.IsDir() {
-			slug = "/" + slug
+			slug = "/" + slug // 📂
 		}
 		log.Printf(" %12s  %-30s %s\n", prefix, slug, collectionStr)
 	}

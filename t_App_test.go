@@ -125,7 +125,7 @@ func Test_AppCollectionFuncs(t *testing.T) {
 func Test_ContentFiles(t *testing.T) {
 	fid := fmt.Sprintf("f-%d", time.Now().UnixNano())
 	paths := map[string]string{
-		"test-files/content/en/" + fid + ".png":  "imagesx",
+		"test-files/content/en/" + fid + ".png":  "images",
 		"test-files/content/en/" + fid + ".JPeg": "images",
 		"test-files/content/en/" + fid + ".pdf":  "data",
 		"test-files/content/en/" + fid + ".Pdf":  "data",

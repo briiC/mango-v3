@@ -51,7 +51,7 @@ func Test_Params(t *testing.T) {
 			"Author":     "Mango",         // top defaults
 		},
 		"about-cats": map[string]string{
-			"CONTENT": "<h1>Here are info about cats</h1>\n\n",
+			"CONTENT": "<h1>Here are info about cats</h1>\n\n<p>Miau!</p>\n",
 		},
 		"dog": map[string]string{
 			"Icon": "animal.png",
