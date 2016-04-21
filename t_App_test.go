@@ -68,6 +68,15 @@ func Test_AppPageFuncs(t *testing.T) {
 		t.Fatal("Must be found 2 pages")
 	}
 
+	// Search - no such slug, no results
+	xpages := app.Search("non-existing-slug", "nope")
+	if len(xpages) != 0 {
+		t.Fatal("Must be found 0 pages")
+	}
+
+	// Check reload file
+	ioutil.WriteFile(app.binPath+"/.reload", []byte("..."), 0644)
+
 	// new virtual page
 	// linked to app, but no parents
 	// not listed anywhere
@@ -106,6 +115,10 @@ func Test_AppCollectionFuncs(t *testing.T) {
 
 	if count := app.Collection("Categories").Len(); count != 4 {
 		t.Fatal("Categories: incorrect count. Found:", count)
+	}
+
+	if count := app.CollectionPages("Undefined", "nope").Len(); count != 0 {
+		t.Fatal("Undefined collection: incorrect count. Found:", count)
 	}
 }
 

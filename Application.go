@@ -286,7 +286,7 @@ func (app *Application) afterLoadContent() {
 				ckey := arr[0]
 				citem := arr[1]
 
-				pages := app.Collection(ckey).Get(citem)
+				pages := app.CollectionPages(ckey, citem)
 				pages.Sort(p.Get("Sort"))
 
 				// Load content from sub-pages

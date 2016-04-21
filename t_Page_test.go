@@ -1,6 +1,9 @@
 package mango
 
-import "testing"
+import (
+	"strings"
+	"testing"
+)
 
 // Parsing datetimes
 func Test_PageFuncs(t *testing.T) {
@@ -44,5 +47,20 @@ func Test_PageFuncs(t *testing.T) {
 	page = app.Page("goodbye") // Must NOT be found
 	if page != nil {
 		t.Fatal("New slug must not be found")
+	}
+
+	// Reload content (page)
+	page = app.Page("my-secret-post")
+	page.Set("ModTime", "0") // simulate file content changed
+	content := strings.TrimSpace(string(page.Content()))
+	if content != "<p>Auto reloaded.</p>" {
+		t.Fatalf("Content not correct. Must be reloaded. Found: [%s]", content)
+	}
+
+	// Reload content (dir)
+	page = app.Page("fruits")
+	page.Set("ModTime", "0") // simulate file content changed
+	if page.ReloadContent() != false {
+		t.Fatalf("Directories can not be reloaded")
 	}
 }

@@ -83,11 +83,15 @@ func (pm *PageMap) Print() {
 		prefix := ""
 
 		if contentFrom := p.Get("ContentFrom"); contentFrom != "" {
+			if ix := strings.Index(contentFrom, ":"); ix > 0 {
+				// collection pages
+				contentFrom = "(" + contentFrom[ix:] + ")"
+			}
 			prefix += contentFrom + " ⏩"
 		}
 
 		if p.IsYes("IsUnlisted") {
-			prefix += "🔎" // ⛬ ⋱ ⍉ ⛳ 🔎 🔓 🔒 🎩
+			prefix += "🔎" // ⛬ ⋱ ⍉ ⛳ 🔎 🔓 🔒 🎩 ❤
 		}
 
 		if p.IsNo("IsCache") {
@@ -113,7 +117,8 @@ func (pm *PageMap) Print() {
 		}
 
 		if p.Parent == nil && !p.IsSet("Level") {
-			prefix += strings.ToUpper(p.Get("Slug"))
+			prefix += strings.ToUpper(p.Get("Slug")) + " ⛿"
+			// prefix += "⛿"
 		} else if p.IsEqual("Level", "1") {
 			// prefix += "*"
 		}

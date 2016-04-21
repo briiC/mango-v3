@@ -34,7 +34,7 @@ func Benchmark_App_Parallel(b *testing.B) {
 			app.Collection("Tags").Remove("tag-x")
 
 			app.Collection("Categories").Append("cat-x", &Page{})
-			app.Collection("Categories").Get("cat-x")
+			app.CollectionPages("Categories", "cat-x")
 			app.Collection("Categories").Len() //count of items insife Tags
 			app.Collection("Categories").Remove("cat-x")
 

@@ -8,3 +8,8 @@ PublicPath: test-files/public/
 -- app.collectables["Tag"]["my-tag"] --> PageList of this tag
 -- app.CollectablePages("Tag", "my-tag")
 Collections: Tags, Categories, Keywords,,,,
+
+
+-- Template how to construct page and file urls
+PageURL: /{Lang}/{Slug}.html
+FileURL: /{File}
