@@ -10,6 +10,7 @@ func Test_FuncMap(t *testing.T) {
 	app, _ := NewApplication()
 	page := app.Page("cat")
 
+	// tT
 	if s := tT(page, "Hello"); s != "Labdien" {
 		t.Fatalf("Incorrect translation [%s]", s)
 	}
@@ -21,6 +22,7 @@ func Test_FuncMap(t *testing.T) {
 		t.Fatalf("Incorrect translation [%s]", s)
 	}
 
+	// tGet
 	if s := tGet(page, "Label"); s != "Cat" {
 		t.Fatalf("Incorrect param [%s]", s)
 	}
@@ -34,12 +36,17 @@ func Test_FuncMap(t *testing.T) {
 		t.Fatalf("Incorrect param [%s]", s)
 	}
 
+	// tContent
 	if s := tContent(page); s != "<p>Miau!</p>\n" {
 		t.Fatalf("Incorrect content [%s]", s)
 	}
 
+	// tPage
 	if p := tPage(page, "cat"); p == nil {
 		t.Fatal("Page must be found")
+	}
+	if p := tPage(page, "undefined"); p != nil {
+		t.Fatal("Page must NOT be found")
 	}
 
 	if s := tHTML("<b>html</b>"); s != "<b>html</b>" {
@@ -52,19 +59,26 @@ func Test_FuncMap(t *testing.T) {
 
 	pages := page.Parent.Pages // cat -> animals
 
+	// tSlice
 	if _pages := tSlice(pages, 0, 1); len(_pages) != 1 {
+		t.Fatalf("Incorrect slice [%d]", len(_pages))
+	}
+	if _pages := tSlice(page.Pages, 0, 1); len(_pages) != 0 {
 		t.Fatalf("Incorrect slice [%d]", len(_pages))
 	}
 
 	if _pages := tSliceFrom(pages, 1); len(_pages) != 4 {
 		t.Fatalf("Incorrect slice [%d]", len(_pages))
 	}
+	if _pages := tSliceFrom(page.Pages, 1); len(_pages) != 0 {
+		t.Fatalf("Incorrect slice [%d]", len(_pages))
+	}
 
-	if s := tParseToTags("javascript", "a.js, /js/b.js"); s != "<script type=\"text/javascript\">a.js</script>\n<script type=\"text/javascript\" src=\"/js/b.js\"></script>\n" {
+	if s := tParseToTags("javascript", "a.js,, /js/b.js"); s != "<script type=\"text/javascript\">a.js</script>\n<script type=\"text/javascript\" src=\"/js/b.js\"></script>\n" {
 		t.Fatalf("Incorrect parse to tags [%s]", s)
 	}
 
-	if s := tParseToTags("css", "a.css, /css/b.css"); s != "<style type=\"text/css\">a.css</style>\n<link rel=\"stylesheet\" href=\"/css/b.css\" type=\"text/css\" />\n" {
+	if s := tParseToTags("css", "a.css,, /css/b.css"); s != "<style type=\"text/css\">a.css</style>\n<link rel=\"stylesheet\" href=\"/css/b.css\" type=\"text/css\" />\n" {
 		t.Fatalf("Incorrect parse to tags [%s]", s)
 	}
 
