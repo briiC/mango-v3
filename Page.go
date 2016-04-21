@@ -401,7 +401,10 @@ func (page *Page) ReloadContent() bool {
 	}
 
 	fpath := page.Get("Path")
-	finfo, _ := os.Stat(fpath)
+	finfo, ferr := os.Stat(fpath)
+	if ferr != nil {
+		return false
+	}
 
 	// Reload if ModTime changed
 	fModTime := fmt.Sprint(finfo.ModTime().UnixNano())
