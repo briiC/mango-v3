@@ -27,6 +27,7 @@ var (
 		"ToTags":      tParseToTags,
 		"CurrentYear": tCurrentYear,
 		"FileURL":     tFileURL,
+		"Print":       tPrint,
 	}
 )
 
@@ -191,4 +192,12 @@ func tFileURL(page *Page, s string) string {
 	// construct based on url file template
 	s = prefix + s
 	return path.Clean(s)
+}
+
+func tPrint(p interface{}) string {
+	switch p.(type) {
+	case *Page:
+		p.(*Page).Print()
+	}
+	return "..."
 }
