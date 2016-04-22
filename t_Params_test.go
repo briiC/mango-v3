@@ -13,7 +13,7 @@ func Test_Params(t *testing.T) {
 		"birthday": nil,
 		"golf":     nil,
 		"curling":  nil,
-		"hello": map[string]string{
+		"hello": {
 			"FileName":    "1_Hello.md",
 			"Title":       "Hello",
 			"Label":       "Hello",
@@ -32,7 +32,7 @@ func Test_Params(t *testing.T) {
 			"Spaced":      "",
 			"BreadCrumbs": "en / en-top-menu / news / ",
 		},
-		"hello-2": map[string]string{
+		"hello-2": {
 			"FileName":    "6_Hello.md",
 			"Title":       "Hello",
 			"Label":       "Hello",
@@ -42,7 +42,7 @@ func Test_Params(t *testing.T) {
 			"SortNr":      "6",
 			"VisibleTo":   "4076179200000000000", // late in future
 		},
-		"cat": map[string]string{
+		"cat": {
 			"Tags":       "animal, pet",
 			"Categories": "Housepets",
 			"SortNr":     "",
@@ -50,18 +50,18 @@ func Test_Params(t *testing.T) {
 			"Keywords":   "top, keywords", // top defaults
 			"Author":     "Mango",         // top defaults
 		},
-		"about-cats": map[string]string{
+		"about-cats": {
 			"CONTENT": "<h1>Here are info about cats</h1>\n\n<p>Miau!</p>\n",
 		},
-		"dog": map[string]string{
+		"dog": {
 			"Icon": "animal.png",
 		},
-		"mango": map[string]string{
+		"mango": {
 			"SortNr":     "1",
 			"Tags":       "",
 			"Categories": "",
 		},
-		"sports": map[string]string{
+		"sports": {
 			"IsDir":       "Yes",
 			"Level":       "2",
 			"Sort":        "Random",
@@ -71,10 +71,10 @@ func Test_Params(t *testing.T) {
 			"Keywords":    "fun, play", // override top defaults
 			"Author":      "Sportsman", // top defaults
 		},
-		"soccer": map[string]string{
+		"soccer": {
 			"Icon": "ball.png",
 		},
-		"fruits": map[string]string{
+		"fruits": {
 			"ContentFrom": "fruits",
 			"IsDir":       "Yes",
 			"HaveContent": "Yes",

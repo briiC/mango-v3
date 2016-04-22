@@ -6,34 +6,34 @@ import "testing"
 func Test_FilenameToParams(t *testing.T) {
 	// Define filenames and expected result map
 	cases := map[string]map[string]string{
-		".mango": map[string]string{
+		".mango": {
 			"Ext":       ".mango",
 			"Label":     "",
 			"Slug":      "",
 			"IsVisible": "No",
 		},
-		"Simple.md": map[string]string{
+		"Simple.md": {
 			"Ext":       ".md",
 			"Label":     "Simple",
 			"Title":     "Simple",
 			"Slug":      "simple",
 			"IsVisible": "Yes",
 		},
-		"path.to/some/file/Simple.md": map[string]string{
+		"path.to/some/file/Simple.md": {
 			"Ext":       ".md",
 			"Label":     "Simple",
 			"Title":     "Simple",
 			"Slug":      "simple",
 			"IsVisible": "Yes",
 		},
-		"path.to/some/file/ŪTF 8.md/": map[string]string{
+		"path.to/some/file/ŪTF 8.md/": {
 			"Ext":       ".md",
 			"Label":     "ŪTF 8",
 			"Title":     "ŪTF 8",
 			"Slug":      "utf-8",
 			"IsVisible": "Yes",
 		},
-		"65_With sort number.md": map[string]string{
+		"65_With sort number.md": {
 			"Ext":       ".md",
 			"Label":     "With sort number",
 			"Title":     "With sort number",

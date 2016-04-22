@@ -19,31 +19,31 @@ func Test_Server(t *testing.T) {
 
 	// Define urls to check
 	urls := map[string]map[string]string{
-		// "/": map[string]string{
+		// "/": {
 		// 	"Code": "200",
 		// 	"Body": "</h1>\nindex", // contains
 		// },
-		"/en/hello.html": map[string]string{
+		"/en/hello.html": {
 			"Code": "200",
 			"Body": "</h1>\none",
 		},
-		"/en/": map[string]string{
+		"/en/": {
 			"Code": "200",
 			"Body": "</h1>\nindex",
 		},
-		"/en/en-top-menu.html": map[string]string{
+		"/en/en-top-menu.html": {
 			"Code": "200",
 			"Body": "</h1>\ngroup",
 		},
-		"/en/about-cats.html": map[string]string{ // content from
+		"/en/about-cats.html": { // content from
 			"Code": "200",
 			"Body": "</h1>\none",
 		},
-		// "/en/go-to-lv.html": map[string]string{ // rediret
+		// "/en/go-to-lv.html": { // rediret
 		// 	"Code": "200",
 		// 	"Body": "</h1>\ngroup",
 		// },
-		"/en/Hello.html": map[string]string{
+		"/en/Hello.html": {
 			"Code": "404",
 			"Body": "404",
 		},
