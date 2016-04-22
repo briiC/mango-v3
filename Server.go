@@ -54,6 +54,7 @@ func (srv *Server) preStart() {
 	// Set default routes
 	r := srv.Router
 
+	r.HandleFunc("/", srv.runIndex)
 	// doesn't overwrites if user defined same before
 	r.HandleFunc("/{Lang:[a-z]{2}}/", srv.runIndex)
 

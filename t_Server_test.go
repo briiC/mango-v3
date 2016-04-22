@@ -19,10 +19,10 @@ func Test_Server(t *testing.T) {
 
 	// Define urls to check
 	urls := map[string]map[string]string{
-		// "/": {
-		// 	"Code": "200",
-		// 	"Body": "</h1>\nindex", // contains
-		// },
+		"/": {
+			"Code": "200",
+			"Body": "</h1>\nindex", // contains
+		},
 		"/en/hello.html": {
 			"Code": "200",
 			"Body": "</h1>\none",
