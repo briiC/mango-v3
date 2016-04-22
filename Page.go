@@ -84,6 +84,11 @@ func (page *Page) SetContent(content []byte) {
 		arr := strings.SplitN(page.App.URLTemplates["File"], "{File", 2)
 		prefix := arr[0]
 
+		scopes := map[string]string{
+			"images": "src",
+			"data":   "href",
+		}
+
 		// Image URLs
 		/*
 			ALTER -- logo.png
@@ -92,23 +97,6 @@ func (page *Page) SetContent(content []byte) {
 			NO -- /logo.png
 			NO -- http://example.com/logo.png
 		*/
-		re := regexp.MustCompile(` src="(.+?)"`)
-		all := re.FindAllSubmatch(content, -1)
-		for _, match := range all {
-			src := match[1]
-			if string(src[:8]) != "/images/" && (src[0] == '/' || bytes.Index(src, []byte(":")) >= 0) {
-				// starts with "/" or have schema (http://, ftp://)
-				// then skip
-				continue
-			}
-			src = bytes.TrimPrefix(src, []byte("images/"))
-			// construct valid url
-			src = []byte(prefix + "images/" + string(src))
-			old := []byte(fmt.Sprintf("src=\"%s\"", match[1]))
-			new := []byte(fmt.Sprintf("src=\"%s\"", src))
-			content = bytes.Replace(content, old, new, 1)
-			// fmt.Printf("src=\"%s\" ---> src=\"%s\"\n", match[1], src)
-		}
 
 		// Data URLs
 		/*
@@ -118,22 +106,25 @@ func (page *Page) SetContent(content []byte) {
 			NO -- /file.pdf
 			NO -- http://example.com/file.pdf
 		*/
-		re = regexp.MustCompile(` href="(.+?)"`)
-		all = re.FindAllSubmatch(content, -1)
-		for _, match := range all {
-			href := match[1]
-			if string(href[:6]) != "/data/" && (href[0] == '/' || bytes.Index(href, []byte(":")) >= 0) {
-				// starts with "/" or have schema (http://, ftp://)
-				// then skip
-				continue
+		for scope, attr := range scopes {
+			re := regexp.MustCompile(` ` + attr + `="(.+?)"`)
+			all := re.FindAllSubmatch(content, -1)
+			for _, match := range all {
+				val := match[1]
+				if string(val[:8]) != "/"+scope+"/" && (val[0] == '/' || bytes.Index(val, []byte(":")) >= 0) {
+					// starts with "/" or have schema (http://, ftp://)
+					// then skip
+					continue
+				}
+				val = bytes.TrimPrefix(val, []byte(scope+"/"))
+				// construct valid url
+				val = []byte(prefix + scope + "/" + string(val))
+				old := []byte(fmt.Sprintf(attr+"=\"%s\"", match[1]))
+				new := []byte(fmt.Sprintf(attr+"=\"%s\"", val))
+				content = bytes.Replace(content, old, new, 1)
+				// fmt.Printf("src=\"%s\" ---> src=\"%s\"\n", match[1], src)
+				// fmt.Printf("href=\"%s\" ---> href=\"%s\"\n", match[1], href)
 			}
-			href = bytes.TrimPrefix(href, []byte("data/"))
-			// construct valid url
-			href = []byte(prefix + "data/" + string(href))
-			old := []byte(fmt.Sprintf("href=\"%s\"", match[1]))
-			new := []byte(fmt.Sprintf("href=\"%s\"", href))
-			content = bytes.Replace(content, old, new, 1)
-			// fmt.Printf("href=\"%s\" ---> href=\"%s\"\n", match[1], href)
 		}
 
 	}

@@ -3,6 +3,7 @@ package mango
 import (
 	"flag"
 	"html/template"
+	"io"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -164,7 +165,7 @@ func (srv *Server) run404(w http.ResponseWriter, r *http.Request) {
 
 // Render only layout
 // But give param for page to distinct template
-func (srv *Server) Render(w http.ResponseWriter, page *Page, templateID string) {
+func (srv *Server) Render(w io.Writer, page *Page, templateID string) {
 	page.Set("Template", templateID)
 	srv.Templates.ExecuteTemplate(w, "layout", page)
 }
