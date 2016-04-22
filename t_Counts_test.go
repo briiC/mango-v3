@@ -73,7 +73,7 @@ func Test_SearchCounts(t *testing.T) {
 
 	// Search
 	results := app.Page("en").Search("oC")
-	if count := len(results); count != 2 {
+	if count := len(results); count != 3 {
 		app.Print()
 		results.Print()
 		t.Fatal("[Search: oC] count incorrect. Found:", count)

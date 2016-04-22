@@ -211,11 +211,11 @@ func (app *Application) loadPages(fpath string) PageList {
 			ext := filepath.Ext(f2.Name())
 			ext = strings.ToLower(ext)
 			if !f2.IsDir() && ext != _Md {
-				images := ".png, .gif, .jpg, .jpeg, .svg,"
-				mvPath := app.PublicPath + "/data/" + f2.Name()
-				if strings.Index(images, ext) >= 0 {
-					// Images move to /public/images/
-					mvPath = app.PublicPath + "/images/" + f2.Name()
+				images := ".png, .gif, .jpg, .jpeg, .svg," // comma-ended
+				mvPath := app.PublicPath + "/images/" + f2.Name()
+				if strings.Index(images, ext) == -1 {
+					// Images move to /public/data/
+					mvPath = app.PublicPath + "/data/" + f2.Name()
 				}
 				os.Rename(fpath+"/"+f2.Name(), mvPath)
 				continue

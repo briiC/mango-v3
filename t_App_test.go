@@ -63,9 +63,9 @@ func Test_AppPageFuncs(t *testing.T) {
 	app, _ := NewApplication()
 
 	// Search
-	pages := app.Search("en", "oc") // hOCkey, sOCcer
-	if len(pages) != 2 {
-		t.Fatal("Must be found 2 pages")
+	pages := app.Search("en", "oc") // hOCkey, sOCcer, http://remote.lOC/..
+	if len(pages) != 3 {
+		t.Fatal("Must be found 3 pages")
 	}
 
 	// Search - no such slug, no results
