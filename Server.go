@@ -5,7 +5,6 @@ import (
 	"html/template"
 	"io"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 
@@ -103,8 +102,6 @@ func (srv *Server) preStart() {
 // Start listening to port (default)
 func (srv *Server) Start() error {
 	srv.preStart()
-	// Start listening
-	log.Println("Start listening on", ":"+srv.Port)
 	return http.ListenAndServe(":"+srv.Port, nil)
 }
 
