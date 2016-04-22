@@ -64,9 +64,9 @@ func tContent(page *Page) template.HTML {
 // Get Page by given slug
 // Give Application context
 func tPage(page *Page, slug string) *Page {
-	p := page.App.Page(slug)
+	p := page.App.Page(page.Get("Lang") + "-" + slug)
 	if p == nil {
-		p = page.App.Page(page.Get("Lang") + "-" + slug)
+		p = page.App.Page(slug)
 	}
 	return p
 }

@@ -39,10 +39,10 @@ func Test_Server(t *testing.T) {
 			"Code": "200",
 			"Body": "</h1>\none",
 		},
-		// "/en/go-to-lv.html": { // rediret
-		// 	"Code": "200",
-		// 	"Body": "</h1>\ngroup",
-		// },
+		"/en/go-to-lv.html": { // rediret
+			"Code": "200",
+			"Body": "</h1>\nindex",
+		},
 		"/en/Hello.html": {
 			"Code": "404",
 			"Body": "404",

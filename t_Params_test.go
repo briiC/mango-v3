@@ -79,6 +79,9 @@ func Test_Params(t *testing.T) {
 			"IsDir":       "Yes",
 			"HaveContent": "Yes",
 		},
+		"go-to-lv": {
+			"Redirect": "/lv",
+		},
 	}
 
 	// Run test cases and verify result params

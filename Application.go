@@ -269,6 +269,7 @@ func (app *Application) loadPages(fpath string) PageList {
 // Edit page after all pages loaded
 // For example param: ContentFrom, can be used only after all pages loaded
 func (app *Application) afterLoadContent() {
+
 	// Do filter walk but don't collect pages
 	app.slugPages.Filter(func(p *Page) bool {
 
@@ -325,6 +326,21 @@ func (app *Application) afterLoadContent() {
 			crumbs := parent.Get("Slug") + " / " + p.Get("BreadCrumbs")
 			p.Set("BreadCrumbs", crumbs)
 		})
+
+		// *** Redirect:
+		// 1. Try to get page by redirect slug (if not language root page)
+		// 2. add / at the beginning if not absolute url
+		if s := p.Get("Redirect"); s != "" {
+			url := s
+			if p2 := app.Page(s); p2 != nil && p2.IsSet("Level") {
+				// Destination page found assign it's URL
+				url = p2.Get("URL")
+
+			} else if s[0] != '/' && s[0] != '?' && strings.Index(s, ":") == -1 {
+				url = "/" + s
+			}
+			p.Set("Redirect", url)
+		}
 
 		return false
 	})

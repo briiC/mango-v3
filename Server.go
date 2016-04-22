@@ -40,6 +40,7 @@ func NewServer() *Server {
 	}
 
 	srv.Router = mux.NewRouter()
+	srv.Router.StrictSlash(true)
 
 	srv.Middlewares = make(map[string]func(next http.Handler) http.Handler, 0)
 
@@ -53,14 +54,16 @@ func (srv *Server) preStart() {
 	// Set default routes
 	r := srv.Router
 
-	r.HandleFunc("/", srv.runIndex)
 	// doesn't overwrites if user defined same before
-	r.HandleFunc("/{Lang:[a-z]{2}}/", srv.runIndex)
+	r.HandleFunc("/", srv.runIndex)
+	r.HandleFunc("/{Lang:[a-z]{2}}", srv.runIndex)
 
+	// Pages (by slug)
 	if route := srv.App.URLTemplates["Page"]; route != "" {
 		r.HandleFunc(route, srv.runOne)
 	}
 
+	// Files (by file path)
 	if route := srv.App.URLTemplates["File"]; route != "" {
 		// get prefix to strip
 		arr := strings.SplitN(route, "{File", 2)
@@ -68,7 +71,7 @@ func (srv *Server) preStart() {
 
 		fs := http.FileServer(http.Dir(srv.App.PublicPath))
 
-		// User middleware for fileserver
+		// Middlewares (for files)
 		if mw, haveMw := srv.Middlewares["File"]; haveMw {
 			fs = mw(fs)
 		}
@@ -77,9 +80,10 @@ func (srv *Server) preStart() {
 		r.Handle(route, fs)
 	}
 
+	// 404
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
 
-	// Add user defined middlewares
+	// Middlewares (for pages)
 	var rh http.Handler
 	rh = r
 	if mw, haveMw := srv.Middlewares["Page"]; haveMw {
@@ -105,18 +109,7 @@ func (srv *Server) Start() error {
 	return http.ListenAndServe(":"+srv.Port, nil)
 }
 
-//
-// func (srv *Server) mwCheckReload(next http.Handler) http.Handler {
-// 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-// 		if _, err := os.Stat(srv.App.BinPath() + "/.reload"); err != nil {
-//			os.Remove(App.ReloadFile)
-//			srv.App.LoadContent() // Reload
-// 		}
-// 		next.ServeHTTP(w, r)
-// 	})
-// }
-
-// Index
+// handler: Index
 func (srv *Server) runIndex(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	lang := vars["Lang"]
@@ -131,7 +124,7 @@ func (srv *Server) runIndex(w http.ResponseWriter, r *http.Request) {
 	srv.Render(w, page, "index")
 }
 
-// *Page
+// handler: One (*Page)
 func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["Slug"]
@@ -154,7 +147,7 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	srv.Render(w, page, templateID)
 }
 
-// 404
+// handler: 404
 func (srv *Server) run404(w http.ResponseWriter, r *http.Request) {
 	page := srv.App.NewPage("404")
 	w.WriteHeader(http.StatusNotFound)
