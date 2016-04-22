@@ -77,8 +77,8 @@ func (page *Page) SetContent(content []byte) {
 
 	if page.App != nil {
 		// Make full path based on FileURL
-		// Ugly fix but go doesnt support negative lookup
-		// (?!:\\/|http?:ftp) to doesnt select strings that starts with these
+		// Ugly fix but go doesn't support negative lookup
+		// (?!:\\/|http?:ftp) to doesn't select strings that starts with these
 
 		// Get FileURl prefix
 		arr := strings.SplitN(page.App.URLTemplates["File"], "{File", 2)
@@ -426,7 +426,7 @@ func (page *Page) ReloadContent() bool {
 
 // PopulateParams - replace given string with templated params
 // Use figure brackets "{}" as param placeholders
-// /{Slug}.html withh be replaced with actual page slug
+// /{Slug}.html with be replaced with actual page slug
 func (page *Page) PopulateParams(s string) string {
 	re := regexp.MustCompile("{(.+?)}")
 	matches := re.FindAllStringSubmatch(s, -1)

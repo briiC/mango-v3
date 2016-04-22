@@ -27,7 +27,7 @@ type Application struct {
 	// Absolute path to content (folders with .md files)
 	ContentPath string
 
-	// Absolute path to web accessable files
+	// Absolute path to web accessible files
 	PublicPath string
 
 	// Page tree
@@ -272,7 +272,7 @@ func (app *Application) afterLoadContent() {
 	// Do filter walk but don't collect pages
 	app.slugPages.Filter(func(p *Page) bool {
 
-		// What seperator to use by appending content
+		// What separator to use by appending content
 		sepTemplate := []byte("\n{{ Content }}")
 		if _sepTemplate := p.Get("ContentTemplate"); _sepTemplate != "" {
 			sepTemplate = []byte(_sepTemplate)
@@ -334,7 +334,7 @@ func (app *Application) afterLoadContent() {
 func (app *Application) loadTranslations() {
 	app.translations = make(map[string]map[string]string, 0)
 
-	// Loop only first level (it's langauge folders)
+	// Loop only first level (it's language folders)
 	for _, p := range app.Pages {
 		fpath := p.Get("Path") + "/.translations"
 		buf, _ := ioutil.ReadFile(fpath)
