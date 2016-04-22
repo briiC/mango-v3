@@ -111,7 +111,12 @@ func (page *Page) SetContent(content []byte) {
 			all := re.FindAllSubmatch(content, -1)
 			for _, match := range all {
 				val := match[1]
-				if string(val[:len(scope)+2]) != "/"+scope+"/" && (val[0] == '/' || bytes.Index(val, []byte(":")) >= 0) {
+				// /images/logo.png --> logo.png
+				// images/logo.png --> logo.png
+				val = bytes.TrimPrefix(val, []byte("/"+scope+"/"))
+				val = bytes.TrimPrefix(val, []byte(scope+"/"))
+
+				if val[0] == '/' || bytes.Index(val, []byte(":")) >= 0 {
 					// starts with "/" or have schema (http://, ftp://)
 					// then skip
 					continue
