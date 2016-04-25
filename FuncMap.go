@@ -26,6 +26,7 @@ var (
 		// "GetParams":      GetParams,
 		"ToTags":      tParseToTags,
 		"CurrentYear": tCurrentYear,
+		"DateFormat":  tDateFormat,
 		"FileURL":     tFileURL,
 		"Print":       tPrint,
 	}
@@ -192,6 +193,14 @@ func tFileURL(page *Page, parts ...string) string {
 	// construct based on url file template
 	url := prefix + strings.Join(parts, "/")
 	return path.Clean(url)
+}
+
+func tDateFormat(layout, s string) string {
+	if t, err := toTime(s); err == nil {
+		return t.Format(layout)
+	}
+
+	return s // return as given
 }
 
 func tPrint(p interface{}) string {

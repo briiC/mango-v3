@@ -89,4 +89,13 @@ func Test_FuncMap(t *testing.T) {
 	if s := tFileURL(page, "logo.png"); s != "/logo.png" {
 		t.Fatalf("Incorrect file url [%s]", s)
 	}
+
+	// Datetimes
+	if s := tDateFormat("02.01.2006", "1984-07-02"); s != "02.07.1984" {
+		t.Fatalf("Incorrect datetime url [%s]", s)
+	}
+	if s := tDateFormat("02.01.2006", "1461584775277491501"); s != "25.04.2016" {
+		t.Fatalf("Incorrect datetime url [%s]", s)
+	}
+
 }

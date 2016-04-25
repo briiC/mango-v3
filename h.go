@@ -3,6 +3,7 @@ package mango
 import (
 	"errors"
 	"log"
+	"strconv"
 	"strings"
 	"time"
 
@@ -57,6 +58,7 @@ func toTime(s string) (time.Time, error) {
 	dotCount := strings.Count(s, ".")
 	dashCount := strings.Count(s, "-")
 	slashCount := strings.Count(s, "/")
+	allCount := timeSeps + dotCount + dashCount + slashCount
 
 	var dt time.Time
 	var err error
@@ -104,6 +106,12 @@ func toTime(s string) (time.Time, error) {
 		dt, err = time.Parse("01/02/2006", s)
 	case slashCount == 1 && timeSeps == 0:
 		dt, err = time.Parse("01/02", s)
+
+		// Try to get from unix or nanounix
+	case allCount == 0 && sLen >= 10:
+		var unixint int64
+		unixint, err = strconv.ParseInt(s[:10], 10, 64)
+		dt = time.Unix(unixint, 0)
 
 	default:
 		err = errors.New("ERROR: \"" + s + "\" not in correct datetune format")
