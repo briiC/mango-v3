@@ -9,6 +9,17 @@ import (
 	"time"
 )
 
+func TestMain(m *testing.M) {
+	// Setup (before any test has run)
+
+	retCode := m.Run() // run every test
+
+	// Tear down (after all tests done)
+	os.Remove("test-files/public/sitemap.xml")
+
+	os.Exit(retCode)
+}
+
 func Test_NewApplication(t *testing.T) {
 	// .mango ------------------------------------------------------
 	app, err := NewApplication()
