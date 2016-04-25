@@ -407,10 +407,12 @@ xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" >
 `
 	// Language roots
-	for _, p := range app.Pages {
-		contents += "<url>\n"
-		contents += "\t<loc>" + p.AbsoluteURL() + "</loc>\n"
-		contents += "</url>\n"
+	if strings.Index(app.URLTemplates["Page"], "{Lang") >= 0 {
+		for _, p := range app.Pages {
+			contents += "<url>\n"
+			contents += "\t<loc>" + p.AbsoluteURL() + "</loc>\n"
+			contents += "</url>\n"
+		}
 	}
 
 	// All pageList
