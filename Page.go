@@ -9,6 +9,7 @@ import (
 	"strconv"
 	"strings"
 	"sync"
+	"time"
 
 	"github.com/russross/blackfriday"
 )
@@ -225,6 +226,31 @@ func (page *Page) IsSet(key string) bool {
 // IsDir - shorthand to find out is this val set and not empty "IsDir"
 func (page *Page) IsDir() bool {
 	return page.IsYes("IsDir")
+}
+
+// AbsoluteURL - page URL prefixed with domain
+func (page *Page) AbsoluteURL() string {
+	if page.App == nil {
+		return page.Get("URL")
+	}
+	return page.App.Domain + page.Get("URL")
+}
+
+// ModTime - Get mod time for page from params
+// not reading actual file from filesystem
+func (page *Page) ModTime() time.Time {
+	sMod := page.Get("ModTime")
+	if len(sMod) < 10 {
+		return time.Now()
+	}
+
+	// Skip nano precision. Use only unix timestamp
+	i, err := strconv.ParseInt(sMod[:10], 10, 64)
+	if err != nil {
+		return time.Now()
+	}
+
+	return time.Unix(i, 0) // time.Time from int64
 }
 
 // Check if page is duplicate slug

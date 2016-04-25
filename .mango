@@ -1,6 +1,7 @@
 TODO: add all possible params for mango app
 Key: Value
 
+DomainPath: https://example.loc/
 ContentPath: test-files/content
 PublicPath: test-files/public/
 
@@ -13,3 +14,7 @@ Collections: Tags, Categories, Keywords,,,,
 -- Template how to construct page and file urls
 PageURL: /{Lang}/{Slug}.html
 FileURL: /{File}
+
+-- More custom urls to add to sitemap
+-- To exclude some urls use "IsUnlisted: Yes" in that file
+SitemapAdd: /photos, /lv/more-

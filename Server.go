@@ -20,7 +20,15 @@ type Server struct {
 	Router    *mux.Router
 	FuncMap   template.FuncMap // user can define its
 
-	// slice of middlewares
+	/* Middlewares:
+	Middlewares["Page"]
+	Middlewares["File"]
+
+	To add multiple middlewares on one map key:
+	srv.Middlewares["File"] = func(next http.Handler) http.Handler {
+		return mwFirst(mwSecond(next))
+	}
+	*/
 	Middlewares map[string]func(next http.Handler) http.Handler
 }
 

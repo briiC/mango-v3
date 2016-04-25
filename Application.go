@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 )
 
 // Constants that detected by "gometalinter (goconst)"
@@ -19,6 +20,10 @@ const (
 // Application - mango application
 type Application struct {
 	// sync.RWMutex
+
+	// Absoluted domain path with scheme
+	// https://example.loc
+	Domain string
 
 	// Absolute path to where binary is
 	// config file ".mango" must be there
@@ -116,17 +121,27 @@ func (app *Application) BinPath() string {
 func (app *Application) loadConfig(fname string) {
 	fpath := app.binPath + "/" + fname
 	params := fileToParams(fpath)
-	// if len(params) == 0 {
-	// 	// log.Printf("Error: Empty OR not exists [%s] config file", fname)
-	// }
 
 	// Overwrite only allowed params
 
+	// Domain which used in sitemap.xml and constructing absolute page url's
+	if domain := params["Domain"]; domain != "" {
+		// Must be with scheme
+		if domain[:5] != "http:" && domain[:6] != "https:" {
+			domain = "http://" + domain
+		}
+		// page URL's starts with slash. So skip in domain
+		domain = strings.TrimSuffix(domain, "/")
+		app.Domain = domain
+	}
+
+	// Where content can be found
 	if path := params["ContentPath"]; path != "" {
 		path, _ = filepath.Abs(path)
 		app.ContentPath = filepath.Clean(path)
 	}
 
+	// Where web accessible files goes
 	if path := params["PublicPath"]; path != "" {
 		path, _ = filepath.Abs(path)
 		app.PublicPath = filepath.Clean(path)
@@ -134,12 +149,14 @@ func (app *Application) loadConfig(fname string) {
 	os.MkdirAll(app.PublicPath+"/images/", 0755) // where all images from content path moved
 	os.MkdirAll(app.PublicPath+"/data/", 0755)   // other file smoved here
 
+	// Template for construction page url's
 	if urlTemplate := params["PageURL"]; urlTemplate != "" {
 		// Slug must be very specific
 		app.URLTemplates["Page"] = urlTemplate
 	}
 	app.URLTemplates["Page"] = strings.Replace(app.URLTemplates["Page"], "{Slug}", "{Slug:[a-z0-9\\-]+}", -1)
 
+	// Template for construction file url's
 	if urlTemplate := params["FileURL"]; urlTemplate != "" {
 		app.URLTemplates["File"] = urlTemplate
 	}
@@ -189,6 +206,9 @@ func (app *Application) LoadContent() {
 
 	// Load translations from every language folder
 	app.loadTranslations()
+
+	// Create sitemap.xml under public path
+	app.createSitemap()
 
 	<-app.chBusy
 }
@@ -372,6 +392,44 @@ func (app *Application) Search(pageSlug, sterm string) PageList {
 
 	// Success results
 	return page.Search(sterm)
+}
+
+// CreateSitemap - sitemap.xml
+// TODO: custom urls to add. Must Application used to register customs
+func (app *Application) createSitemap() {
+	filepath := app.PublicPath + "/sitemap.xml"
+	// tCreated := time.Now()
+
+	contents := `<?xml version="1.0" encoding="UTF-8"?>
+<urlset
+xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
+http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" >
+`
+	for _, p := range app.slugPages.m {
+
+		if p.IsYes("IsUnlisted") {
+			// Unlisted pages must no be in sitemap
+			continue
+		}
+
+		if p.IsSet("Redirect") {
+			// Redirect pages also not inside
+			continue
+		}
+
+		contents += "<url>\n"
+		contents += "\t<loc>" + p.AbsoluteURL() + "</loc>\n"
+		contents += "\t<lastmod>" + p.ModTime().Format(time.RFC3339) + "</lastmod>\n"
+		contents += "</url>\n"
+	}
+
+	contents += "</urlset>"
+
+	// write whole the body
+	ioutil.WriteFile(filepath, []byte(contents), 0644)
+
 }
 
 // Print - output app highlights
