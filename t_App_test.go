@@ -15,7 +15,8 @@ func TestMain(m *testing.M) {
 	retCode := m.Run() // run every test
 
 	// Tear down (after all tests done)
-	os.Remove("test-files/public/sitemap.xml")
+	os.RemoveAll("test-files/public/")
+	// os.Remove("test-files/public/sitemap.xml")
 
 	os.Exit(retCode)
 }
