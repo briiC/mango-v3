@@ -395,7 +395,6 @@ func (app *Application) Search(pageSlug, sterm string) PageList {
 }
 
 // CreateSitemap - sitemap.xml
-// TODO: custom urls to add. Must Application used to register customs
 func (app *Application) createSitemap() {
 	filepath := app.PublicPath + "/sitemap.xml"
 	// tCreated := time.Now()
@@ -407,6 +406,14 @@ xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9
 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" >
 `
+	// Language roots
+	for _, p := range app.Pages {
+		contents += "<url>\n"
+		contents += "\t<loc>" + p.AbsoluteURL() + "</loc>\n"
+		contents += "</url>\n"
+	}
+
+	// All pageList
 	for _, p := range app.slugPages.m {
 
 		if p.IsYes("IsUnlisted") {
