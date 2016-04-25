@@ -91,9 +91,15 @@ func tMdToHTML(args ...interface{}) template.HTML {
 // use it in template as:
 //		Slice $Arr 0 4
 func tSlice(pages PageList, from, to int) PageList {
-	if to >= len(pages) || from < 0 || to <= 0 {
+	if to >= len(pages) {
+		// slice as many can
+		to = len(pages)
+	}
+
+	if from < 0 || to <= 0 {
 		return nil
 	}
+
 	return pages[from:to]
 }
 
