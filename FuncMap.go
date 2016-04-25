@@ -184,14 +184,14 @@ func tCurrentYear() int {
 	return year
 }
 
-func tFileURL(page *Page, s string) string {
+func tFileURL(page *Page, parts ...string) string {
 	// get prefix
 	arr := strings.SplitN(page.App.URLTemplates["File"], "{File", 2)
 	prefix := arr[0]
 
 	// construct based on url file template
-	s = prefix + s
-	return path.Clean(s)
+	url := prefix + strings.Join(parts, "/")
+	return path.Clean(url)
 }
 
 func tPrint(p interface{}) string {
