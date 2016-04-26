@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"path"
+	"strconv"
 	"strings"
 	"time"
 
@@ -29,6 +30,7 @@ var (
 		"DateFormat":  tDateFormat,
 		"FileURL":     tFileURL,
 		"Print":       tPrint,
+		"Loop":        tLoop,
 	}
 )
 
@@ -215,4 +217,27 @@ func tPrint(p interface{}) string {
 		p.(*Page).Print()
 	}
 	return "..."
+}
+
+// return slice filled with items of given number
+func tLoop(s interface{}) []int {
+
+	n := 1 //default
+
+	// Convert any type to int
+	if i, err := strconv.Atoi(fmt.Sprintf("%v", s)); err == nil {
+		n = i
+	}
+
+	// Not returning only empty slice
+	// but fill it with actual numbers
+	// so in template we get correct number on:
+	// {{ range $i := Loop 10 }} {{ $i }} {{ end }}
+	// starting with 1 not 0
+	arr := make([]int, n)
+	for i := 0; i < n; i++ {
+		arr[i] = i + 1 // slice[0] = 1
+	}
+
+	return arr
 }

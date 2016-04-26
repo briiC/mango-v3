@@ -360,7 +360,7 @@ func (page *Page) Search(sterm string) PageList {
 	sterm = strings.ToLower(sterm)
 
 	return page.Walk(func(p *Page) bool {
-		// TODO: skip unlisted pages?
+		// Unlisted pages already not listed here
 
 		// Custom check
 		// TODO: add correct search by params and content. Not only slug
