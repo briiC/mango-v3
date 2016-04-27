@@ -74,11 +74,11 @@ func Test_FuncMap(t *testing.T) {
 		t.Fatalf("Incorrect slice [%d]", len(_pages))
 	}
 
-	if s := tParseToTags("javascript", "a.js,, /js/b.js"); s != "<script type=\"text/javascript\">a.js</script>\n<script type=\"text/javascript\" src=\"/js/b.js\"></script>\n" {
+	if s := tParseToTags(page, "javascript", "a.js,, /js/b.js"); s != "<script type=\"text/javascript\">a.js</script>\n<script type=\"text/javascript\" src=\"/js/b.js\"></script>\n" {
 		t.Fatalf("Incorrect parse to tags [%s]", s)
 	}
 
-	if s := tParseToTags("css", "a.css,, /css/b.css"); s != "<style type=\"text/css\">a.css</style>\n<link rel=\"stylesheet\" href=\"/css/b.css\" type=\"text/css\" />\n" {
+	if s := tParseToTags(page, "css", "a.css,, /css/b.css"); s != "<style type=\"text/css\">a.css</style>\n<link rel=\"stylesheet\" href=\"/css/b.css\" type=\"text/css\" />\n" {
 		t.Fatalf("Incorrect parse to tags [%s]", s)
 	}
 

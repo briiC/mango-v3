@@ -116,10 +116,23 @@ func tSliceFrom(pages PageList, from int) PageList {
 
 // ParseToTags - parse to tags for html output
 // @line can have multiple tag definitions, but separated with comma ","
-func tParseToTags(codeLang string, params ...string) template.HTML {
+func tParseToTags(page *Page, codeLang string, params ...string) template.HTML {
 	codeLang = strings.ToLower(codeLang)
-	rawLine := params[0]
+	rawLine := strings.Trim(strings.Join(params, ","), " ,\n\t")
+
 	htmlStr := ""
+
+	if rawLine == "" {
+		// Try to use page param if no val given
+		switch codeLang {
+		case "javascript":
+			rawLine = page.Get("JavaScript")
+		case "css":
+			rawLine = page.Get("CSS")
+		case "breadcrumbs":
+			rawLine = page.Get("BreadCrumbs")
+		}
+	}
 
 	// To avoid splitting in wrong comma first replace all "\,"
 	// Later we replace it back to comma
@@ -145,8 +158,6 @@ func tParseToTags(codeLang string, params ...string) template.HTML {
 				// plain code
 				htmlStr += "<script type=\"text/javascript\">" + line + "</script>\n"
 			}
-			break
-
 		case "css":
 			if isURL {
 				// href
@@ -155,30 +166,22 @@ func tParseToTags(codeLang string, params ...string) template.HTML {
 				// plain code
 				htmlStr += "<style type=\"text/css\">" + line + "</style>\n"
 			}
-			break
 
-			// case "breadcrumbs":
-			// 	if len(params) >= 2 {
-			// 		separator := App.BreadcrumbSeparator
-			// 		if separator == "" {
-			// 			separator = " / " //default separator
-			// 		}
-			// 		crumbs := strings.Split(line, separator)
-			// 		urls := strings.Split(params[1], " ")
-			// 		for index, crumbFilename := range crumbs {
-			// 			crumbFilename = strings.Trim(crumbFilename, " ")
-			// 			if crumbFilename != "" {
-			// 				label, _, _, _, _, _, _ := FilenameToParams(crumbFilename)
-			// 				if label == "_" || label == "-" || label[:1] == "." {
-			// 					continue
-			// 				}
-			// 				htmlStr += "<a href=\"" + urls[index] + "\">" + label + "</a> "
-			// 				htmlStr += separator
-			// 			}
-			// 		}
-			// 		htmlStr = strings.TrimSuffix(htmlStr, separator)
-			// 	}
-			// 	break
+		case "breadcrumbs":
+			line = strings.Trim(line, "/ \t\n")
+			slugs := strings.Split(line, "/")
+			var arr []string
+			for _, slug := range slugs {
+				slug = strings.TrimSpace(slug)
+				if p := page.App.Page(slug); p != nil {
+					if lvl, _ := strconv.Atoi(p.Get("Level")); lvl >= 2 {
+						// Skip root levels
+						// If need root levels add it in html by yourself
+						arr = append(arr, "<a href=\""+p.Get("URL")+"\" title=\""+p.Get("Title")+"\">"+p.Get("Title")+"</a>")
+					}
+				}
+			}
+			htmlStr += strings.Join(arr, " / ")
 		}
 	}
 
