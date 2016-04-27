@@ -88,6 +88,13 @@ func (srv *Server) preStart() {
 		r.Handle(route, fs)
 	}
 
+	// Serve "naked" files. No prefixes, no versions
+	// This does nothing if FileURL is: /{File}
+	// but mandatory if FileURL is more complex: /static/{File}
+	// These lines makes sure we can serve root files: /sitemap.xml
+	fs := http.FileServer(http.Dir(srv.App.PublicPath))
+	r.Handle("/{file:.+\\.[a-z]{3,4}}", fs)
+
 	// 404
 	r.NotFoundHandler = http.HandlerFunc(srv.run404)
 
@@ -97,6 +104,7 @@ func (srv *Server) preStart() {
 	if mw, haveMw := srv.Middlewares["Page"]; haveMw {
 		rh = mw(rh)
 	}
+
 	http.Handle("/", rh)
 
 	// Try minified templates first
