@@ -2,6 +2,7 @@ package mango
 
 import (
 	"log"
+	"math"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -60,6 +61,63 @@ func (pages PageList) Sort(sortType string) {
 		default:
 			sort.Sort(pages)
 		}
+	}
+}
+
+// Paging - Make paging params
+// Returns necessary params for paging
+func (pages PageList) Paging(pNum, pSize, pLimit int) (PageList, map[string]int) {
+	len := pages.Len()
+	pageCount := int(math.Ceil(float64(len) / float64(pSize)))
+
+	if pSize < 1 {
+		pSize = 1
+	}
+
+	if pLimit > 0 && pageCount > pLimit {
+		pageCount = pLimit
+		len = pSize * pageCount
+	} else {
+		pLimit = -1
+	}
+
+	if pNum < 1 {
+		pNum = 1
+	} else if pNum > pageCount {
+		pNum = pageCount
+	}
+
+	pPrev := pNum - 1
+	if pPrev < 0 {
+		pPrev = 0
+	}
+	pNext := pNum + 1
+	if pNext > pageCount {
+		pNext = 0
+	}
+
+	from := (pNum - 1) * pSize
+	to := pNum * pSize
+
+	if from >= len {
+		from = len - pSize
+	}
+	if to > len {
+		to = len
+	}
+
+	pages = pages[from:to]
+
+	return pages, map[string]int{
+		"PPrev":       pPrev,
+		"PNum":        pNum,
+		"PNext":       pNext,
+		"PSize":       pSize,
+		"PFrom":       from,
+		"PTo":         to,
+		"PTotalPages": int(math.Ceil(float64(len) / float64(pSize))),
+		"PTotalItems": len,
+		"PLimit":      pLimit,
 	}
 }
 

@@ -446,6 +446,23 @@ func (page *Page) ReloadContent() bool {
 	return true
 }
 
+// Paging - slice page.Pages with paging logic
+// and add params from paging to page params
+func (page *Page) Paging(pNum, pSize, pLimit int) {
+	// Paging stuff
+	_pages, mPaging := page.Pages.Paging(pNum, pSize, pLimit)
+	page.Pages = _pages
+
+	page.Set("PPrev", fmt.Sprintf("%d", mPaging["PPrev"]))
+	page.Set("PNum", fmt.Sprintf("%d", mPaging["PNum"]))
+	page.Set("PNext", fmt.Sprintf("%d", mPaging["PNext"]))
+	page.Set("PSize", fmt.Sprintf("%d", mPaging["PSize"]))
+	page.Set("PFrom", fmt.Sprintf("%d", mPaging["PFrom"]))
+	page.Set("PTo", fmt.Sprintf("%d", mPaging["PTo"]))
+	page.Set("PTotalPages", fmt.Sprintf("%d", mPaging["PTotalPages"]))
+	page.Set("PTotalItems", fmt.Sprintf("%d", mPaging["PTotalItems"]))
+}
+
 // PopulateParams - replace given string with templated params
 // Use figure brackets "{}" as param placeholders
 // /{Slug}.html with be replaced with actual page slug
