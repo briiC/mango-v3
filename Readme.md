@@ -77,8 +77,8 @@ func main() {
 	}
 
     // Custom route
-	ma.Router.HandleFunc("/{Lang:lv|ru|en}/search/{sterm:.*?}", func(w http.ResponseWriter, r *http.Request) {
-		runSearch(ma, w, r)
+	ma.Router.HandleFunc("/{Lang}/search/{sterm}", func(w http.ResponseWriter, r *http.Request) {
+		runSearch(ma, w, r) // create your handler
 	})
 
     // Print all pages and info about them
