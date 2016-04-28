@@ -1,4 +1,5 @@
-[![Go Report Card](http://goreportcard.com/badge/bitbucket.org/briiC/mango-v3)](http://goreportcard.com/report/bitbucket.org/briiC/mango-v3)
+[![Go Report Card](http://goreportcard.com/badge/bitbucket.org/briiC/mango-v3)](http://goreportcard.com/report/bitbucket.org/briiC/mango-v3) &nbsp;
+[![Code coverage](https://img.shields.io/badge/coverage-98.8%-f39f37.svg)](https://img.shields.io/badge/coverage-98.8%-f39f37.svg)  &nbsp;
 
 # Mango
 Takes content from markdown files and serves html to browser.
