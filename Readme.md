@@ -59,9 +59,10 @@ Before starting webserver add custom stuff if you need advanced configuration.
 func main() {
     srv := mango.NewServer()
 
-	// Add some middlewares
-    // ma.Middlewares["File"] = mwFirst  // assign one mw
-	srv.Middlewares["File"] = func(next http.Handler) http.Handler {
+	// Add some middlewares ("File", "Page")
+    // ma.Middlewares["Page"] = mwForPage  // assign one mw
+    // ma.Middlewares["File"] = mwForFile  // assign one mw
+	srv.Middlewares["Page"] = func(next http.Handler) http.Handler {
 		return mwFirst(mwSecond(next))
 	}
 
@@ -69,6 +70,9 @@ func main() {
 	ma.FuncMap = template.FuncMap{
 		"Smile": func() string {
 			return ":)"
+		},
+		"Add": func(a,b int) string {
+			return a + b
 		},
 	}
 
