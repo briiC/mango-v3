@@ -120,6 +120,7 @@ func (srv *Server) preStart() {
 }
 
 // Start listening to port (default)
+// Can't be tested because using httptest package (it have his own listener)
 func (srv *Server) Start() error {
 	srv.preStart()
 	return http.ListenAndServe(":"+srv.Port, nil)

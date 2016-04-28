@@ -49,10 +49,22 @@ func Test_NewApplication(t *testing.T) {
 		t.Fatal("Default PublicPath must end with /test-files/public")
 	}
 
-	// .mango-empty ------------------------------------------------------
+	// .mango2 ------------------------------------------------------
 	// Test empty config file
 	app2, _ := NewApplication()
-	app2.loadConfig(".mango-empty")
+	app = app2
+	app.loadConfig(".mango2")
+
+	// Trim from binPath end to content path end
+	if app.Domain != "http://example.loc" {
+		t.Fatal("Incorrect app domain", app.Domain)
+	}
+
+	// .mango-empty ------------------------------------------------------
+	// Test empty config file
+	app3, _ := NewApplication()
+	app = app3
+	app.loadConfig(".mango-empty")
 
 	// Check default paths
 	if app.binPath == "" {

@@ -11,6 +11,18 @@ import (
 
 func Test_Server(t *testing.T) {
 	ma := NewServer()
+	ma.Middlewares["Page"] = func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// do smth
+			next.ServeHTTP(w, r)
+		})
+	}
+	ma.Middlewares["File"] = func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			// do smth
+			next.ServeHTTP(w, r)
+		})
+	}
 	ma.preStart()
 
 	// Serve to test server

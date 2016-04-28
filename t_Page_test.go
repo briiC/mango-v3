@@ -97,7 +97,7 @@ func Test_PageFuncs(t *testing.T) {
 
 	page = app.Page("cat")
 	page.Paging(0, 0, 0)
-	isValid = page.IsEqual("PPrev", "0") &&
+	isValid = page.Get("PPrev") == "0" &&
 		page.IsEqual("PNum", "1") &&
 		page.IsEqual("PNext", "0") &&
 		page.IsEqual("PSize", "1") &&
@@ -112,7 +112,7 @@ func Test_PageFuncs(t *testing.T) {
 
 	page = app.Page("cat")
 	page.Paging(99, 99, 99)
-	isValid = page.IsEqual("PPrev", "0") &&
+	isValid = "0" == page.Get("PPrev") &&
 		page.IsEqual("PNum", "1") &&
 		page.IsEqual("PNext", "0") &&
 		page.IsEqual("PSize", "99") &&
