@@ -2,7 +2,7 @@
 [![Code coverage](https://img.shields.io/badge/coverage-98.8%-f39f37.svg)](https://img.shields.io/badge/coverage-98.8%-f39f37.svg)
 
 # Mango
-Takes content from markdown files and serves html to browser.
+Serves markdown content as webpage.
 
 
 ## Content structure
