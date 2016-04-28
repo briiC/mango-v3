@@ -36,6 +36,11 @@ func Test_NewApplication(t *testing.T) {
 	}
 
 	// Trim from binPath end to content path end
+	if app.Domain != "https://example.loc" {
+		t.Fatal("Incorrect app domain", app.Domain)
+	}
+
+	// Trim from binPath end to content path end
 	if app.ContentPath[len(app.binPath):] != "/test-files/content" {
 		t.Fatal("Default ContentPath must end with /test-files/content")
 	}

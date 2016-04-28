@@ -74,14 +74,32 @@ func Test_FuncMap(t *testing.T) {
 		t.Fatalf("Incorrect slice [%d]", len(_pages))
 	}
 
+	// tParseToTags
 	if s := tParseToTags(page, "javascript", "a.js,, /js/b.js"); s != "<script type=\"text/javascript\">a.js</script>\n<script type=\"text/javascript\" src=\"/js/b.js\"></script>\n" {
 		t.Fatalf("Incorrect parse to tags [%s]", s)
 	}
-
 	if s := tParseToTags(page, "css", "a.css,, /css/b.css"); s != "<style type=\"text/css\">a.css</style>\n<link rel=\"stylesheet\" href=\"/css/b.css\" type=\"text/css\" />\n" {
 		t.Fatalf("Incorrect parse to tags [%s]", s)
 	}
+	if s := tParseToTags(page, "css", ""); s != "" {
+		t.Fatalf("Incorrect parse to tags [%s]", s)
+	}
+	if s := tParseToTags(page, "javascript", ""); s != "" {
+		t.Fatalf("Incorrect parse to tags [%s]", s)
+	}
+	if s := tParseToTags(page, "breadcrumbs", ""); s != "<a href=\"/en/animals.html\" title=\"Animals\">Animals</a>" {
+		t.Fatalf("Incorrect parse to tags [%s]", s)
+	}
 
+	// tLoop
+	if arr := tLoop(3); len(arr) != 3 || arr[0] != 1 {
+		t.Fatalf("Incorrect slice for loop [%v]", arr)
+	}
+	if arr := tLoop("2"); len(arr) != 2 || arr[0] != 1 {
+		t.Fatalf("Incorrect slice for loop [%v]", arr)
+	}
+
+	//
 	if d := tCurrentYear(); d != time.Now().Year() {
 		t.Fatalf("Incorrect year [%d]", d)
 	}
@@ -92,10 +110,13 @@ func Test_FuncMap(t *testing.T) {
 
 	// Datetimes
 	if s := tDateFormat("02.01.2006", "1984-07-02"); s != "02.07.1984" {
-		t.Fatalf("Incorrect datetime url [%s]", s)
+		t.Fatalf("Incorrect datetime parse [%s]", s)
 	}
 	if s := tDateFormat("02.01.2006", "1461584775277491501"); s != "25.04.2016" {
-		t.Fatalf("Incorrect datetime url [%s]", s)
+		t.Fatalf("Incorrect datetime parse [%s]", s)
+	}
+	if s := tDateFormat("02.01.2006", "xxx"); s != "xxx" {
+		t.Fatalf("Incorrect datetime parse [%s]", s)
 	}
 
 }

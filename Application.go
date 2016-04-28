@@ -126,10 +126,12 @@ func (app *Application) loadConfig(fname string) {
 
 	// Domain which used in sitemap.xml and constructing absolute page url's
 	if domain := params["Domain"]; domain != "" {
-		// Must be with scheme
-		if domain[:5] != "http:" && domain[:6] != "https:" {
+		domain = strings.TrimPrefix(domain, "http://") // remove default
+
+		if strings.Index(domain, "https://") != 0 {
 			domain = "http://" + domain
 		}
+
 		// page URL's starts with slash. So skip in domain
 		domain = strings.TrimSuffix(domain, "/")
 		app.Domain = domain

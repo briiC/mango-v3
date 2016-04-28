@@ -230,9 +230,6 @@ func (page *Page) IsDir() bool {
 
 // AbsoluteURL - page URL prefixed with domain
 func (page *Page) AbsoluteURL() string {
-	if page.App == nil {
-		return page.Get("URL")
-	}
 	return page.App.Domain + page.Get("URL")
 }
 

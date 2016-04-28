@@ -81,16 +81,14 @@ func (pages PageList) Paging(pNum, pSize, pLimit int) (PageList, map[string]int)
 		pLimit = -1
 	}
 
+	if pNum > pageCount {
+		pNum = pageCount
+	}
 	if pNum < 1 {
 		pNum = 1
-	} else if pNum > pageCount {
-		pNum = pageCount
 	}
 
 	pPrev := pNum - 1
-	if pPrev < 0 {
-		pPrev = 0
-	}
 	pNext := pNum + 1
 	if pNext > pageCount {
 		pNext = 0
@@ -104,6 +102,11 @@ func (pages PageList) Paging(pNum, pSize, pLimit int) (PageList, map[string]int)
 	}
 	if to > len {
 		to = len
+	}
+
+	if len <= 0 {
+		from = 0
+		to = 0
 	}
 
 	pages = pages[from:to]

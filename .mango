@@ -1,7 +1,7 @@
 TODO: add all possible params for mango app
 Key: Value
 
-DomainPath: https://example.loc/
+Domain: https://example.loc/
 ContentPath: test-files/content
 PublicPath: test-files/public/
 

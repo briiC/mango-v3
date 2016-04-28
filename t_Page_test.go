@@ -3,6 +3,7 @@ package mango
 import (
 	"strings"
 	"testing"
+	"time"
 )
 
 // Parsing datetimes
@@ -63,4 +64,65 @@ func Test_PageFuncs(t *testing.T) {
 	if page.ReloadContent() != false {
 		t.Fatalf("Directories can not be reloaded")
 	}
+
+	// Urls
+	if url := page.AbsoluteURL(); url != "https://example.loc/en/fruits.html" {
+		t.Fatalf("Incorrect absolute url: %s", url)
+	}
+
+	// ModTime
+	page.Set("ModTime", "xxx") // simulate file content changed
+	if dt := page.ModTime(); dt.Format("01.02.2006") != time.Now().Format("01.02.2006") {
+		t.Fatalf("Incorrect modtime: %v", dt)
+	}
+	page.Set("ModTime", "xxxxxxxxxxxxxx") // simulate file content changed
+	if dt := page.ModTime(); dt.Format("01.02.2006") != time.Now().Format("01.02.2006") {
+		t.Fatalf("Incorrect modtime: %v", dt)
+	}
+
+	// Paging
+	page.Paging(2, 1, 2)
+	isValid := page.IsEqual("PPrev", "1") &&
+		page.IsEqual("PNum", "2") &&
+		page.IsEqual("PNext", "0") &&
+		page.IsEqual("PSize", "1") &&
+		page.IsEqual("PFrom", "1") &&
+		page.IsEqual("PTo", "2") &&
+		page.IsEqual("PTotalPages", "2") &&
+		page.IsEqual("PTotalItems", "2")
+	if !isValid {
+		page.Print()
+		t.Fatalf("Incorrect paging 1")
+	}
+
+	page = app.Page("cat")
+	page.Paging(0, 0, 0)
+	isValid = page.IsEqual("PPrev", "0") &&
+		page.IsEqual("PNum", "1") &&
+		page.IsEqual("PNext", "0") &&
+		page.IsEqual("PSize", "1") &&
+		page.IsEqual("PFrom", "0") &&
+		page.IsEqual("PTo", "0") &&
+		page.IsEqual("PTotalPages", "0") &&
+		page.IsEqual("PTotalItems", "0")
+	if !isValid {
+		page.Print()
+		t.Fatalf("Incorrect paging 2")
+	}
+
+	page = app.Page("cat")
+	page.Paging(99, 99, 99)
+	isValid = page.IsEqual("PPrev", "0") &&
+		page.IsEqual("PNum", "1") &&
+		page.IsEqual("PNext", "0") &&
+		page.IsEqual("PSize", "99") &&
+		page.IsEqual("PFrom", "0") &&
+		page.IsEqual("PTo", "0") &&
+		page.IsEqual("PTotalPages", "0") &&
+		page.IsEqual("PTotalItems", "0")
+	if !isValid {
+		page.Print()
+		t.Fatalf("Incorrect paging 3")
+	}
+
 }
