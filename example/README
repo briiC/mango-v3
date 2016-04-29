@@ -1,0 +1,9 @@
+# Run example
+By default runs on port `:3000`
+
+    cd examples/
+    go run *.go
+
+or on another port
+
+    go run *.go --port=8080

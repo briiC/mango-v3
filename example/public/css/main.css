@@ -1,0 +1,38 @@
+body {
+    background:#fafafa;
+    font-family:monospace;
+    padding:20px 50px;
+    line-height: 23px;
+}
+.content {
+    background: #fff;
+    padding:20px 40px;
+    margin-top:40px;
+    min-height: 300px;
+}
+ul.nav {
+    padding: 0;
+}
+
+ul.nav li {
+    margin:1px 5px;
+    display: inline;
+}
+
+ul.nav li a {
+    background-color: black;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+ul.nav li a:hover {
+    background-color: orange;
+}
+
+code {
+    color: maroon;
+    background:#fafafa;
+    padding:3px 5px;
+}

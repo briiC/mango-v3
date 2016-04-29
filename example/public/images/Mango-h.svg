@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="287.06696"
+   height="99.9375"
+   id="svg5079"
+   version="1.1"
+   inkscape:version="0.48.4 r9939"
+   sodipodi:docname="Mango-h.svg"
+   inkscape:export-filename="/home/briic/www/mango/Mango.png"
+   inkscape:export-xdpi="152.56"
+   inkscape:export-ydpi="152.56">
+  <defs
+     id="defs5081" />
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="1.4"
+     inkscape:cx="59.821255"
+     inkscape:cy="63.253619"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="false"
+     inkscape:window-width="1165"
+     inkscape:window-height="885"
+     inkscape:window-x="438"
+     inkscape:window-y="104"
+     inkscape:window-maximized="0"
+     fit-margin-top="0"
+     fit-margin-left="0"
+     fit-margin-right="0"
+     fit-margin-bottom="0" />
+  <metadata
+     id="metadata5084">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-106.44116,-398.63988)">
+    <g
+       transform="translate(2.5215171,-26.422622)"
+       id="g3023">
+      <path
+         style="opacity:0.63865548;fill:#000000;fill-opacity:1;stroke:none"
+         d="m 119.18594,431.0625 c -5.97946,15.36946 -9.2663,32.05921 -9.2663,49.5 0,15.54958 2.62335,30.48575 7.42573,44.4375 l 266.21551,0 c 4.80238,-13.95175 7.42573,-28.88792 7.42573,-44.4375 0,-17.44079 -3.28684,-34.13054 -9.2663,-49.5 l -262.53437,0 z"
+         id="path3055"
+         inkscape:connector-curvature="0" />
+      <path
+         inkscape:connector-curvature="0"
+         id="rect5608"
+         d="m 113.18594,425.0625 c -5.97946,15.36946 -9.2663,32.05921 -9.2663,49.5 0,15.54958 2.62335,30.48575 7.42573,44.4375 l 266.21551,0 c 4.80238,-13.95175 7.42573,-28.88792 7.42573,-44.4375 0,-17.44079 -3.28684,-34.13054 -9.2663,-49.5 l -262.53437,0 z"
+         style="fill:#88aa00;fill-opacity:1;stroke:none" />
+      <text
+         sodipodi:linespacing="125%"
+         id="text5604"
+         y="496.32153"
+         x="135.27751"
+         style="font-size:64.34514618px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;text-align:start;line-height:125%;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Screengem;-inkscape-font-specification:Screengem"
+         xml:space="preserve"><tspan
+           y="496.32153"
+           x="135.27751"
+           id="tspan5606"
+           sodipodi:role="line">MANGO</tspan></text>
+    </g>
+  </g>
+</svg>

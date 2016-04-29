@@ -1,0 +1,54 @@
+{{ define "layout" }}<!DOCTYPE html>
+
+{{ $Page := . }}
+{{ $App := $Page.App }}
+{{ $Lang := (Get $Page "Lang") }}
+{{ $Menu := (Page $Page "menu") }}
+
+<html lang="{{ $Lang }}">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+    <meta name="language" content="{{ $Lang }}" />
+    <meta name="description" content="{{ Get $Page "Description" }}" />
+    <meta name="keywords" content="{{ Get $Page "Keywords" }}" />
+    <meta name="author" content="{{ Get $Page "Author" }}" />
+
+    <link rel="stylesheet" href="{{ FileURL $Page "css/main.css" }}" type="text/css"  >
+
+    <title>{{ Get $Page "Title" }}</title>
+</head>
+<body>
+    <ul class="nav">
+        <li>
+            <img src="{{ FileURL $Page "images/Mango-h.svg" }}" alt="Logo" style="float:left;height:40px;margin:-12px 0 0 0;" />
+        </li>
+        <li><a href="/">{{ T $Page "Index" }}</a></li>
+
+        {{ range $P := $Menu.Pages }}
+        <li><a href="{{ Get $P "URL" }}">{{ Get $P "Title" }}</a></li>
+        {{ end }}
+
+    </ul>
+
+    <div class="content">
+        {{ if eq (Get $Page "Template") "one" }}
+            <!-- One page contents -->
+            {{ Content $Page }}
+            <hr/>
+            <div>Absolute url: <code>{{ $App.Domain }}{{ Get $Page "URL" }}</code></div>
+            <div>Path to file: <code>{{ Get $Page "Path" }}</code></div>
+        {{ else }}
+            <!-- Index -->
+            <h2>This is index page.</h2>
+
+            And content of this can be edited in
+            <code>examples/templates/layout.tmpl</code>
+        {{ end }}
+    </div>
+    <small style="margin:5px 10px;color:#999;">&copy; {{ CurrentYear }}</small>
+
+    <script src="{{ FileURL $Page "js/main.js" }}"></script>
+</body>
+{{ end }}
