@@ -6,7 +6,8 @@ Serves markdown content as webpage.
 
 
 ## Content structure
-You can see content structure example in `test-files/`.
+You can see content structure example in `test-files/`.  
+Or find runnable example in folder `example/`.
 
 ```
 main.go
@@ -39,12 +40,21 @@ FileURL: /{File}
 
 ```
 
+# Examples
+
+Check out `example/README`
 
 ## Example (simple)
+First install with `go get bitbucket.org/briiC/mango-v3`  
+and use in code as `import "bitbucket.org/briiC/mango-v3"`
+
 One-liner if you need basic webpage functionality.
 
 ```
 #!go
+package main
+
+import "bitbucket.org/briiC/mango-v3"
 
 func main() {
     mango.NewServer().Start()
@@ -56,6 +66,9 @@ func main() {
 Before starting webserver add custom stuff if you need advanced configuration.
 ```
 #!go
+package main
+
+import "bitbucket.org/briiC/mango-v3"
 
 func main() {
     srv := mango.NewServer()
