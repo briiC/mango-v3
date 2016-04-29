@@ -479,3 +479,70 @@ func (page *Page) PopulateParams(s string) string {
 	}
 	return s
 }
+
+// PrintRow - print page as one row
+func (page *Page) PrintRow() {
+	p := page
+	slug := p.Get("Slug")
+	prefix := ""
+
+	if contentFrom := p.Get("ContentFrom"); contentFrom != "" {
+		if ix := strings.Index(contentFrom, ":"); ix > 0 {
+			// collection pages
+			contentFrom = "(" + contentFrom[ix:] + ")"
+		}
+		prefix += contentFrom + " ⏩"
+	}
+
+	if p.IsYes("IsUnlisted") {
+		prefix += "🔎" // ⛬ ⋱ ⍉ ⛳ 🔎 🔓 🔒 🎩 ❤
+	}
+
+	if p.IsNo("IsCache") {
+		// Not cached
+		prefix += " ⟳" //↺ ⟲ ⥀ ◖ ◶ 𝌇 ⍟ ⩺ ⛣ ⨷ 🔃 🔁 🔄 🔂
+	}
+
+	if redirect := p.Get("Redirect"); redirect != "" {
+		if len(redirect) > 20 {
+			redirect = strings.TrimPrefix(redirect, "https://")
+			redirect = strings.TrimPrefix(redirect, "http://")
+			if len(redirect) > 20 {
+				redirect = redirect[:18] + ".."
+			}
+		}
+		prefix += redirect + " ⏮"
+	}
+
+	if p.IsEqual("Sort", "Reverse") {
+		prefix += "[z-a]"
+	} else if p.IsEqual("Sort", "Random") {
+		prefix += "[?-?]"
+	}
+
+	if p.Parent == nil && !p.IsSet("Level") {
+		// prefix += strings.ToUpper(p.Get("Slug")) + " ⛿"
+		prefix += "⛿"
+	} else if p.IsEqual("Level", "1") {
+		// prefix += "*"
+	}
+
+	collectionStr := ""
+	for ckey := range p.App.collections {
+		if p.IsSet(ckey) {
+			collectionStr += "[" + ckey[:1] + "]: "
+			cval := p.Get(ckey)
+			if len(cval) > 25 {
+				// Make shorter and skip middle. Show only start/end values
+				v := cval[:5] + " .. " + cval[len(cval)-20:]
+				cval = v
+			}
+			collectionStr += cval + " "
+		}
+	}
+
+	if p.IsDir() {
+		slug = "/" + slug // 📂
+	}
+	log.Printf(" %12s  %-30s %s\n", prefix, slug, collectionStr)
+}
