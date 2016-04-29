@@ -79,7 +79,7 @@ func NewApplication() (*Application, error) {
 	// TODO: make as string var, not map ?
 	app.URLTemplates = map[string]string{
 		"Page": "/{Lang}/{Slug}",
-		"File": "/static/{File}",
+		"File": "/{File}",
 		// "Collection": "/{collection}/{key}", // /tag/my-tag , /category/Dogs
 		// "Group": "/{Lang}/{Slug:[a-z0-9\\-]+}",
 	}
