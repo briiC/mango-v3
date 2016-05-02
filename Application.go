@@ -55,6 +55,9 @@ type Application struct {
 	// URLTemplates - url templates for pages
 	URLTemplates map[string]string
 
+	// Link to server
+	Server *Server
+
 	// channel to limit access to App
 	chBusy chan bool
 }

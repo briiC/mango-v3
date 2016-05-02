@@ -18,7 +18,7 @@ import (
 type Page struct {
 	sync.RWMutex
 
-	// Linkt to application
+	// Link to application
 	App *Application
 
 	// Content
@@ -63,7 +63,12 @@ func fileToPage(fpath string) *Page {
 	delete(params, "Content")
 
 	// To markdown
-	bufContent = blackfriday.MarkdownCommon(bufContent)
+	if params["IsHTML"] == "Yes" {
+		// Do nothing for html pages
+		// leave as is
+	} else {
+		bufContent = blackfriday.MarkdownCommon(bufContent)
+	}
 
 	// Create new page
 	page := newPage("")
@@ -216,6 +221,25 @@ func (page *Page) IsYes(key string) bool {
 // IsNo - shorthand to compare param with "No"
 func (page *Page) IsNo(key string) bool {
 	return page.IsEqual(key, _No) || !page.IsYes(key)
+}
+
+// IsNegation - Similar to IsNo, bu check for more negation forms
+// Negation values are:
+// No
+// Not
+// None
+// N/A
+// 0
+// -1
+// "" (empty, not set)
+func (page *Page) IsNegation(key string) bool {
+	return page.IsEqual(key, _No) ||
+		page.IsEqual(key, "") ||
+		page.IsEqual(key, "Not") ||
+		page.IsEqual(key, "None") ||
+		page.IsEqual(key, "N/A") ||
+		page.IsEqual(key, "0") ||
+		page.IsEqual(key, "-1")
 }
 
 // IsSet - shorthand to find out is this val set and not empty ""

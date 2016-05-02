@@ -52,6 +52,8 @@ func NewServer() *Server {
 
 	srv.Middlewares = make(map[string]func(next http.Handler) http.Handler, 0)
 
+	app.Server = srv
+
 	return srv
 }
 
