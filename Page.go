@@ -190,6 +190,21 @@ func (page *Page) Get(key string) string {
 	return page.params[key]
 }
 
+// RemoveParam - remove param by given key
+func (page *Page) RemoveParam(key string) {
+	page.Lock()
+	delete(page.params, key)
+	page.Unlock()
+}
+
+// ParamsLen - how many params page have
+func (page *Page) ParamsLen() int {
+	page.RLock()
+	defer page.RUnlock()
+
+	return len(page.params)
+}
+
 // Split - get param as slice splitted by given separator
 func (page *Page) Split(key, sep string) []string {
 	val := page.Get(key)

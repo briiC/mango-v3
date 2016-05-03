@@ -55,10 +55,13 @@ func (app *Application) linkPage(page *Page) {
 	page.MergeParams(defaults) // fill empty params with defaults
 
 	// Add "URL" param
-	url := app.URLTemplates["Page"]
-	url = page.PopulateParams(url)
-	url = "/" + strings.TrimLeft(url, "/") // Fix broken url "//slug/" to "/slug"
-	page.Set("URL", url)
+	// Only if all other params is set
+	if page.ParamsLen() > 0 {
+		url := app.URLTemplates["Page"]
+		url = page.PopulateParams(url)
+		url = "/" + strings.TrimLeft(url, "/") // Fix broken url "//slug/" to "/slug"
+		page.Set("URL", url)
+	}
 
 	// Add to collections
 	for ckey := range app.collections {
