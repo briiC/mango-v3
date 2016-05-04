@@ -166,6 +166,18 @@ func (page *Page) Content() []byte {
 	return page.content
 }
 
+// Params - return map safaly
+func (page *Page) Params() map[string]string {
+	page.RLock()
+	defer page.RUnlock()
+	m := make(map[string]string, 0)
+	for key, val := range page.params {
+		m[key] = val
+	}
+
+	return m
+}
+
 // Set - set thread-safely param to Page.Params
 func (page *Page) Set(key, val string) {
 	if key == "Slug" {
@@ -188,6 +200,21 @@ func (page *Page) Get(key string) string {
 	defer page.RUnlock()
 
 	return page.params[key]
+}
+
+// SetValue - set any type value
+// Interface variable will cast to string
+func (page *Page) SetValue(key string, val interface{}) {
+	switch val.(type) {
+	case bool:
+		if val.(bool) {
+			page.Set(key, "Yes")
+		} else {
+			page.Set(key, "No")
+		}
+	default:
+		page.Set(key, fmt.Sprintf("%v", val))
+	}
 }
 
 // RemoveParam - remove param by given key

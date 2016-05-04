@@ -1,9 +1,10 @@
-# Mango [![Go Report Card](http://goreportcard.com/badge/bitbucket.org/briiC/mango-v3)](http://goreportcard.com/report/bitbucket.org/briiC/mango-v3) [![Code coverage](https://img.shields.io/badge/coverage-98.8%-f39f37.svg)](https://img.shields.io/badge/coverage-98.8%-f39f37.svg) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://img.shields.io/badge/license-MIT-blue.svg)
+# Mango [![Go Report Card](http://goreportcard.com/badge/bitbucket.org/briiC/mango-v3)](http://goreportcard.com/report/bitbucket.org/briiC/mango-v3) [![Code coverage](https://img.shields.io/badge/coverage-98.8%-f39f37.svg)](https://img.shields.io/badge/coverage-97%-f39f37.svg) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](https://img.shields.io/badge/license-MIT-blue.svg)
 
 Serves markdown content as webpage.
 
 
 ## Content structure
+
 You can see content structure example in `test-files/`.  
 Or find runnable example in folder `example/`.
 

@@ -184,26 +184,16 @@ func Test_FileURLs(t *testing.T) {
 	page := app.Page("about")
 	expected := `<h2>Image urls</h2>
 
-<p><img src="/images/logo.png" alt="img" />
-<br />
+<p><img src="/images/logo.png" alt="img" /><br />
+<img src="/images/logo.png" alt="img" /><br />
 <img src="/images/logo.png" alt="img" />
-<br />
-<img src="/images/logo.png" alt="img" />
-
 <img src="/images/http.png" alt="img" />
-
-<img src="/http.png" alt="img" />
-<br />
+<img src="/http.png" alt="img" /><br />
 <img src="/lv/logo.png" alt="img" />
-
 <img src="/data/logo.png" alt="img" />
-
-<img src="http://remote.loc/logo.png" alt="img" />
-<br />
-<img src="https://remote.loc/logo.png" alt="img" />
-<br />
-<img src="ftp://remote.loc/logo.png" alt="img" />
-</p>
+<img src="http://remote.loc/logo.png" alt="img" /><br />
+<img src="https://remote.loc/logo.png" alt="img" /><br />
+<img src="ftp://remote.loc/logo.png" alt="img" /></p>
 
 <h2>Data urls</h2>
 
