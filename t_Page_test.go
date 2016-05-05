@@ -31,8 +31,20 @@ func Test_PageFuncs(t *testing.T) {
 	if page.IsNo("HaveContent") {
 		t.Fatal("ERROR: IsNo")
 	}
+	if !page.IsNegation("XXX") {
+		t.Fatal("ERROR: IsNegation")
+	}
+	if page.IsNegation("HaveContent") {
+		t.Fatal("ERROR: IsNegation")
+	}
 	if page.IsDir() {
 		t.Fatal("ERROR: IsDir: Must not be directory")
+	}
+
+	page.Set("My", "Custom")
+	page.RemoveParam("My")
+	if page.IsSet("My") {
+		t.Fatal("ERROR: RemoveParam")
 	}
 
 	// Trye to Change Slug with setter
