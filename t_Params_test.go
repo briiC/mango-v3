@@ -72,7 +72,9 @@ func Test_Params(t *testing.T) {
 			"Author":      "Sportsman", // top defaults
 		},
 		"soccer": {
-			"Icon": "ball.png",
+			"Icon":    "ball.png",
+			"IsHTML":  "Yes",
+			"CONTENT": "Not **markdown**\n\n    this\n    is\n    <b>HTML</b>",
 		},
 		"fruits": {
 			"ContentFrom": "fruits",
