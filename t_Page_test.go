@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 	"time"
@@ -47,6 +48,25 @@ func Test_PageFuncs(t *testing.T) {
 		t.Fatal("ERROR: RemoveParam")
 	}
 
+	if paramCount := len(page.Params()); paramCount != 21 {
+		t.Fatal("ERROR: Params(): Found:", paramCount)
+	}
+
+	page.SetValue("IntVal", 102)
+	if !page.IsEqual("IntVal", "102") {
+		t.Fatal("int value not correct")
+	}
+
+	page.SetValue("BoolVal", true)
+	if !page.IsEqual("BoolVal", "Yes") {
+		t.Fatal("bool value not correct")
+	}
+
+	page.SetValue("BoolVal", false)
+	if !page.IsEqual("BoolVal", "No") {
+		t.Fatal("bool value not correct")
+	}
+
 	// Trye to Change Slug with setter
 	// Must NOT be changed
 	page = app.Page("hello")
@@ -75,6 +95,12 @@ func Test_PageFuncs(t *testing.T) {
 	page.Set("ModTime", "0") // simulate file content changed
 	if page.ReloadContent() != false {
 		t.Fatalf("Directories can not be reloaded")
+	}
+	p := app.NewPage("Virtual")
+	p.Set("Path", "../no-such-file")
+	if p.ReloadContent() != false {
+		fmt.Println(p.Get("Path"))
+		t.Fatalf("File doesn't exists to reload")
 	}
 
 	// Urls

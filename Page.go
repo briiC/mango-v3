@@ -188,9 +188,12 @@ func (page *Page) Set(key, val string) {
 		return
 	}
 
-	page.Lock()
-	page.params[key] = val
-	page.Unlock()
+	// On benchmark test without checking for nil is risk for race condition
+	if page.params != nil {
+		page.Lock()
+		page.params[key] = val
+		page.Unlock()
+	}
 
 }
 

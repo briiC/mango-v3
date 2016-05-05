@@ -26,6 +26,14 @@ func Benchmark_App_Parallel(b *testing.B) {
 			app.PageCount()
 			app.slugPages.Remove("slug-x")
 
+			// Params
+			p.Set("Custom", "hi")
+			p.Get("Custom")
+			p.RemoveParam("Custom")
+			p.SetValue("KeyInt", 102)
+			p.SetValue("KeyBool", true)
+			p.Params()
+
 			// Collection
 			app.CollectionCount()
 			app.Collection("Tags").Append("tag-x", &Page{})
