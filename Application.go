@@ -102,9 +102,8 @@ func (app *Application) setBinPath() error {
 	path, err := filepath.Abs(filepath.Dir(os.Args[0]))
 	if err != nil || strings.Index(path, "/tmp/") >= 0 {
 		// if user run "go run *.go" binary will be created in temp folder
-		if path, err = filepath.Abs("."); err != nil {
-			// Can't be tested because this will be only on "go run *.go"
-			return err
+		if _path, err := filepath.Abs("."); err == nil {
+			path = _path
 		}
 	}
 

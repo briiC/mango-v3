@@ -112,9 +112,9 @@ func fileToParams(fpath string) map[string]string {
 
 	// Title is tricky. We need special treatment.
 	// Title is based on Label if empty (always set)
-	if params["Title"] == "" && params["Label"] != "" {
-		params["Title"] = params["Label"]
-	}
+	// if params["Title"] == "" && params["Label"] != "" {
+	// 	params["Title"] = params["Label"]
+	// }
 
 	// ** Merge params correctly. First param map is more important
 	// file <---- filename <---- defaults <- subdefaults
