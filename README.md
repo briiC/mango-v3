@@ -1,4 +1,4 @@
-# Mango [![Go Report Card](http://goreportcard.com/badge/bitbucket.org/briiC/mango-v3)](http://goreportcard.com/report/bitbucket.org/briiC/mango-v3) ![Code coverage](https://img.shields.io/badge/coverage-100%-f39f37.svg) [![Docs](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/bitbucket.org/briiC/mango-v3) ![License](https://img.shields.io/badge/license-MIT-blue.svg)
+# Mango [![Go Report Card](http://goreportcard.com/badge/bitbucket.org/briiC/mango-v3)](http://goreportcard.com/report/bitbucket.org/briiC/mango-v3) ![Code coverage](https://img.shields.io/badge/coverage-100%-f39f37.svg) [![Docs](https://img.shields.io/badge/godoc-reference-blue.svg)](https://godoc.org/bitbucket.org/briiC/mango-v3) [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE.md)
 
 Serves markdown content as webpage.
 
