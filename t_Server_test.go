@@ -1,7 +1,6 @@
 package mango
 
 import (
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -74,7 +73,7 @@ func Test_Server(t *testing.T) {
 			t.Fatal(url, err)
 		}
 		body, _ := ioutil.ReadAll(res.Body)
-		fmt.Printf("%s\n", body)
+		// fmt.Printf("%s\n", body)
 
 		// HTTP codecheck
 		if strconv.Itoa(res.StatusCode) != m["Code"] {
