@@ -72,6 +72,8 @@ func Test_Params(t *testing.T) {
 			"Author":      "Sportsman", // top defaults
 		},
 		"soccer": {
+			"Label":   "Soccer!!!",
+			"Title":   "Soccer!!!",
 			"Icon":    "ball.png",
 			"IsHTML":  "Yes",
 			"CONTENT": "Not **markdown**\n\n    this\n    is\n    <b>HTML</b>",

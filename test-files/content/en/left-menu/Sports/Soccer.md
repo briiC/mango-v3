@@ -1,3 +1,4 @@
+Label: Soccer!!!
 Icon: ball.png
 IsHTML: Yes
 +++
