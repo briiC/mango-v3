@@ -1,7 +1,7 @@
 package mango
 
 import (
-	"flag"
+	"fmt"
 	"html/template"
 	"io"
 	"io/ioutil"
@@ -33,17 +33,13 @@ type Server struct {
 }
 
 // NewServer - create server instance
-func NewServer() *Server {
-
-	// Using as string because further code uses it as string
-	port := flag.String("port", "3000", "Mango web server port")
-	flag.Parse()
+func NewServer(port int) *Server {
 
 	app, _ := NewApplication()
 
 	srv := &Server{
 		Host: "localhost",
-		Port: *port,
+		Port: fmt.Sprintf("%d", port),
 		App:  app,
 	}
 
@@ -59,7 +55,7 @@ func NewServer() *Server {
 
 // Prepare all for start
 // Separated func for easy testing
-func (srv *Server) preStart() {
+func (srv *Server) preStart() http.Handler {
 
 	// Set default routes
 	r := srv.Router
@@ -107,8 +103,6 @@ func (srv *Server) preStart() {
 		rh = mw(rh)
 	}
 
-	http.Handle("/", rh)
-
 	// Try minified templates first
 	// If not found use originals
 	templatePath := srv.App.BinPath() + "/templates/min"
@@ -119,12 +113,15 @@ func (srv *Server) preStart() {
 		Funcs(defaultFuncMap). // fill with defaults
 		Funcs(srv.FuncMap).    // user adds/overwrites his own
 		ParseGlob(templatePath + "/*.tmpl"))
+
+	return rh
 }
 
 // Start listening to port (default)
 // Can't be tested because using httptest package (it have his own listener)
 func (srv *Server) Start() error {
-	srv.preStart()
+	rh := srv.preStart()
+	http.Handle("/", rh)
 	return http.ListenAndServe(":"+srv.Port, nil)
 }
 

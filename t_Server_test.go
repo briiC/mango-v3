@@ -1,6 +1,7 @@
 package mango
 
 import (
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -10,7 +11,7 @@ import (
 )
 
 func Test_Server(t *testing.T) {
-	ma := NewServer()
+	ma := NewServer(3000)
 	ma.Middlewares["Page"] = func(next http.Handler) http.Handler {
 		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 			// do smth
@@ -55,7 +56,11 @@ func Test_Server(t *testing.T) {
 			"Code": "200",
 			"Body": "</h1>\nindex",
 		},
-		"/en/Hello.html": {
+		"/en/Hello.html": { // gets file 404. case sensitive
+			"Code": "404",
+			"Body": "404",
+		},
+		"/en/no-such-file.html": { // gets tmpl 404
 			"Code": "404",
 			"Body": "404",
 		},
@@ -69,7 +74,7 @@ func Test_Server(t *testing.T) {
 			t.Fatal(url, err)
 		}
 		body, _ := ioutil.ReadAll(res.Body)
-		// fmt.Printf("%s\n", body)
+		fmt.Printf("%s\n", body)
 
 		// HTTP codecheck
 		if strconv.Itoa(res.StatusCode) != m["Code"] {
@@ -84,4 +89,14 @@ func Test_Server(t *testing.T) {
 		}
 	}
 
+	// use for test coverage only
+	go ma.Start()
+
 }
+
+//
+// func Test_ServerStart(t *testing.T) {
+// 	ma := NewServer(3001)
+// 	ma.Start()
+//
+// }

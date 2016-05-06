@@ -7,7 +7,7 @@ import (
 )
 
 func main() {
-	ma := mango.NewServer()
+	ma := mango.NewServer(3000)
 	fmt.Println("Start listening on :" + ma.Port)
 	panic(ma.Start())
 }
