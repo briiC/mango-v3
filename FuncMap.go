@@ -31,6 +31,7 @@ var (
 		"FileURL":     tFileURL,
 		"Print":       tPrint,
 		"Loop":        tLoop,
+		"Split":       tSplitToSlice,
 	}
 )
 
@@ -243,4 +244,9 @@ func tLoop(s interface{}) []int {
 	}
 
 	return arr
+}
+
+// Split strings by seperator
+func tSplitToSlice(s, sep string) []string {
+	return strings.Split(s, sep)
 }
