@@ -135,7 +135,8 @@ func (srv *Server) runIndex(w http.ResponseWriter, r *http.Request) {
 		lang = srv.App.Pages[0].Get("Slug")
 	}
 
-	page := srv.App.NewPage("Home")
+	// Index page with empty title. User can defined his own handler if he wants
+	page := srv.App.NewPage("")
 	page.Set("Lang", lang)
 	srv.Render(w, page, "index")
 }
