@@ -119,4 +119,12 @@ func Test_FuncMap(t *testing.T) {
 		t.Fatalf("Incorrect datetime parse [%s]", s)
 	}
 
+	// tSplitToSlice
+	if arr := tSplitToSlice("a, b, c", ","); len(arr) != 3 {
+		t.Fatalf("Incorrect slice: %v", arr)
+	}
+	if arr := tSplitToSlice("", ""); len(arr) != 0 {
+		t.Fatalf("Incorrect slice: %v", arr)
+	}
+
 }
