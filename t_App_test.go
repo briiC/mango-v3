@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"time"
 )
@@ -41,12 +42,12 @@ func Test_NewApplication(t *testing.T) {
 	}
 
 	// Trim from binPath end to content path end
-	if app.ContentPath[len(app.binPath):] != "/test-files/content" {
-		t.Fatal("Default ContentPath must end with /test-files/content")
+	if !strings.HasSuffix(app.ContentPath, "/test-files/content") {
+		t.Fatal("Default ContentPath must end with /test-files/content. Found: " + app.ContentPath)
 	}
 	// Trim from binPath end to public path end
-	if app.PublicPath[len(app.binPath):] != "/test-files/public" {
-		t.Fatal("Default PublicPath must end with /test-files/public")
+	if !strings.HasSuffix(app.PublicPath, "/test-files/public") {
+		t.Fatal("Default PublicPath must end with /test-files/public. Found: " + app.PublicPath)
 	}
 
 	// .mango2 ------------------------------------------------------
@@ -72,11 +73,11 @@ func Test_NewApplication(t *testing.T) {
 	}
 
 	// Trim from binPath end to content path end
-	if app.ContentPath[len(app.binPath):] != "/test-files/content" {
+	if !strings.HasSuffix(app.ContentPath, "/test-files/content") {
 		t.Fatal("Default ContentPath must end with /test-files/content")
 	}
 	// Trim from binPath end to public path end
-	if app.PublicPath[len(app.binPath):] != "/test-files/public" {
+	if !strings.HasSuffix(app.PublicPath, "/test-files/public") {
 		t.Fatal("Default PublicPath must end with /test-files/public")
 	}
 
