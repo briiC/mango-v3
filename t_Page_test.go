@@ -163,4 +163,15 @@ func Test_PageFuncs(t *testing.T) {
 		t.Fatalf("Incorrect paging 3")
 	}
 
+	// Set page lang
+	if page.SetLang("lv"); page.Get("Lang") != "lv" {
+		t.Fatal("Page lang must be [lv]")
+	}
+	if page.SetLang("en"); page.Get("Lang") != "en" {
+		t.Fatal("Page lang must be [en]")
+	}
+	if page.SetLang("xx"); page.Get("Lang") == "xx" {
+		t.Fatal("Page lang can't be [xx]")
+	}
+
 }

@@ -14,7 +14,7 @@ import (
 var (
 	// FuncMap - To use in html/template FuncMap
 	defaultFuncMap = template.FuncMap{
-		"T":         tT,
+		"T":         T,
 		"Get":       tGet,
 		"Content":   tContent,
 		"Page":      tPage,
@@ -35,8 +35,8 @@ var (
 	}
 )
 
-// Translate string to given language
-func tT(page *Page, s string) string {
+// T - Translate string to given language
+func T(page *Page, s string) string {
 	if page.App == nil {
 		return s // cant translate w/o app
 	}

@@ -87,6 +87,14 @@ func Test_NewApplication(t *testing.T) {
 		t.Fatal("Must be 3 default collections")
 	}
 
+	// Helper function to check valid app language
+	if !app.IsValidLang("lv") {
+		t.Fatal("App language can be [lv]")
+	}
+	if app.IsValidLang("xx") {
+		t.Fatal("App language can't be [xx]")
+	}
+
 }
 
 func Test_AppPageFuncs(t *testing.T) {

@@ -11,14 +11,14 @@ func Test_FuncMap(t *testing.T) {
 	page := app.Page("cat")
 
 	// tT
-	if s := tT(page, "Hello"); s != "Labdien" {
+	if s := T(page, "Hello"); s != "Labdien" {
 		t.Fatalf("Incorrect translation [%s]", s)
 	}
-	if s := tT(page, "Undefined"); s != "Undefined" {
+	if s := T(page, "Undefined"); s != "Undefined" {
 		t.Fatalf("Incorrect translation [%s]", s)
 	}
 	p := newPage("Not linked")
-	if s := tT(p, "Hello"); s != "Hello" {
+	if s := T(p, "Hello"); s != "Hello" {
 		t.Fatalf("Incorrect translation [%s]", s)
 	}
 

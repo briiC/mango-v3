@@ -78,6 +78,19 @@ func fileToPage(fpath string) *Page {
 	return page
 }
 
+// SetLang - try to set page language
+// If given lang is not valid, use default lang from App
+func (page *Page) SetLang(lang string) string {
+
+	// Check if language is valid in App scope
+	// Also can be assigned if App is not linked to page
+	if page.App == nil || page.App.IsValidLang(lang) {
+		page.Set("Lang", lang)
+	}
+
+	return lang
+}
+
 // SetContent set content for page
 func (page *Page) SetContent(content []byte) {
 

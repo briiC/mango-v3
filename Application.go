@@ -49,7 +49,7 @@ type Application struct {
 
 	// Translations
 	// If no need to create new .md file but need translate one string
-	// Translations[lv][Hello] = "Labdien!"
+	// translations[lv][Hello] = "Labdien!"
 	translations map[string]map[string]string
 
 	// URLTemplates - url templates for pages
@@ -443,6 +443,12 @@ http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" >
 	// write whole the body
 	ioutil.WriteFile(filepath, []byte(contents), 0644)
 
+}
+
+// IsValidLang - is given language is valid in App scope
+func (app *Application) IsValidLang(lang string) bool {
+	_, isValid := app.translations[lang]
+	return isValid
 }
 
 // Print - output app highlights

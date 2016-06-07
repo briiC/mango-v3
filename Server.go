@@ -61,12 +61,12 @@ func (srv *Server) preStart() http.Handler {
 	r := srv.Router
 
 	// doesn't overwrites if user defined same before
-	r.HandleFunc("/", srv.runIndex)
-	r.HandleFunc("/{Lang:[a-z]{2}}", srv.runIndex)
+	r.HandleFunc("/", srv.RunIndex)
+	r.HandleFunc("/{Lang:[a-z]{2}}", srv.RunIndex)
 
 	// Pages (by slug)
 	if route := srv.App.URLTemplates["Page"]; route != "" {
-		r.HandleFunc(route, srv.runOne)
+		r.HandleFunc(route, srv.RunOne)
 	}
 
 	// Files (by file path)
@@ -94,7 +94,7 @@ func (srv *Server) preStart() http.Handler {
 	r.Handle("/{file:.+\\.[a-z]{3,4}}", fs)
 
 	// 404
-	r.NotFoundHandler = http.HandlerFunc(srv.run404)
+	r.NotFoundHandler = http.HandlerFunc(srv.Run404)
 
 	// Middlewares (for pages)
 	var rh http.Handler
@@ -125,30 +125,25 @@ func (srv *Server) Start() error {
 	return http.ListenAndServe(":"+srv.Port, nil)
 }
 
-// handler: Index
-func (srv *Server) runIndex(w http.ResponseWriter, r *http.Request) {
+// RunIndex - handler for first page
+func (srv *Server) RunIndex(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	lang := vars["Lang"]
 
-	if _, isValid := srv.App.translations[lang]; !isValid {
-		// Set default lang if given lang invalid
-		lang = srv.App.Pages[0].Get("Slug")
-	}
-
 	// Index page with empty title. User can defined his own handler if he wants
 	page := srv.App.NewPage("")
-	page.Set("Lang", lang)
+	page.SetLang(lang)
 	srv.Render(w, page, "index")
 }
 
-// handler: One (*Page)
-func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
+// RunOne - handler for specific one (*Page)
+func (srv *Server) RunOne(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	slug := vars["Slug"]
 
 	page := srv.App.Page(slug)
 	if page == nil {
-		srv.run404(w, r)
+		srv.Run404(w, r)
 		return
 	}
 
@@ -164,10 +159,15 @@ func (srv *Server) runOne(w http.ResponseWriter, r *http.Request) {
 	srv.Render(w, page, templateID)
 }
 
-// handler: 404
-func (srv *Server) run404(w http.ResponseWriter, r *http.Request) {
+// Run404 - handler 404
+func (srv *Server) Run404(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	lang := vars["Lang"] // try to get language from url
+
 	page := srv.App.NewPage("404")
+	page.SetLang(lang)
 	w.WriteHeader(http.StatusNotFound)
+
 	srv.Render(w, page, "404")
 }
 
