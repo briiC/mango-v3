@@ -73,14 +73,14 @@ func main() {
     srv := mango.NewServer(3000)
 
 	// Add some middlewares ("File", "Page")
-    // ma.Middlewares["Page"] = mwForPage  // assign one mw
-    // ma.Middlewares["File"] = mwForFile  // assign one mw
+    // srv.Middlewares["Page"] = mwForPage  // assign one mw
+    // srv.Middlewares["File"] = mwForFile  // assign one mw
 	srv.Middlewares["Page"] = func(next http.Handler) http.Handler {
 		return mwFirst(mwSecond(next))
 	}
 
 	// Custom functions for templates
-	ma.FuncMap = template.FuncMap{
+	srv.FuncMap = template.FuncMap{
 		"Smile": func() string {
 			return ":)"
 		},
@@ -90,15 +90,15 @@ func main() {
 	}
 
     // Custom route
-	ma.Router.HandleFunc("/{Lang}/search/{sterm}", func(w http.ResponseWriter, r *http.Request) {
-		runSearch(ma, w, r) // create your handler
+	srv.Router.HandleFunc("/{Lang}/search/{sterm}", func(w http.ResponseWriter, r *http.Request) {
+		runSearch(srv, w, r) // create your handler
 	})
 
     // Print all pages and info about them
-	ma.App.Print()
+	srv.App.Print()
 
     // Go!
-	log.Println("Start listening on", ":"+ma.Port)
+	log.Println("Start listening on", ":"+srv.Port)
 	panic( srv.Start() )
 }
 
