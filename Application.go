@@ -427,6 +427,11 @@ http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" >
 			continue
 		}
 
+		if p.IsEqual("IsSitemap", "No") {
+			// Some pages can be removed only from sitemap
+			continue
+		}
+
 		if p.IsSet("Redirect") {
 			// Redirect pages also not inside
 			continue
