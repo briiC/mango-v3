@@ -133,6 +133,7 @@ func Test_AppPageFuncs(t *testing.T) {
 	p.Set("Custom", "param")
 	if !p.IsYes("IsVirtual") ||
 		!p.IsEqual("VirtualSlug", "") ||
+		!p.IsEqual("Title", "Default title") ||
 		p.App == nil {
 		p.Print()
 		t.Fatal("Empty labeled NewPage")

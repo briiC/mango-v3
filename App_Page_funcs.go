@@ -55,7 +55,7 @@ func (app *Application) linkPage(page *Page) {
 		// After merge check Title
 		// Title is not merged of it's special status
 		// So we merge it here as exception
-		if pDef.IsEqual("Title", "") {
+		if page.IsEqual("Title", "") {
 			page.Set("Title", pDef.Get("Title"))
 		}
 	}
