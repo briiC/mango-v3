@@ -6,7 +6,8 @@ func Test_Counts(t *testing.T) {
 	app, _ := NewApplication()
 
 	// Pages
-	if count := app.PageCount(); count != 39 {
+	// including ".en-defaults", ".lv-defaults"
+	if count := app.PageCount(); count != 41 {
 		app.Print()
 		t.Fatal("Page count incorrect. Found:", count)
 	}

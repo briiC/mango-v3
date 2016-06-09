@@ -6,7 +6,7 @@ import (
 )
 
 // NewPage already linked to app
-func (app *Application) NewPage(label string) *Page {
+func (app *Application) NewPage(lang, label string) *Page {
 	page := newPage(label)
 
 	// Reload all conent for app if "".reload" file is created in bin path
@@ -21,8 +21,7 @@ func (app *Application) NewPage(label string) *Page {
 
 	// Set default language
 	// Check only depth=0 for language
-	lang := app.Pages[0].Get("Slug")
-	page.Set("Lang", lang)
+	page.SetLang(lang)
 
 	// Link page to app
 	app.linkPage(page)
@@ -50,14 +49,15 @@ func (app *Application) linkPage(page *Page) {
 	// Add more params from absolute path
 	page.setPathParams()
 
-	// Load page defaults from language root
-	// defaults := fileToParams(app.ContentPath + "/" + page.Get("Lang") + "/.defaults")
-	// page.MergeParams(defaults) // fill empty params with defaults
-	// app.Pages.Print()
-
-	if p := app.Page(page.Get("Lang")); p != nil {
-		defaults := fileToParams(p.Get("Path") + "/.defaults")
-		page.MergeParams(defaults) // fill empty params with defaults
+	// Load page defaults from language root page
+	if pDef := app.Page("." + page.Get("Lang") + "-defaults"); pDef != nil {
+		page.MergeParams(pDef.params) // fill empty params with defaults
+		// After merge check Title
+		// Title is not merged of it's special status
+		// So we merge it here as exception
+		if pDef.IsEqual("Title", "") {
+			page.Set("Title", pDef.Get("Title"))
+		}
 	}
 
 	// Add "URL" param

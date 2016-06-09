@@ -19,7 +19,7 @@ func Test_Params(t *testing.T) {
 			"Label":       "Hello",
 			"Slug":        "hello",
 			"Keywords":    "top, keywords, hello, markdown", // top defaults
-			"Author":      "Mango",                          // top defaults
+			"Author":      "Mango",
 			"Lang":        "en",
 			"Ext":         ".md",
 			"IsVisible":   "Yes",

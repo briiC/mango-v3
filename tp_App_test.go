@@ -10,7 +10,7 @@ func Benchmark_App_Parallel(b *testing.B) {
 		for pb.Next() {
 			app.LoadContent()
 
-			app.NewPage("Page.md")
+			app.NewPage("en", "Page.md")
 			app.FileToPage("test-files/content/1_en/top-menu/1_Simple.md")
 
 			// Page

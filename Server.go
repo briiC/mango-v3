@@ -131,8 +131,7 @@ func (srv *Server) RunIndex(w http.ResponseWriter, r *http.Request) {
 	lang := vars["Lang"]
 
 	// Index page with empty title. User can defined his own handler if he wants
-	page := srv.App.NewPage("")
-	page.SetLang(lang)
+	page := srv.App.NewPage(lang, "")
 	srv.Render(w, page, "index")
 }
 
@@ -164,7 +163,7 @@ func (srv *Server) Run404(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	lang := vars["Lang"] // try to get language from url
 
-	page := srv.App.NewPage("404")
+	page := srv.App.NewPage(lang, "404")
 	page.SetLang(lang)
 	w.WriteHeader(http.StatusNotFound)
 

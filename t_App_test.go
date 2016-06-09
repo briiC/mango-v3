@@ -118,7 +118,7 @@ func Test_AppPageFuncs(t *testing.T) {
 	// new virtual page
 	// linked to app, but no parents
 	// not listed anywhere
-	p := app.NewPage("Virtual reality!")
+	p := app.NewPage("en", "Virtual reality!")
 	p.Set("Custom", "param")
 	if !p.IsYes("IsVirtual") ||
 		!p.IsEqual("Label", "Virtual reality!") ||
@@ -129,7 +129,7 @@ func Test_AppPageFuncs(t *testing.T) {
 	}
 
 	// Empty label
-	p = app.NewPage("")
+	p = app.NewPage("en", "")
 	p.Set("Custom", "param")
 	if !p.IsYes("IsVirtual") ||
 		!p.IsEqual("VirtualSlug", "") ||

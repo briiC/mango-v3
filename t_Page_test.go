@@ -96,7 +96,7 @@ func Test_PageFuncs(t *testing.T) {
 	if page.ReloadContent() != false {
 		t.Fatalf("Directories can not be reloaded")
 	}
-	p := app.NewPage("Virtual")
+	p := app.NewPage("en", "Virtual")
 	p.Set("Path", "../no-such-file")
 	if p.ReloadContent() != false {
 		fmt.Println(p.Get("Path"))

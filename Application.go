@@ -218,7 +218,6 @@ func (app *Application) LoadContent() {
 }
 
 // Directory to page tree
-// TODO: separate goroutine for every language directory listing ?
 func (app *Application) loadPages(fpath string) PageList {
 
 	// Collect all pages
@@ -269,6 +268,15 @@ func (app *Application) loadPages(fpath string) PageList {
 			if !p.IsYes("IsUnlisted") {
 				// Add to pageTree
 				pages = append(pages, p)
+			}
+
+			// Load .defaults page as separate page
+			// only .defaults that are in same level as language folders
+			// This page will be used on creation of new pages to set default params
+			if !p.IsSet("Level") {
+				pDef := app.FileToPage(fpath + "/" + f2.Name() + "/.defaults")
+				// Nothing on p.Get("Lang") so using Slug because its lang page
+				app.slugPages.Add("."+p.Get("Slug")+"-defaults", pDef) // .en-defaults
 			}
 
 			// After all go deeper.
