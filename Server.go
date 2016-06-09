@@ -162,9 +162,7 @@ func (srv *Server) RunOne(w http.ResponseWriter, r *http.Request) {
 func (srv *Server) Run404(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	lang := vars["Lang"] // try to get language from url
-
 	page := srv.App.NewPage(lang, "404")
-	page.SetLang(lang)
 	w.WriteHeader(http.StatusNotFound)
 
 	srv.Render(w, page, "404")

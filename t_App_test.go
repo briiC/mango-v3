@@ -139,6 +139,18 @@ func Test_AppPageFuncs(t *testing.T) {
 		t.Fatal("Empty labeled NewPage")
 	}
 
+	// Invalid language
+	p = app.NewPage("xx", "")
+	p.Set("Custom", "param")
+	if !p.IsYes("IsVirtual") ||
+		!p.IsEqual("VirtualSlug", "") ||
+		!p.IsEqual("Title", "Default title") ||
+		!p.IsEqual("Lang", "en") ||
+		p.App == nil {
+		p.Print()
+		t.Fatal("Invalid language NewPage")
+	}
+
 }
 
 func Test_AppCollectionFuncs(t *testing.T) {

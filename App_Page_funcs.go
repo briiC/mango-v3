@@ -19,8 +19,7 @@ func (app *Application) NewPage(lang, label string) *Page {
 		// time.Sleep(time.Millisecond * 1)
 	}
 
-	// Set default language
-	// Check only depth=0 for language
+	// Set initial language (mandatory)
 	page.SetLang(lang)
 
 	// Link page to app
@@ -48,6 +47,10 @@ func (app *Application) linkPage(page *Page) {
 
 	// Add more params from absolute path
 	page.setPathParams()
+
+	// Set Default language on linking page
+	// It's validate existing lang
+	page.SetLang(page.Get("Lang"))
 
 	// Load page defaults from language root page
 	if pDef := app.Page("." + page.Get("Lang") + "-defaults"); pDef != nil {

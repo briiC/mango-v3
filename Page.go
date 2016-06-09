@@ -83,11 +83,13 @@ func fileToPage(fpath string) *Page {
 func (page *Page) SetLang(lang string) string {
 
 	// Check if language is valid in App scope
-	// Also can be assigned if App is not linked to page
-	if page.App == nil || page.App.IsValidLang(lang) {
-		page.Set("Lang", lang)
+	if page.App != nil {
+		if !page.App.IsValidLang(lang) && len(page.App.Pages) > 0 {
+			lang = page.App.Pages[0].Get("Slug")
+		}
 	}
 
+	page.Set("Lang", lang)
 	return lang
 }
 

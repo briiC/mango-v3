@@ -165,7 +165,7 @@ func Test_PageFuncs(t *testing.T) {
 
 	// Set page lang
 	if page.SetLang("lv"); page.Get("Lang") != "lv" {
-		t.Fatal("Page lang must be [lv]")
+		t.Fatal("Page lang must be [lv]. Found: " + page.Get("Lang"))
 	}
 	if page.SetLang("en"); page.Get("Lang") != "en" {
 		t.Fatal("Page lang must be [en]")
