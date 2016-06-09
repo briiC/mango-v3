@@ -163,10 +163,10 @@ func Test_AppCollectionFuncs(t *testing.T) {
 func Test_FileURLs(t *testing.T) {
 	fid := fmt.Sprintf("f-%d", time.Now().UnixNano())
 	paths := map[string]string{
-		"test-files/content/en/" + fid + ".png":  "images",
-		"test-files/content/en/" + fid + ".JPeg": "images",
-		"test-files/content/en/" + fid + ".pdf":  "data",
-		"test-files/content/en/" + fid + ".Pdf":  "data",
+		"test-files/content/1_en/" + fid + ".png":  "images",
+		"test-files/content/1_en/" + fid + ".JPeg": "images",
+		"test-files/content/1_en/" + fid + ".pdf":  "data",
+		"test-files/content/1_en/" + fid + ".Pdf":  "data",
 	}
 
 	// Crete temp content files
@@ -182,7 +182,7 @@ func Test_FileURLs(t *testing.T) {
 		destPath := app.PublicPath + "/" + dirScope + "/" + fname
 
 		if finfo, _ := os.Stat(destPath); finfo == nil {
-			t.Fatalf("[%s] must be moved to [%s]", fname, dirScope)
+			t.Fatalf("[%s] must be moved to [%s]", fpath, destPath)
 		}
 
 		os.Remove(fpath)

@@ -51,8 +51,14 @@ func (app *Application) linkPage(page *Page) {
 	page.setPathParams()
 
 	// Load page defaults from language root
-	defaults := fileToParams(app.ContentPath + "/" + page.Get("Lang") + "/.defaults")
-	page.MergeParams(defaults) // fill empty params with defaults
+	// defaults := fileToParams(app.ContentPath + "/" + page.Get("Lang") + "/.defaults")
+	// page.MergeParams(defaults) // fill empty params with defaults
+	// app.Pages.Print()
+
+	if p := app.Page(page.Get("Lang")); p != nil {
+		defaults := fileToParams(p.Get("Path") + "/.defaults")
+		page.MergeParams(defaults) // fill empty params with defaults
+	}
 
 	// Add "URL" param
 	// Only if all other params is set

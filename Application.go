@@ -258,18 +258,6 @@ func (app *Application) loadPages(fpath string) PageList {
 				p.avoidDuplicate()
 			}
 
-			// Load sub-pages if it's directory
-			if p.IsDir() {
-				p.Pages = app.loadPages(p.Get("Path"))
-				p.Pages.Sort(p.Get("Sort"))
-
-				// Add parent to received pages
-				for _, p2 := range p.Pages {
-					// Set Parent page for all sub-pages
-					p2.Parent = p
-				}
-			}
-
 			// Add to linear slugPages
 			// app.slugPages[p.Params["Slug"]] = p
 			app.slugPages.Add(p.Get("Slug"), p)
@@ -281,6 +269,23 @@ func (app *Application) loadPages(fpath string) PageList {
 			if !p.IsYes("IsUnlisted") {
 				// Add to pageTree
 				pages = append(pages, p)
+			}
+
+			// After all go deeper.
+			// Depth loader must be executed last so top pages are added first
+			// Like, "content/en" and "content/lv" are saved and depth pages
+			// can reference to them immediately
+			//
+			// Load sub-pages if it's directory
+			if p.IsDir() {
+				p.Pages = app.loadPages(p.Get("Path"))
+				p.Pages.Sort(p.Get("Sort"))
+
+				// Add parent to received pages
+				for _, p2 := range p.Pages {
+					// Set Parent page for all sub-pages
+					p2.Parent = p
+				}
 			}
 
 		}
