@@ -377,6 +377,7 @@ func (app *Application) afterLoadContent() {
 				url = "/" + s
 			}
 			p.Set("Redirect", url)
+			p.Set("URL", url)
 			// fmt.Println(p.Get("URL"), url)
 		}
 

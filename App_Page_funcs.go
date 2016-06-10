@@ -64,10 +64,7 @@ func (app *Application) linkPage(page *Page) {
 	}
 
 	// Add "URL" param
-	if page.IsSet("Redirect") {
-		// From Redirect param
-		page.Set("URL", page.Get("Redirect"))
-	} else if page.ParamsLen() > 0 {
+	if page.ParamsLen() > 0 {
 		// Only if all other params is set
 		url := app.URLTemplates["Page"]
 		url = page.PopulateParams(url)
