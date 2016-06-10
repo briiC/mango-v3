@@ -246,7 +246,7 @@ func tLoop(s interface{}) []int {
 	return arr
 }
 
-// Split strings by seperator
+// Split strings by separator
 func tSplitToSlice(s, sep string) []string {
 	return strings.Split(s, sep)
 }
