@@ -220,6 +220,12 @@ func bufToParams(buf []byte, strict bool) map[string]string {
 		params[string(key)] = string(val)
 	}
 
+	// Special Label and slug Treatment
+	// If no slug set, set slug using label
+	if pLabel, isLabel := params["Label"]; isLabel {
+		params["Slug"] = toSlug(pLabel)
+	}
+
 	return params
 }
 
@@ -267,14 +273,7 @@ func filenameToParams(fpath string) map[string]string {
 	params["Title"] = label // must be overwritten in fileToParams if have such
 
 	// Slug
-	reg, _ := regexp.Compile("[^a-zA-Zā-žĀ-Žа-яА-Я0-9]+") // en, lv, ru
-	slug := reg.ReplaceAllString(label, "-")
-	slug = ToASCII(slug)
-	slug = strings.ToLower(strings.Trim(slug, "-"))
-	if slug == "" {
-		slug = label
-	}
-	params["Slug"] = slug
+	params["Slug"] = toSlug(label)
 
 	// Visibility check - always leave it as last check
 	// Not visible if no filename
@@ -295,4 +294,18 @@ func filenameToParams(fpath string) map[string]string {
 	}
 
 	return params
+}
+
+// Create Slug from given string
+// "Hello World!" ==> "hello-world"
+// "Mazs, rūķītis.." ==> "mazs-rukitis"
+func toSlug(s string) string {
+	reg, _ := regexp.Compile("[^a-zA-Zā-žĀ-Žа-яА-Я0-9]+") // en, lv, ru
+	slug := reg.ReplaceAllString(s, "-")
+	slug = ToASCII(slug)
+	slug = strings.ToLower(strings.Trim(slug, "-"))
+	if slug == "" {
+		slug = s
+	}
+	return slug
 }

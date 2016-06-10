@@ -86,6 +86,11 @@ func Test_Params(t *testing.T) {
 		"go-to-lv": {
 			"Redirect": "/lv",
 		},
+		"parsaukts-sakums": {
+			"FileName": "Sākums.md",
+			"Label":    "Pārsaukts sākums",
+			"Title":    "Sākuma meta nosaukums",
+		},
 	}
 
 	// Run test cases and verify result params
