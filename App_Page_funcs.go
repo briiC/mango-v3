@@ -64,8 +64,11 @@ func (app *Application) linkPage(page *Page) {
 	}
 
 	// Add "URL" param
-	// Only if all other params is set
-	if page.ParamsLen() > 0 {
+	if page.IsSet("Redirect") {
+		// From Redirect param
+		page.Set("URL", page.Get("Redirect"))
+	} else if page.ParamsLen() > 0 {
+		// Only if all other params is set
 		url := app.URLTemplates["Page"]
 		url = page.PopulateParams(url)
 		url = "/" + strings.TrimLeft(url, "/") // Fix broken url "//slug/" to "/slug"

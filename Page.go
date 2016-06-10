@@ -377,6 +377,7 @@ func (page *Page) setPathParams() {
 		page.Lock()
 		// Do not use page.Set() to change Slug
 		page.params["Slug"] = newSlug
+		page.params["IsSitemap"] = "No" // top level folders not included in sitemap
 		page.Unlock()
 	}
 
@@ -612,16 +613,18 @@ func (page *Page) PrintRow() {
 	}
 
 	collectionStr := ""
-	for ckey := range p.App.collections {
-		if p.IsSet(ckey) {
-			collectionStr += "[" + ckey[:1] + "]: "
-			cval := p.Get(ckey)
-			if len(cval) > 25 {
-				// Make shorter and skip middle. Show only start/end values
-				v := cval[:5] + " .. " + cval[len(cval)-20:]
-				cval = v
+	if !p.IsSet("Redirect") {
+		for ckey := range p.App.collections {
+			if p.IsSet(ckey) {
+				collectionStr += "[" + ckey[:1] + "]: "
+				cval := p.Get(ckey)
+				if len(cval) > 25 {
+					// Make shorter and skip middle. Show only start/end values
+					v := cval[:5] + " .. " + cval[len(cval)-20:]
+					cval = v
+				}
+				collectionStr += cval + " "
 			}
-			collectionStr += cval + " "
 		}
 	}
 

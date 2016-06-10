@@ -1,3 +1,5 @@
+Label: Citur
+Slug: citrons
 Redirect: sakums
 IsSitemap: No
 +++

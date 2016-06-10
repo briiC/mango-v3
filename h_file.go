@@ -120,6 +120,11 @@ func fileToParams(fpath string) map[string]string {
 	// file <---- filename <---- defaults <- subdefaults
 	params = mergeParams(params, params2, params3)
 
+	// Slug modified if Redirect param is set
+	if params["Redirect"] != "" {
+		params["Slug"] = "-" + params["Slug"] // redirect suffix
+	}
+
 	// Check and format datetime to UnixNano format
 	// after all merged
 	if params["VisibleFrom"] != "" || params["VisibleTo"] != "" {
@@ -223,7 +228,9 @@ func bufToParams(buf []byte, strict bool) map[string]string {
 	// Special Label and slug Treatment
 	// If no slug set, set slug using label
 	if pLabel, isLabel := params["Label"]; isLabel {
-		params["Slug"] = toSlug(pLabel)
+		if _, isSlug := params["Slug"]; !isSlug {
+			params["Slug"] = toSlug(pLabel)
+		}
 	}
 
 	return params

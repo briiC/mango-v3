@@ -83,13 +83,21 @@ func Test_Params(t *testing.T) {
 			"IsDir":       "Yes",
 			"HaveContent": "Yes",
 		},
-		"go-to-lv": {
+		"-go-to-lv": { // Redirect
 			"Redirect": "/lv",
+		},
+		"-citrons": {
+			"FileName": "Citur.md",
+			"Label":    "Citur",
 		},
 		"parsaukts-sakums": {
 			"FileName": "Sākums.md",
 			"Label":    "Pārsaukts sākums",
 			"Title":    "Sākuma meta nosaukums",
+		},
+		"en-top-menu": {
+			"Level":     "1",
+			"IsSitemap": "No",
 		},
 	}
 
