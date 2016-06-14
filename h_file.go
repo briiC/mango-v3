@@ -49,7 +49,14 @@ func fileToParams(fpath string) map[string]string {
 		// Get original Path
 		params2["Path"] = fpath[:len(fpath)-5] // trim .dir
 	}
-	params2["ModTime"] = fmt.Sprint(finfo.ModTime().UnixNano()) //TODO: or strconv faster?
+
+	// stat := finfo.Sys().(*syscall.Stat_t)
+	mtime := finfo.ModTime()
+	// atime := time.Unix(int64(stat.Atim.Sec), int64(stat.Atim.Nsec))
+	// ctime := time.Unix(int64(stat.Ctim.Sec), int64(stat.Ctim.Nsec))
+	params2["ModTime"] = fmt.Sprint(mtime.UnixNano())
+	// params2["ATime"] = fmt.Sprint(atime.UnixNano())
+	// params2["CTime"] = fmt.Sprint(ctime.UnixNano())
 
 	// if _, err := os.Stat("/path/to/whatever"); os.IsNotExist(err) {
 

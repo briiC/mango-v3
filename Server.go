@@ -62,7 +62,7 @@ func (srv *Server) preStart() http.Handler {
 
 	// doesn't overwrites if user defined same before
 	r.HandleFunc("/", srv.RunIndex)
-	r.HandleFunc("/{Lang:[a-z]{2}}", srv.RunIndex)
+	r.HandleFunc("/{Lang:[a-z]{2}}/", srv.RunIndex)
 
 	// Pages (by slug)
 	if route := srv.App.URLTemplates["Page"]; route != "" {
