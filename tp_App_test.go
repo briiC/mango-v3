@@ -54,3 +54,14 @@ func Benchmark_App_Parallel(b *testing.B) {
 		}
 	})
 }
+
+// Concurrency testing for NewPage func
+func Benchmark_AppNewPage_Parallel(b *testing.B) {
+	app, _ := NewApplication()
+
+	b.RunParallel(func(pb *testing.PB) {
+		for pb.Next() {
+			app.NewPage("en", "Index")
+		}
+	})
+}

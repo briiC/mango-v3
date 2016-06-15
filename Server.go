@@ -134,7 +134,7 @@ func (srv *Server) RunIndex(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	lang := vars["Lang"]
 
-	// Index page with empty title. User can defined his own handler if he wants
+	// Default params taken from /content/{lang}/.defaults
 	page := srv.App.NewPage(lang, "")
 	srv.Render(w, page, "index")
 }
