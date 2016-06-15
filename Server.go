@@ -91,6 +91,10 @@ func (srv *Server) preStart() http.Handler {
 	// but mandatory if FileURL is more complex: /static/{File}
 	// These lines makes sure we can serve root files: /sitemap.xml
 	fs := http.FileServer(http.Dir(srv.App.PublicPath))
+	// Middlewares for these files too
+	if mw, haveMw := srv.Middlewares["File"]; haveMw {
+		fs = mw(fs)
+	}
 	r.Handle("/{file:.+\\.[a-z]{3,4}}", fs)
 
 	// 404
