@@ -38,7 +38,7 @@ func Test_ToTime(t *testing.T) {
 	}
 
 	for in, expected := range cases {
-		dt, err := toTime(in)
+		dt, err := ToTime(in)
 		if err != nil || dt.String() != expected {
 			fmt.Println(":: ", in, " ---> ", dt)
 			t.Fatal("\tEXPECTED: [", expected, "]", err)

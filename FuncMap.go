@@ -208,7 +208,7 @@ func tFileURL(page *Page, parts ...string) string {
 }
 
 func tDateFormat(layout, s string) string {
-	if t, err := toTime(s); err == nil {
+	if t, err := ToTime(s); err == nil {
 		return t.Format(layout)
 	}
 

@@ -140,14 +140,14 @@ func fileToParams(fpath string) map[string]string {
 
 		// From
 		if params["VisibleFrom"] != "" {
-			if dt, err := toTime(params["VisibleFrom"]); err == nil {
+			if dt, err := ToTime(params["VisibleFrom"]); err == nil {
 				params["VisibleFrom"] = fmt.Sprint(dt.UnixNano())
 				dtFrom = dt
 			}
 		}
 		// To
 		if params["VisibleTo"] != "" {
-			if dt, err := toTime(params["VisibleTo"]); err == nil {
+			if dt, err := ToTime(params["VisibleTo"]); err == nil {
 				params["VisibleTo"] = fmt.Sprint(dt.UnixNano())
 				dtTo = dt
 			}

@@ -45,11 +45,12 @@ func mergeParams(mainMap map[string]string, maps ...map[string]string) map[strin
 	return m
 }
 
+// ToTime - datetime string to time type
 // Parse any custom string
 // 2006-01-02 15:04:05
 // 01 - month
 // 02 - day
-func toTime(s string) (time.Time, error) {
+func ToTime(s string) (time.Time, error) {
 	sLen := len(s)
 	dtNow := time.Now()
 
