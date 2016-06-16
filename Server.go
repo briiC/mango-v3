@@ -129,6 +129,15 @@ func (srv *Server) Start() error {
 	return http.ListenAndServe(":"+srv.Port, nil)
 }
 
+// // StartSecure listening to :443 port
+// func (srv *Server) StartSecure() error {
+// 	rh := srv.preStart()
+// 	http.Handle("/", rh)
+// 	certPath := srv.App.BinPath() + "/cert.pem"
+// 	keyPath := srv.App.BinPath() + "/key.pem"
+// 	return http.ListenAndServeTLS(":"+srv.Port, certPath, keyPath, nil)
+// }
+
 // RunIndex - handler for first page
 func (srv *Server) RunIndex(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
