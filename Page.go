@@ -314,7 +314,12 @@ func (page *Page) IsDir() bool {
 
 // AbsoluteURL - page URL prefixed with domain
 func (page *Page) AbsoluteURL() string {
-	return page.App.Domain + page.Get("URL")
+	if page.Get("URL")[0] == '/' {
+		// relative urls must be prefixed with host
+		return page.App.Domain + page.Get("URL")
+	}
+	// If not relative url leave as is
+	return page.Get("URL")
 }
 
 // ModTime - Get mod time for page from params

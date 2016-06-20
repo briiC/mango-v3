@@ -107,6 +107,10 @@ func Test_PageFuncs(t *testing.T) {
 	if url := page.AbsoluteURL(); url != "https://example.loc/en/fruits.html" {
 		t.Fatalf("Incorrect absolute url: %s", url)
 	}
+	p = app.Page("-hockey")
+	if url := p.AbsoluteURL(); url != "http://remote-url.com/go-there.html" {
+		t.Fatalf("Incorrect absolute url: %s", url)
+	}
 
 	// ModTime
 	page.Set("ModTime", "xxx") // simulate file content changed
