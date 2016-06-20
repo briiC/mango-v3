@@ -99,6 +99,11 @@ func Test_NewApplication(t *testing.T) {
 
 func Test_AppPageFuncs(t *testing.T) {
 	app, _ := NewApplication()
+	app.OnReload = func(app *Application) {
+		// Set this func, but do nothing
+		// Test coverage purpose
+	}
+	ioutil.WriteFile(app.BinPath()+"/.reload", nil, 0666)
 
 	// Search
 	pages := app.Search("en", "oc") // hOCkey, sOCcer, http://remote.lOC/..

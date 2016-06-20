@@ -60,6 +60,9 @@ type Application struct {
 
 	// channel to limit access to App
 	chBusy chan bool
+
+	// Run this func on content reload
+	OnReload func(app *Application)
 }
 
 // NewApplication - create/init new application
@@ -215,6 +218,11 @@ func (app *Application) LoadContent() {
 	app.createSitemap()
 
 	<-app.chBusy
+
+	// Run on every content load
+	if app.OnReload != nil {
+		app.OnReload(app)
+	}
 }
 
 // Directory to page tree
