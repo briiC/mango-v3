@@ -154,6 +154,13 @@ func (srv *Server) RunOne(w http.ResponseWriter, r *http.Request) {
 	slug := vars["Slug"]
 
 	page := srv.App.Page(slug)
+
+	// Also do not render if page is language root level
+	// content/en/{here}
+	if page.IsNegation("Level") {
+		page = nil
+	}
+
 	if page == nil {
 		srv.Run404(w, r)
 		return
