@@ -281,7 +281,7 @@ func (app *Application) loadPages(fpath string) PageList {
 			// Load .defaults page as separate page
 			// only .defaults that are in same level as language folders
 			// This page will be used on creation of new pages to set default params
-			if !p.IsSet("Level") {
+			if p.IsEqual("Level", "0") {
 				pDef := app.FileToPage(fpath + "/" + f2.Name() + "/.defaults")
 				// Nothing on p.Get("Lang") so using Slug because its lang page
 				app.slugPages.Add("."+p.Get("Slug")+"-defaults", pDef) // .en-defaults
@@ -377,7 +377,7 @@ func (app *Application) afterLoadContent() {
 		// 2. add / at the beginning if not absolute url
 		if s := p.Get("Redirect"); s != "" {
 			url := s
-			if p2 := app.Page(s); p2 != nil && p2.IsSet("Level") {
+			if p2 := app.Page(s); p2 != nil {
 				// Destination page found assign it's URL
 				url = p2.Get("URL")
 

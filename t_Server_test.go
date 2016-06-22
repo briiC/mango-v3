@@ -43,7 +43,7 @@ func Test_Server(t *testing.T) {
 			"Code": "200",
 			"Body": "</h1>\nindex",
 		},
-		"/en/en-top-menu.html": {
+		"/en/news.html": {
 			"Code": "200",
 			"Body": "</h1>\ngroup",
 		},
@@ -52,8 +52,12 @@ func Test_Server(t *testing.T) {
 			"Body": "</h1>\none",
 		},
 		"/en/-go-to-lv.html": { // redirect
-			"Code": "200",
+			"Code": "200", // status checked for destinatin page (after redirect)
 			"Body": "</h1>\nindex",
+		},
+		"/en/en-top-menu.html": { // top level pages are not allowed in web access
+			"Code": "404",
+			"Body": "</h1>\n404",
 		},
 		"/en/Hello.html": { // gets file 404. case sensitive
 			"Code": "404",

@@ -1,7 +1,7 @@
 Label: Citur
 Slug: citrons
-Redirect: sakums
+Redirect: parsaukts-sakums
 IsSitemap: No
 +++
 
-Redirect to page by slug "sakums"
+Redirect to page by slug "parsaukts-sakums"

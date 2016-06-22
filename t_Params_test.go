@@ -84,7 +84,7 @@ func Test_Params(t *testing.T) {
 			"HaveContent": "Yes",
 		},
 		"-go-to-lv": { // Redirect
-			"Redirect": "/lv",
+			"Redirect": "/lv", // not lv.html
 		},
 		"-citrons": {
 			"FileName": "Citur.md",

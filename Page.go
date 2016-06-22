@@ -344,6 +344,16 @@ func (page *Page) isDuplicate() bool {
 	return page.App.Page(page.Get("Slug")) != nil
 }
 
+// Is page is top level
+// /content/en/				-- Level=0
+// /content/en/top-menu/	-- Level=1
+func (page *Page) isTopLevel() bool {
+	level := page.Get("Level")
+	// Do not check for empty, because top level pages
+	// are assigned Level 0 or 1
+	return level == "0" || level == "1"
+}
+
 // Get some params from path
 func (page *Page) setPathParams() {
 
@@ -360,6 +370,8 @@ func (page *Page) setPathParams() {
 	// level of depth
 	if len(arr) == 1 && arr[0] == "" {
 		// langage is in zero level depth
+		page.Set("Level", "0")
+
 		// remove empty
 		arr = make([]string, 0)
 	}
@@ -382,7 +394,7 @@ func (page *Page) setPathParams() {
 		page.Lock()
 		// Do not use page.Set() to change Slug
 		page.params["Slug"] = newSlug
-		page.params["IsSitemap"] = "No" // top level folders not included in sitemap
+		page.params["IsSitemap"] = _No // top level folders not included in sitemap
 		page.Unlock()
 	}
 
@@ -415,11 +427,14 @@ func (page *Page) Walk(fnCheck func(p *Page) bool) PageList {
 	pages := make(PageList, 0)
 
 	page.RLock()
-	all := page.Pages[:]
+	all := page.Pages[:] // doesn't include Unlisted
 	page.RUnlock()
 
 	for _, p := range all {
-		if fnCheck(p) {
+
+		// Skip by defined fnCheck
+		// and also skip top level pages (content/lv/{here})
+		if fnCheck(p) && !p.isTopLevel() {
 			pages = append(pages, p)
 		}
 
@@ -450,7 +465,6 @@ func (page *Page) Search(sterm string) PageList {
 		// Unlisted pages already not listed here
 
 		// Custom check
-		// TODO: add correct search by params and content. Not only slug
 		s := p.Get("Slug") +
 			p.Get("Label") +
 			p.Get("Title") +
@@ -610,11 +624,11 @@ func (page *Page) PrintRow() {
 		prefix += "[?-?]"
 	}
 
-	if p.Parent == nil && !p.IsSet("Level") {
+	if p.Parent == nil && p.IsEqual("Level", "0") {
 		// prefix += strings.ToUpper(p.Get("Slug")) + " ⛿"
 		prefix += "⛿"
 	} else if p.IsEqual("Level", "1") {
-		// prefix += "*"
+		prefix += "---"
 	}
 
 	collectionStr := ""
