@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"io/ioutil"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 	"strings"
@@ -326,7 +327,17 @@ func (app *Application) afterLoadContent() {
 
 		// *** ContentFrom:
 		if cfrom := p.Get("ContentFrom"); cfrom != "" {
-			if strings.Index(cfrom, ":") > 0 {
+			if cfrom[:7] == "http://" || cfrom[:8] == "https://" {
+				response, err := http.Get(cfrom)
+				if err == nil {
+					defer response.Body.Close()
+					urlContent, urlErr := ioutil.ReadAll(response.Body)
+					if urlErr == nil {
+						p.SetContent(urlContent)
+					}
+				}
+
+			} else if strings.Index(cfrom, ":") > 0 {
 				// From collection
 				arr := strings.SplitN(cfrom, ":", 2)
 				ckey := arr[0]
