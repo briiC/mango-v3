@@ -113,7 +113,7 @@ func (srv *Server) preStart() http.Handler {
 	if _, err := ioutil.ReadFile(templatePath + "/layout.tmpl"); err != nil {
 		templatePath = srv.App.BinPath() + "/templates"
 	}
-	srv.Templates = template.Must(template.New("").
+	srv.Templates = template.Must(template.New("#mango#").
 		Funcs(defaultFuncMap). // fill with defaults
 		Funcs(srv.FuncMap).    // user adds/overwrites his own
 		ParseGlob(templatePath + "/*.tmpl"))
