@@ -5,6 +5,8 @@
 {{ $Lang := (Get $Page "Lang") }}
 {{ $Menu := (Page $Page "menu") }}
 
+{{ Set $Page "NewParam" "I set Page param from template" }}
+
 <html lang="{{ $Lang }}">
 <head>
     <meta charset="utf-8" />
