@@ -36,6 +36,19 @@ func Test_FuncMap(t *testing.T) {
 		t.Fatalf("Incorrect param [%s]", s)
 	}
 
+	// tSet
+	tSet(page, "Label", "Mouse")
+	if s := tGet(page, "Label"); s != "Mouse" {
+		t.Fatalf("Incorrect param [%s]", s)
+	}
+	tSet(params, "Label", "Set for map")
+	if s := tGet(params, "Label"); s != "Set for map" {
+		t.Fatalf("Incorrect param [%s]", s)
+	}
+	if s := tGet(nil, "Label"); s != "" {
+		t.Fatalf("Incorrect param [%s]", s)
+	}
+
 	// tContent
 	if s := tContent(page); s != "<p>Miau!</p>\n" {
 		t.Fatalf("Incorrect content [%s]", s)

@@ -106,8 +106,8 @@ func Test_AppPageFuncs(t *testing.T) {
 	ioutil.WriteFile(app.BinPath()+"/.reload", nil, 0666)
 
 	// Search
-	pages := app.Search("en", "oc") // hOCkey, sOCcer, http://remote.lOC/..
-	if len(pages) != 3 {
+	pages := app.Search("en", "oc") // hOCkey, sOCcer, http://remote.lOC/.., localhost..
+	if len(pages) != 4 {
 		t.Fatal("Must be found 3 pages")
 	}
 

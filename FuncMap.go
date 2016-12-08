@@ -16,6 +16,7 @@ var (
 	defaultFuncMap = template.FuncMap{
 		"T":         T,
 		"Get":       tGet,
+		"Set":       tSet,
 		"Content":   tContent,
 		"Page":      tPage,
 		"HTML":      tHTML,
@@ -56,6 +57,19 @@ func tGet(page interface{}, key string) string {
 		return page.(*Page).Get(key)
 	case map[string]string:
 		return page.(map[string]string)[key]
+	}
+
+	return ""
+}
+
+// Set param for Page or params map
+// Use to change/add new param inside template
+func tSet(page interface{}, key string, val interface{}) string {
+	switch page.(type) {
+	case *Page:
+		page.(*Page).SetValue(key, val)
+	case map[string]string:
+		page.(map[string]string)[key] = valueToString(val)
 	}
 
 	return ""

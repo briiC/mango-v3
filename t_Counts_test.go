@@ -7,7 +7,7 @@ func Test_Counts(t *testing.T) {
 
 	// Pages
 	// including ".en-defaults", ".lv-defaults"
-	if count := app.PageCount(); count != 42 {
+	if count := app.PageCount(); count != 43 {
 		app.Print()
 		t.Fatal("Page count incorrect. Found:", count)
 	}
@@ -74,7 +74,7 @@ func Test_SearchCounts(t *testing.T) {
 
 	// Search
 	results := app.Page("en").Search("oC")
-	if count := len(results); count != 3 {
+	if count := len(results); count != 4 {
 		app.Print()
 		results.Print()
 		t.Fatal("[Search: oC] count incorrect. Found:", count)
@@ -92,7 +92,7 @@ func Test_SearchCounts(t *testing.T) {
 	results = app.Page("en").Walk(func(p *Page) bool {
 		return !p.IsSet("IsDir") || p.IsEqual("IsDir", "No")
 	})
-	if count := len(results); count != 26 {
+	if count := len(results); count != 27 {
 		app.Print()
 		results.Print()
 		t.Fatal("[Search: NOT IsDir] count incorrect. Found:", count)

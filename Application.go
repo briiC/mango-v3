@@ -327,7 +327,7 @@ func (app *Application) afterLoadContent() {
 
 		// *** ContentFrom:
 		if cfrom := p.Get("ContentFrom"); cfrom != "" {
-			if cfrom[:7] == "http://" || cfrom[:8] == "https://" {
+			if strings.HasPrefix(cfrom, "http://") || strings.HasPrefix(cfrom, "https://") {
 				response, err := http.Get(cfrom)
 				if err == nil {
 					defer response.Body.Close()

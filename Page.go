@@ -223,16 +223,7 @@ func (page *Page) Get(key string) string {
 // SetValue - set any type value
 // Interface variable will cast to string
 func (page *Page) SetValue(key string, val interface{}) {
-	switch val.(type) {
-	case bool:
-		if val.(bool) {
-			page.Set(key, "Yes")
-		} else {
-			page.Set(key, "No")
-		}
-	default:
-		page.Set(key, fmt.Sprintf("%v", val))
-	}
+	page.Set(key, valueToString(val))
 }
 
 // RemoveParam - remove param by given key

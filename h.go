@@ -2,6 +2,7 @@ package mango
 
 import (
 	"errors"
+	"fmt"
 	"log"
 	"strconv"
 	"strings"
@@ -146,4 +147,18 @@ func printMap(fname string, m map[string]string) {
 		log.Printf("%20s: %s \n", key, val)
 	}
 	log.Println("--------------------------------------------------------")
+}
+
+// Convert any given value to string
+// Bool is converted to Mango Params friendly values: Yes/No
+func valueToString(val interface{}) string {
+	switch val.(type) {
+	case bool:
+		if val.(bool) {
+			return "Yes"
+		} else {
+			return "No"
+		}
+	}
+	return fmt.Sprintf("%v", val)
 }
