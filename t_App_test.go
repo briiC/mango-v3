@@ -107,8 +107,13 @@ func Test_AppPageFuncs(t *testing.T) {
 
 	// Search
 	pages := app.Search("en", "oc") // hOCkey, sOCcer, http://remote.lOC/.., localhost..
-	if len(pages) != 4 {
-		t.Fatal("Must be found 3 pages")
+	if len(pages) != 4 && len(pages) != 3 {
+		// NOTE: There can be different count of results depending
+		// where test are executed
+		// Because of one result tries to get content from "http://localhost"
+		// And if it fails that result not counted (one result less)
+		pages.Print()
+		t.Fatal("Must be found 4 pages")
 	}
 
 	// Search - no such slug, no results
