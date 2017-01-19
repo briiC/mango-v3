@@ -62,14 +62,15 @@ func Test_Params(t *testing.T) {
 			"Categories": "",
 		},
 		"sports": {
-			"IsDir":       "Yes",
-			"Level":       "2",
-			"Sort":        "Random",
-			"Ext":         ".dir",
-			"HaveContent": "No",
-			"Icon":        "sports.png",
-			"Keywords":    "fun, play", // override top defaults
-			"Author":      "Sportsman", // top defaults
+			"IsDir":        "Yes",
+			"Level":        "2",
+			"Sort":         "Random",
+			"Ext":          ".dir",
+			"HaveContent":  "No",
+			"Icon":         "sports.png",
+			"Keywords":     "fun, play", // override top defaults
+			"Author":       "Sportsman", // top defaults
+			"SourceParams": "Author, Icon, Sort, Keywords, ",
 		},
 		"soccer": {
 			"Label":   "Soccer!!!",
@@ -124,5 +125,7 @@ func Test_Params(t *testing.T) {
 				}
 			}
 		}
+
 	}
+
 }

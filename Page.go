@@ -233,6 +233,14 @@ func (page *Page) RemoveParam(key string) {
 	page.Unlock()
 }
 
+// BlankParams - init/clear all params
+// Or could be used to init page params map
+func (page *Page) BlankParams() {
+	page.RLock()
+	defer page.RUnlock()
+	page.params = map[string]string{}
+}
+
 // ParamsLen - how many params page have
 func (page *Page) ParamsLen() int {
 	page.RLock()

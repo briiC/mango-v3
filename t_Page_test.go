@@ -48,7 +48,7 @@ func Test_PageFuncs(t *testing.T) {
 		t.Fatal("ERROR: RemoveParam")
 	}
 
-	if paramCount := len(page.Params()); paramCount != 21 {
+	if paramCount := len(page.Params()); paramCount != 22 {
 		t.Fatal("ERROR: Params(): Found:", paramCount)
 	}
 
@@ -176,6 +176,12 @@ func Test_PageFuncs(t *testing.T) {
 	}
 	if page.SetLang("xx"); page.Get("Lang") == "xx" {
 		t.Fatal("Page lang can't be [xx]")
+	}
+
+	// Remove all params
+	p.BlankParams()
+	if p.ParamsLen() != 0 {
+		t.Fatalf("Expected empty params. Found %d params.", p.ParamsLen())
 	}
 
 }
