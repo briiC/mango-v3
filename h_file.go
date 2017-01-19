@@ -12,7 +12,7 @@ import (
 	"time"
 )
 
-// Read file contents and convert to map of params
+// FileToParams - Read file contents and convert to map of params
 // We do not check for error because we only want to get/or not file
 // Importance order:
 // 1. Content params
@@ -20,7 +20,7 @@ import (
 // 3. (same depth) .defaults
 // 4 -n. (up n depth) .subdefaults
 // 5. .mango config file params
-func fileToParams(fpath string) map[string]string {
+func FileToParams(fpath string) map[string]string {
 	// get given filepath directory path
 	pwd, _ := filepath.Abs(filepath.Dir(fpath))
 
@@ -28,7 +28,7 @@ func fileToParams(fpath string) map[string]string {
 	finfo, fErr := os.Stat(fpath)
 	if os.IsNotExist(fErr) {
 		// Not exists
-		// fileToParams expect to file be created
+		// FileToParams expect to file be created
 		// otherwise params empty
 		return map[string]string{}
 	}
@@ -100,7 +100,7 @@ func fileToParams(fpath string) map[string]string {
 	if params2["Ext"] == _Md || finfo.IsDir() {
 
 		// Same depth .defaults
-		params3 = fileToParams(pwd + "/.defaults")
+		params3 = FileToParams(pwd + "/.defaults")
 
 		// Up level .subdefaults (until can't found)
 		subfilepath := pwd
@@ -108,7 +108,7 @@ func fileToParams(fpath string) map[string]string {
 		subparams := make(map[string]string, 0)
 	SUB:
 		subfilepath, _ = filepath.Abs(subfilepath + "/../") //one up
-		_subparams := fileToParams(subfilepath + "/.subdefaults")
+		_subparams := FileToParams(subfilepath + "/.subdefaults")
 		if len(_subparams) > 0 {
 			subparams = mergeParams(subparams, _subparams)
 			goto SUB
@@ -284,7 +284,7 @@ func filenameToParams(fpath string) map[string]string {
 
 	// Set before visibility check
 	params["Label"] = label
-	params["Title"] = label // must be overwritten in fileToParams if have such
+	params["Title"] = label // must be overwritten in FileToParams if have such
 
 	// Slug
 	params["Slug"] = toSlug(label)

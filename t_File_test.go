@@ -160,7 +160,7 @@ func Test_FilenameToParams(t *testing.T) {
 //
 // 	// Run test cases and verify result params
 // 	for filename, cParams := range cases {
-// 		fParams := fileToParams(filename)
+// 		fParams := FileToParams(filename)
 // 		for ckey, cval := range cParams {
 // 			notValid := false
 //

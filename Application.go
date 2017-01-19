@@ -126,7 +126,7 @@ func (app *Application) BinPath() string {
 // Should not be tested for parallel because used only once in init
 func (app *Application) loadConfig(fname string) {
 	fpath := app.binPath + "/" + fname
-	params := fileToParams(fpath)
+	params := FileToParams(fpath)
 
 	// Overwrite only allowed params
 

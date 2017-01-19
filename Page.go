@@ -58,7 +58,7 @@ func newPage(label string) *Page {
 func fileToPage(fpath string) *Page {
 
 	// Extract content
-	params := fileToParams(fpath)
+	params := FileToParams(fpath)
 	bufContent := []byte(params["Content"])
 	delete(params, "Content")
 
