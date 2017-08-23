@@ -337,6 +337,14 @@ func (app *Application) afterLoadContent() {
 					}
 				}
 
+			} else if strings.HasPrefix(cfrom, ".") || strings.HasPrefix(cfrom, "/") {
+				// Any Filesystem file with path traversal
+				// ../../../ or ./readme.txt
+				buf, err := ioutil.ReadFile(cfrom)
+				if err == nil {
+					p.SetContent(buf)
+				}
+
 			} else if strings.Index(cfrom, ":") > 0 {
 				// From collection
 				arr := strings.SplitN(cfrom, ":", 2)
