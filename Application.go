@@ -340,9 +340,16 @@ func (app *Application) afterLoadContent() {
 			} else if strings.HasPrefix(cfrom, ".") || strings.HasPrefix(cfrom, "/") {
 				// Any Filesystem file with path traversal
 				// ../../../ or ./readme.txt
-				buf, err := ioutil.ReadFile(cfrom)
-				if err == nil {
-					p.SetContent(buf)
+				if strings.HasSuffix(strings.ToLower(cfrom), ".md") {
+					// markdown
+					if filePage := fileToPage(cfrom); filePage != nil {
+						p.SetContent(filePage.Content())
+					}
+				} else {
+					// raw
+					if buf, err := ioutil.ReadFile(cfrom); err == nil {
+						p.SetContent(buf)
+					}
 				}
 
 			} else if strings.Index(cfrom, ":") > 0 {
