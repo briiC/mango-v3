@@ -162,7 +162,7 @@ func tParseToTags(page *Page, codeLang string, params ...string) template.HTML {
 		}
 
 		line = strings.Trim(line, " ")
-		isURL := (line[:1] == "/" || line[:4] == "http")
+		isURL := strings.HasPrefix(line, "/") || strings.HasPrefix(line, "http")
 
 		switch codeLang {
 		case "javascript":
