@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/russross/blackfriday"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 var (
@@ -99,7 +99,8 @@ func tHTML(args ...interface{}) template.HTML {
 // Markdown To HTML - Parse string (markdown) to html
 // used in tmeplates
 func tMdToHTML(args ...interface{}) template.HTML {
-	s := blackfriday.MarkdownCommon([]byte(fmt.Sprintf("%s", args...)))
+	// s := blackfriday.MarkdownCommon([]byte(fmt.Sprintf("%s", args...))) //v1
+	s := blackfriday.Run([]byte(fmt.Sprintf("%s", args...))) //v2
 	return template.HTML(s)
 }
 

@@ -11,7 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/russross/blackfriday"
+	"gopkg.in/russross/blackfriday.v2"
 )
 
 // Page - page with content and params + sub-pages
@@ -67,7 +67,8 @@ func fileToPage(fpath string) *Page {
 		// Do nothing for html pages
 		// leave as is
 	} else {
-		bufContent = blackfriday.MarkdownCommon(bufContent)
+		// bufContent = blackfriday.MarkdownCommon(bufContent) //v1
+		bufContent = blackfriday.Run(bufContent) //v2
 	}
 
 	// Create new page
