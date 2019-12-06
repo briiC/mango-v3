@@ -10,6 +10,6 @@ import (
 func parseMarkdown(buf []byte) []byte {
 	parser := parser.NewWithExtensions(parser.CommonExtensions | parser.AutoHeadingIDs)
 	buf = bytes.ReplaceAll(buf, []byte("\t"), []byte("    "))
-	buf = bytes.ReplaceAll(buf, []byte("\r"))
+	buf = bytes.ReplaceAll(buf, []byte("\r"), nil)
 	return markdown.ToHTML(buf, parser, nil)
 }
