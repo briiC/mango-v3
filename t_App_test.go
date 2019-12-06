@@ -214,30 +214,30 @@ func Test_FileURLs(t *testing.T) {
 
 	// Test urls in content
 	page := app.Page("about")
-	expected := `<h2>Image urls</h2>
+	expected := `<h2 id="image-urls">Image urls</h2>
 
-<p><img src="/images/logo.png" alt="img" /><br />
-<img src="/images/logo.png" alt="img" /><br />
+<p><img src="/images/logo.png" alt="img" /><br>
+<img src="/images/logo.png" alt="img" /><br>
 <img src="/images/logo.png" alt="img" />
 <img src="/images/http.png" alt="img" />
-<img src="/http.png" alt="img" /><br />
+<img src="/http.png" alt="img" /><br>
 <img src="/lv/logo.png" alt="img" />
 <img src="/data/logo.png" alt="img" />
-<img src="http://remote.loc/logo.png" alt="img" /><br />
-<img src="https://remote.loc/logo.png" alt="img" /><br />
+<img src="http://remote.loc/logo.png" alt="img" /><br>
+<img src="https://remote.loc/logo.png" alt="img" /><br>
 <img src="ftp://remote.loc/logo.png" alt="img" /></p>
 
-<h2>Data urls</h2>
+<h2 id="data-urls">Data urls</h2>
 
-<p><a href="/data/file.pdf">pdf</a><br />
-<a href="/data/file.pdf">pdf</a><br />
+<p><a href="/data/file.pdf">pdf</a><br>
+<a href="/data/file.pdf">pdf</a><br>
 <a href="/data/file.pdf">pdf</a>
 <a href="/data/http.pdf">pdf</a>
-<a href="/http.pdf">pdf</a><br />
+<a href="/http.pdf">pdf</a><br>
 <a href="/lv/file.pdf">pdf</a>
 <a href="/images/file.pdf">pdf</a>
-<a href="http://remote.loc/file.pdf">pdf</a><br />
-<a href="https://remote.loc/file.pdf">pdf</a><br />
+<a href="http://remote.loc/file.pdf">pdf</a><br>
+<a href="https://remote.loc/file.pdf">pdf</a><br>
 <a href="ftp://remote.loc/file.pdf">pdf</a></p>
 `
 	if s := tContent(page); string(s) != expected {
