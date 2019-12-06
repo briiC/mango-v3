@@ -1,0 +1,6 @@
+goos: linux
+goarch: amd64
+Benchmark_App_Parallel-6          	     318	   5643559 ns/op	 1917704 B/op	   13733 allocs/op
+Benchmark_AppNewPage_Parallel-6   	  192193	      6034 ns/op	   12044 B/op	     125 allocs/op
+PASS
+ok  	_/home/briic/Projects/mango	4.351s

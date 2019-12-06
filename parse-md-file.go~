@@ -1,0 +1,30 @@
+package main
+
+import (
+	"bytes"
+	"io/ioutil"
+	"log"
+
+	"github.com/fatih/color"
+	"github.com/gomarkdown/markdown"
+	"github.com/gomarkdown/markdown/parser"
+)
+
+func parseMarkdown(buf []byte) []byte {
+	parser := parser.NewWithExtensions(parser.CommonExtensions | parser.AutoHeadingIDs | parser.LaxHTMLBlocks)
+	buf = bytes.ReplaceAll(buf, []byte("\t"), []byte("    "))
+	return markdown.ToHTML(buf, parser, nil)
+}
+
+func main() {
+
+	var fpath = "/home/briic/Projects/nic-front-content/content/1_lv/top-menu/2_Noteikumi/1_Lietosanas_Noteikumi.md"
+	buf, err := ioutil.ReadFile(fpath)
+	if err != nil {
+		log.Fatalf("Cant read %s: %s", fpath, err)
+	}
+
+	out := parseMarkdown(buf)
+	color.Cyan("[%s]", out)
+
+}
